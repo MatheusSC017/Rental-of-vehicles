@@ -27,6 +27,7 @@ class Vehicle(models.Model):
     engine_vehicle = models.CharField(max_length=100, verbose_name='motor')
     color_vehicle = models.CharField(max_length=25, verbose_name='cor')
     other_data_vehicle = models.CharField(max_length=500, blank=True, null=True, verbose_name='mais informações')
+    available_vehicle = models.BooleanField(default=True, verbose_name='disponível')
 
     class Meta:
         verbose_name = 'veículo'
