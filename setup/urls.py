@@ -20,6 +20,7 @@ urlpatterns = [
     path('veiculos/', include('vehicle.urls')),
     path('enderecos/', include('address.urls')),
     path('clientes/', include('client.urls')),
+    path('filiais/', include('branch.urls')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls'))
 ]
