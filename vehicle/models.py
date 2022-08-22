@@ -29,5 +29,8 @@ class Vehicle(models.Model):
     other_data_vehicle = models.CharField(max_length=500, blank=True, null=True, verbose_name='mais informações')
     available_vehicle = models.BooleanField(default=True, verbose_name='disponível')
 
+    def __str__(self):
+        return f'{self.brand_vehicle} / {self.model_vehicle} - {self.model_year_vehicle}'
+
     class Meta:
         verbose_name = 'veículo'

@@ -19,5 +19,8 @@ class Client(models.Model):
     finance_client = models.FloatField(verbose_name='renda')
     address_client = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, verbose_name='endereço')
 
+    def __str__(self):
+        return f'{self.user_client.first_name} {self.user_client.last_name}'
+
     class Meta:
         verbose_name = 'cliente'
