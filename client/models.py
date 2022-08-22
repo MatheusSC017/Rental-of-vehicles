@@ -18,3 +18,6 @@ class Client(models.Model):
     age_client = models.PositiveSmallIntegerField(verbose_name='idade')
     finance_client = models.FloatField(verbose_name='renda')
     address_client = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, verbose_name='endereço')
+
+    class Meta:
+        verbose_name = 'cliente'

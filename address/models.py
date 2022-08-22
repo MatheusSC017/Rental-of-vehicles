@@ -8,3 +8,6 @@ class Address(models.Model):
     district_address = models.CharField(max_length=100, verbose_name='bairro')
     street_address = models.CharField(max_length=100, verbose_name='rua')
     number_address = models.CharField(max_length=30, verbose_name='número')
+
+    class Meta:
+        verbose_name = 'endereço'
