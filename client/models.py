@@ -11,9 +11,9 @@ class Client(models.Model):
     )
 
     user_client = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='usuário')
-    cpf_client = models.CharField(max_length=11, verbose_name='CPF')
+    cpf_client = models.CharField(max_length=11, primary_key=True, verbose_name='CPF')
     rg_client = models.CharField(max_length=20, verbose_name='RG')
-    cnh_client = models.CharField(max_length=11, verbose_name='CNH')
+    cnh_client = models.CharField(max_length=11, unique=True, verbose_name='CNH')
     gender_client = models.CharField(max_length=1, choices=GENDER, verbose_name='sexo')
     age_client = models.PositiveSmallIntegerField(verbose_name='idade')
     finance_client = models.FloatField(verbose_name='renda')
