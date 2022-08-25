@@ -17,6 +17,7 @@ class Client(models.Model):
     gender_client = models.CharField(max_length=1, choices=GENDER, verbose_name='sexo')
     age_client = models.PositiveSmallIntegerField(verbose_name='idade')
     finance_client = models.FloatField(verbose_name='renda')
+    phone_client = models.CharField(max_length=20, verbose_name='telefone')
     address_client = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, verbose_name='endereço')
 
     def __str__(self):

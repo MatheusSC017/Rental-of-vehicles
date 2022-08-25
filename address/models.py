@@ -32,7 +32,7 @@ class Address(models.Model):
         ('TO', 'Tocantins')
     )
 
-    cep_address = models.CharField(max_length=8, verbose_name='CEP')
+    cep_address = models.CharField(max_length=9, verbose_name='CEP')
     state_address = models.CharField(max_length=2, choices=STATES, verbose_name='estado')
     city_address = models.CharField(max_length=100, verbose_name='cidade')
     district_address = models.CharField(max_length=100, verbose_name='bairro')
