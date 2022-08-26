@@ -17,7 +17,7 @@ class Vehicle(models.Model):
     type_vehicle = models.CharField(max_length=1, default='M', choices=TYPE, verbose_name='veículo')
     brand_vehicle = models.CharField(max_length=100, verbose_name='marca')
     model_vehicle = models.CharField(max_length=100, verbose_name='modelo')
-    year_manufacure_vehicle = models.CharField(max_length=4, verbose_name='ano de fabricação')
+    year_manufacture_vehicle = models.CharField(max_length=4, verbose_name='ano de fabricação')
     model_year_vehicle = models.CharField(max_length=4, verbose_name='ano do modelo')
     mileage_vehicle = models.FloatField(default=0, verbose_name='quilometragem')
     license_plate_vehicle = models.CharField(max_length=7, unique=True, verbose_name='placa')
