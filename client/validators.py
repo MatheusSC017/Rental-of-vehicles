@@ -1,35 +1,32 @@
-from django.core.validators import BaseValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.utils.deconstruct import deconstructible
 from validate_docbr import CPF, CNH
 import re
 
 
-class CPFValidator(BaseValidator):
-    message = _('The CPF entered is invalid.')
+@deconstructible
+class DocValidator:
+    def __call__(self, value):
+        cleaned = self.clean(value)
+
+        if not self.doc_validator.validate(cleaned):
+            raise ValidationError(self.message, code=self.code)
+
+    @staticmethod
+    def clean(x):
+        return re.sub('[^0-9]', '', x)
+
+
+@deconstructible
+class CPFValidator(DocValidator):
+    message = 'O CPF informado é inválido.'
     code = 'cpf_validator'
-
-    def __call__(self, value):
-        cleaned = self.clean(value)
-        cpf = CPF()
-
-        if not cpf.validate(cleaned):
-            raise ValidationError(self.message, code=self.code)
-
-    def clean(self, x):
-        return re.sub('[^0-9]', '', x)
+    doc_validator = CPF()
 
 
-class CNHValidator(BaseValidator):
-    message = _('The CNH entered is invalid.')
+@deconstructible
+class CNHValidator(DocValidator):
+    message = 'A CNH informada é inválida.'
     code = 'cnh_validator'
-
-    def __call__(self, value):
-        cleaned = self.clean(value)
-        cnh = CNH()
-
-        if not cnh.validate(cleaned):
-            raise ValidationError(self.message, code=self.code)
-
-    def clean(self, x):
-        return re.sub('[^0-9]', '', x)
+    doc_validator = CNH()
