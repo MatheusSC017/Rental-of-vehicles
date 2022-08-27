@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from address.models import Address
-from .validators import CPFValidator, CNHValidator
+from validators.docbr import CPFValidator, CNHValidator
 
 
 class Client(models.Model):

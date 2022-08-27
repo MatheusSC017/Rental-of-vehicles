@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
 from django.utils.deconstruct import deconstructible
-from validate_docbr import CPF, CNH
+from validate_docbr import CPF, CNH, RENAVAM
 import re
 
 
@@ -30,3 +29,10 @@ class CNHValidator(DocValidator):
     message = 'A CNH informada é inválida.'
     code = 'cnh_validator'
     doc_validator = CNH()
+
+
+@deconstructible
+class RENAVAMValidator(DocValidator):
+    message = 'O Renavam informado é inválido'
+    code = 'renavam_validator'
+    doc_validator = RENAVAM()

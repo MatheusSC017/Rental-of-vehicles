@@ -5,6 +5,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'setup.settings')
 django.setup()
 
 import faker
+from validate_docbr import CPF, CNH, RENAVAM
 from random import randrange, choice
 from address.models import Address
 from client.models import Client
@@ -13,6 +14,9 @@ from vehicle.models import Vehicle
 from django.contrib.auth.models import User
 
 fake = faker.Faker('pt_BR')
+cpf = CPF()
+cnh = CNH()
+renavam = RENAVAM()
 
 
 def address_generator():
@@ -56,9 +60,9 @@ def client_generator():
     gender_options = ('M', 'F', 'N')
 
     user = user_generator()
-    cpf = fake.cpf()
+    cpf_client = cpf.generate()
     rg = fake.rg()
-    cnh = randrange(11111111111, 99999999999)
+    cnh_client = cnh.generate()
     gender = choice(gender_options)
     age = randrange(18, 99)
     finance = randrange(500, 30000)
@@ -67,9 +71,9 @@ def client_generator():
 
     client = Client.objects.create(
         user_client=user,
-        cpf_client=cpf,
+        cpf_client=cpf_client,
         rg_client=rg,
-        cnh_client=cnh,
+        cnh_client=cnh_client,
         gender_client=gender,
         age_client=age,
         finance_client=finance,
@@ -104,6 +108,7 @@ def vehicle_generator(branches):
     year_manufacture = randrange(1960, 2020)
     model_year = year_manufacture + randrange(0, 5)
     mileage = float(randrange(0, 2000))
+    renavam_vehicle = renavam.generate()
     license_plate = fake.license_plate()
     chassi = str(randrange(11111111111111111, 99999999999999999))
     fuel = choice('GEDH')
@@ -120,6 +125,7 @@ def vehicle_generator(branches):
         year_manufacture_vehicle=year_manufacture,
         model_year_vehicle=model_year,
         mileage_vehicle=mileage,
+        renavam_vehicle=renavam_vehicle,
         license_plate_vehicle=license_plate,
         chassi_vehicle=chassi,
         fuel_vehicle=fuel,
@@ -134,13 +140,12 @@ def vehicle_generator(branches):
 
 
 if __name__ == '__main__':
-    '''
-    for _ in range(50):
+    for _ in range(500):
         client_generator()
-    '''
+
     braches = list()
-    for _ in range(10):
+    for _ in range(30):
         braches.append(branch_generator())
 
-    for _ in range(50):
+    for _ in range(150):
         vehicle_generator(braches)

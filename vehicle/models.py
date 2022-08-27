@@ -1,5 +1,7 @@
 from django.db import models
 from branch.models import Branch
+from validators.docbr import RENAVAMValidator
+
 
 class Vehicle(models.Model):
     FUEL = (
@@ -20,8 +22,9 @@ class Vehicle(models.Model):
     year_manufacture_vehicle = models.CharField(max_length=4, verbose_name='ano de fabricação')
     model_year_vehicle = models.CharField(max_length=4, verbose_name='ano do modelo')
     mileage_vehicle = models.FloatField(default=0, verbose_name='quilometragem')
+    renavam_vehicle = models.CharField(max_length=11, primary_key=True, validators=[RENAVAMValidator()], verbose_name='renavam')
     license_plate_vehicle = models.CharField(max_length=7, unique=True, verbose_name='placa')
-    chassi_vehicle = models.CharField(max_length=17, primary_key=True, verbose_name='chassi')
+    chassi_vehicle = models.CharField(max_length=17, unique=True, verbose_name='chassi')
     fuel_vehicle = models.CharField(max_length=1, default='G', choices=FUEL, verbose_name='combustível')
     fuel_tank_vehicle = models.PositiveSmallIntegerField(verbose_name='capacidade do tanque')
     engine_vehicle = models.CharField(max_length=100, verbose_name='motor')
