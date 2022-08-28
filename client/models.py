@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 from address.models import Address
 from validators.docbr import CPFValidator, CNHValidator
+from validators.basic_user import PhoneValidator
 
 
 class Client(models.Model):
@@ -16,9 +18,9 @@ class Client(models.Model):
     rg_client = models.CharField(max_length=20, verbose_name='RG')
     cnh_client = models.CharField(max_length=11, unique=True, validators=[CNHValidator()], verbose_name='CNH')
     gender_client = models.CharField(max_length=1, choices=GENDER, verbose_name='sexo')
-    age_client = models.PositiveSmallIntegerField(verbose_name='idade')
+    age_client = models.PositiveSmallIntegerField(validators=[MinValueValidator(18)], verbose_name='idade')
     finance_client = models.FloatField(verbose_name='renda')
-    phone_client = models.CharField(max_length=20, verbose_name='telefone')
+    phone_client = models.CharField(max_length=16, validators=[PhoneValidator()], verbose_name='telefone')
     address_client = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, verbose_name='endereço')
 
     def __str__(self):
