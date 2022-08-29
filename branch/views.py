@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
+from django.db.models import Count
 from address.models import Address
 from address.serializers import AddressSerializer
 from vehicle.models import Vehicle
@@ -9,7 +10,7 @@ from .serializers import BranchSerializer
 
 
 class BranchViewSet(ModelViewSet):
-    queryset = Branch.objects.all()
+    queryset = Branch.objects.annotate(number_vehicles=Count('vehicle'))
     serializer_class = BranchSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
