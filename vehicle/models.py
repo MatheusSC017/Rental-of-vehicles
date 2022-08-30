@@ -1,6 +1,12 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 from branch.models import Branch
 from validators.docbr import RENAVAMValidator
+
+
+class VehicleClassification(models.Model):
+    title_classification = models.CharField(max_length=50, verbose_name='classificação')
+    daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
 
 
 class Vehicle(models.Model):
@@ -22,7 +28,8 @@ class Vehicle(models.Model):
     year_manufacture_vehicle = models.CharField(max_length=4, verbose_name='ano de fabricação')
     model_year_vehicle = models.CharField(max_length=4, verbose_name='ano do modelo')
     mileage_vehicle = models.FloatField(default=0, verbose_name='quilometragem')
-    renavam_vehicle = models.CharField(max_length=11, primary_key=True, validators=[RENAVAMValidator()], verbose_name='renavam')
+    renavam_vehicle = models.CharField(max_length=11, primary_key=True,
+                                       validators=[RENAVAMValidator()], verbose_name='renavam')
     license_plate_vehicle = models.CharField(max_length=7, unique=True, verbose_name='placa')
     chassi_vehicle = models.CharField(max_length=17, unique=True, verbose_name='chassi')
     fuel_vehicle = models.CharField(max_length=1, default='G', choices=FUEL, verbose_name='combustível')
@@ -32,6 +39,8 @@ class Vehicle(models.Model):
     other_data_vehicle = models.CharField(max_length=500, blank=True, null=True, verbose_name='mais informações')
     available_vehicle = models.BooleanField(default=True, verbose_name='disponível')
     branch_vehicle = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, verbose_name='filial')
+    classification_vehicle = models.ForeignKey(VehicleClassification, on_delete=models.SET_NULL,
+                                               null=True, verbose_name='classificação')
 
     def __str__(self):
         return f'{self.brand_vehicle} / {self.model_vehicle} - {self.model_year_vehicle}'
