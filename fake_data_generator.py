@@ -71,14 +71,14 @@ def client_generator():
 
     client = Client.objects.create(
         user_client=user,
-        cpf_client=cpf_client,
-        rg_client=rg,
-        cnh_client=cnh_client,
-        gender_client=gender,
-        age_client=age,
+        cpf_person=cpf_client,
+        rg_person=rg,
+        cnh_person=cnh_client,
+        gender_person=gender,
+        age_person=age,
         finance_client=finance,
-        phone_client=phone,
-        address_client=address
+        phone_person=phone,
+        address_person=address
     )
 
     return client

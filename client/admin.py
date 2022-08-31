@@ -3,9 +3,9 @@ from .models import Client
 
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['user_client', 'cpf_client', 'cnh_client', 'finance_client', 'address_client']
-    list_display_links = ['user_client', 'cpf_client', ]
-    search_fields = ['cpf_client', 'cnh_client', ]
+    list_display = ['user_client', 'cpf_person', 'cnh_person', 'finance_client', 'address_person']
+    list_display_links = ['user_client', 'cpf_person', ]
+    search_fields = ['cpf_person', 'cnh_person', ]
     list_per_page = 200
 
 
