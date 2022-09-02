@@ -9,4 +9,4 @@ class StaffMemberAdmin(admin.ModelAdmin):
     list_per_page = 200
 
 
-admin.register(StaffMember)
+admin.register(StaffMember, StaffMemberAdmin)
