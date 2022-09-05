@@ -11,6 +11,9 @@ class Insurance(models.Model):
     coverage_insurance = models.JSONField(verbose_name='abrangência')
     price_insurance = models.FloatField(validators=[MinValueValidator(0)], verbose_name='preço')
 
+    def __str__(self):
+        return self.title_insurance
+
     class Meta:
         verbose_name = 'seguro'
 
@@ -35,18 +38,24 @@ class Rental(models.Model):
                                              verbose_name='filial de saída')
     arrival_branch_rental = models.ForeignKey(Branch, null=True, blank=True, related_name='arrival_branch_rental',
                                               on_delete=models.DO_NOTHING, verbose_name='filial de chegada')
-    rent_date_rental = models.DateField(verbose_name='data de alocação')
+    appointment_date_rental = models.DateField(verbose_name='data de agendamento')
+    rent_date_rental = models.DateField(null=True, blank=True, verbose_name='data de alocação')
     devolution_date_rental = models.DateField(null=True, blank=True, verbose_name='data de devolução')
-    requested_deadline_rental = models.PositiveSmallIntegerField(verbose_name='prazo requisitado')
-    actual_deadline_rental = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name='prazo real')
+    requested_days_rental = models.PositiveSmallIntegerField(verbose_name='prazo requisitado')
+    actual_days_rental = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name='prazo real')
     fines_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)], verbose_name='multas')
     rent_deposit_rental = models.FloatField(validators=[MinValueValidator(0)], verbose_name='caução')
     daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
     additional_daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)],
                                                      verbose_name='custo adicional da diária')
-    return_rate_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)], verbose_name='taxa de retorno')
-    total_cost_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)], verbose_name='custo total')
+    return_rate_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
+                                           verbose_name='taxa de retorno')
+    total_cost_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
+                                          verbose_name='custo total')
     driver_rental = models.ManyToManyField(Client, related_name='driver_rental', verbose_name='condutores')
+
+    def __str__(self):
+        return f'{self.client_rental} - {self.vehicle_rental}'
 
     class Meta:
         verbose_name = 'aluguel'

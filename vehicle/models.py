@@ -6,7 +6,14 @@ from validators.docbr import RENAVAMValidator
 
 class VehicleClassification(models.Model):
     title_classification = models.CharField(max_length=50, verbose_name='classificação')
-    daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
+    daily_cost_classification = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
+
+    def __str__(self):
+        return self.title_classification
+
+    class Meta:
+        verbose_name = 'classificação'
+        verbose_name_plural = 'classificações'
 
 
 class Vehicle(models.Model):

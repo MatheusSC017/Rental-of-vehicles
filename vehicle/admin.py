@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Vehicle
+from .models import Vehicle, VehicleClassification
+
+
+class VehicleClassificationAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'title_classification', 'daily_cost_classification', ]
+    list_display_links = ['pk', 'title_classification', ]
+    search_fields = ['title_classification', ]
+    ordering = ['daily_cost_classification', ]
+    list_per_page = 50
 
 
 class VehicleAdmin(admin.ModelAdmin):
@@ -11,4 +19,5 @@ class VehicleAdmin(admin.ModelAdmin):
     list_per_page = 100
 
 
+admin.site.register(VehicleClassification, VehicleClassificationAdmin)
 admin.site.register(Vehicle, VehicleAdmin)
