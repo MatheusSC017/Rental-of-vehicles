@@ -38,7 +38,7 @@ class Rental(models.Model):
                                              verbose_name='filial de saída')
     arrival_branch_rental = models.ForeignKey(Branch, null=True, blank=True, related_name='arrival_branch_rental',
                                               on_delete=models.DO_NOTHING, verbose_name='filial de chegada')
-    appointment_date_rental = models.DateField(verbose_name='data de agendamento')
+    appointment_date_rental = models.DateField(null=True, blank=True, verbose_name='data de agendamento')
     rent_date_rental = models.DateField(null=True, blank=True, verbose_name='data de alocação')
     devolution_date_rental = models.DateField(null=True, blank=True, verbose_name='data de devolução')
     requested_days_rental = models.PositiveSmallIntegerField(verbose_name='prazo requisitado')

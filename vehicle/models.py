@@ -46,8 +46,7 @@ class Vehicle(models.Model):
     other_data_vehicle = models.CharField(max_length=500, blank=True, null=True, verbose_name='mais informações')
     available_vehicle = models.BooleanField(default=True, verbose_name='disponível')
     branch_vehicle = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, verbose_name='filial')
-    classification_vehicle = models.ForeignKey(VehicleClassification, on_delete=models.SET_NULL,
-                                               null=True, verbose_name='classificação')
+    classification_vehicle = models.ForeignKey(VehicleClassification, on_delete=models.PROTECT, verbose_name='classificação')
 
     def __str__(self):
         return f'{self.brand_vehicle} / {self.model_vehicle} - {self.model_year_vehicle}'
