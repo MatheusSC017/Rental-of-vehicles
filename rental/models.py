@@ -4,6 +4,7 @@ from branch.models import Branch
 from vehicle.models import Vehicle
 from staff.models import StaffMember
 from client.models import Client
+from datetime import date
 
 
 class Insurance(models.Model):
@@ -53,6 +54,18 @@ class Rental(models.Model):
     total_cost_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
                                           verbose_name='custo total')
     driver_rental = models.ManyToManyField(Client, related_name='driver_rental', verbose_name='condutores')
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.status_rental in ('D', 'E'):
+            self.devolution_date_rental = date.today()
+            self.actual_days_rental = self.devolution_date_rental - self.rent_date_rental
+            self.fines_rental = abs(self.actual_days_rental - self.devolution_date_rental) * 0.2 * \
+                                   (self.daily_cost_rental + self.additional_daily_cost_rental)
+            self.return_rate_rental = 150.
+
+        self.save_base()
 
     def __str__(self):
         return f'{self.client_rental} - {self.vehicle_rental}'

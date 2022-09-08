@@ -15,6 +15,8 @@ class InsuranceViewSet(ModelViewSet):
 
 
 class RentalViewSet(mixins.CreateModelMixin,
+                    mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
                     mixins.ListModelMixin,
                     GenericViewSet):
     queryset = Rental.objects.all()
@@ -28,6 +30,16 @@ class RentalViewSet(mixins.CreateModelMixin,
             rent_date_rental = date.today()
         serializer.save(
             staff_rental=self.request.user.staffmember,
+            daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
+            rent_date_rental=rent_date_rental
+        )
+
+    def perform_update(self, serializer):
+        vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
+        rent_date_rental = None
+        if self.request.data.get('status_rental') == 'L':
+            rent_date_rental = date.today()
+        serializer.save(
             daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
             rent_date_rental=rent_date_rental
         )
