@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import Insurance, Rental
-from .validators import valid_status_rental
+from . import validators
 
 
 class InsuranceSerializer(ModelSerializer):
@@ -11,15 +11,23 @@ class InsuranceSerializer(ModelSerializer):
 
 class RentalSerializer(ModelSerializer):
     def create(self, validated_data):
-        if not valid_status_rental(validated_data.get('status_rental')):
+        if not validators.valid_status_rental(validated_data.get('status_rental')):
             raise ValidationError('Para cadastro de alocação informe como opção Agendado ou Alugado somente.')
+
         if validated_data.get('status_rental') == 'L':
             validated_data['appointment_date_rental'] = None
+
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        if instance.status_rental == 'A' and validated_data.get('status_rental') not in ('A', 'L', 'C'):
+        if not validators.valid_status_rental_update(instance.status_rental, validated_data.get('status_rental')):
             raise ValidationError('Um carro agendado somente pode transitar para o estado Alocado e Cancelado.')
+
+        valid_update, allowed_field = validators.valid_rental_data_update(instance, validated_data)
+        if not valid_update:
+            raise ValidationError('O estado que o veiculo se encontra não permite que só permite que os seguintes '
+                                  f'campos sejam alterados: {", ".join(allowed_field)}.')
+
         return super().update(instance, validated_data)
 
     class Meta:
@@ -27,4 +35,4 @@ class RentalSerializer(ModelSerializer):
         fields = '__all__'
         read_only_fields = ['staff_rental', 'rent_date_rental', 'devolution_date_rental', 'actual_days_rental',
                             'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
-                            'arrival_branch_rental']
+                            'outlet_branch_rental', 'arrival_branch_rental']

@@ -30,6 +30,7 @@ class RentalViewSet(mixins.CreateModelMixin,
             rent_date_rental = date.today()
         serializer.save(
             staff_rental=self.request.user.staffmember,
+            outlet_branch_rental=vehicle.branch_vehicle,
             daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
             rent_date_rental=rent_date_rental
         )
@@ -41,5 +42,6 @@ class RentalViewSet(mixins.CreateModelMixin,
             rent_date_rental = date.today()
         serializer.save(
             daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
+            outlet_branch_rental=vehicle.branch_vehicle,
             rent_date_rental=rent_date_rental
         )
