@@ -11,7 +11,7 @@ class InsuranceSerializer(ModelSerializer):
 
 class RentalSerializer(ModelSerializer):
     def create(self, validated_data):
-        if not validators.valid_status_rental(validated_data.get('status_rental')):
+        if not validators.valid_status_rental_create(validated_data.get('status_rental')):
             raise ValidationError('Para cadastro de alocação informe como opção Agendado ou Alugado somente.')
 
         if validated_data.get('status_rental') == 'L':
@@ -21,12 +21,12 @@ class RentalSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         if not validators.valid_status_rental_update(instance.status_rental, validated_data.get('status_rental')):
-            raise ValidationError('Um carro agendado somente pode transitar para o estado Alocado e Cancelado.')
+            raise ValidationError('A transição de status requirida não é válida.')
 
         valid_update, allowed_field = validators.valid_rental_data_update(instance, validated_data)
         if not valid_update:
-            raise ValidationError('O estado que o veiculo se encontra não permite que só permite que os seguintes '
-                                  f'campos sejam alterados: {", ".join(allowed_field)}.')
+            raise ValidationError('O estado que o veiculo se encontra só permite que os seguintes campos sejam '
+                                  f'alterados: {", ".join(allowed_field)}.')
 
         return super().update(instance, validated_data)
 

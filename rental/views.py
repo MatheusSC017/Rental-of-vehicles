@@ -5,6 +5,7 @@ from vehicle.models import Vehicle
 from .permissions import OnlyStaffMemberPermission
 from .serializers import InsuranceSerializer, RentalSerializer
 from .models import Insurance, Rental
+from .validators import valid_appointment_update_or_cancellation
 from datetime import date
 
 
@@ -25,9 +26,8 @@ class RentalViewSet(mixins.CreateModelMixin,
 
     def perform_create(self, serializer):
         vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
-        rent_date_rental = None
-        if self.request.data.get('status_rental') == 'L':
-            rent_date_rental = date.today()
+        rent_date_rental = date.today() if self.request.data.get('status_rental') == 'L' else None
+
         serializer.save(
             staff_rental=self.request.user.staffmember,
             outlet_branch_rental=vehicle.branch_vehicle,
@@ -37,11 +37,20 @@ class RentalViewSet(mixins.CreateModelMixin,
 
     def perform_update(self, serializer):
         vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
-        rent_date_rental = None
-        if self.request.data.get('status_rental') == 'L':
-            rent_date_rental = date.today()
+        daily_cost = vehicle.classification_vehicle.daily_cost_classification
+        if not valid_appointment_update_or_cancellation(self.request.data.get('appointment_date_rental')):
+            fines_rental = self.calculate_fines(daily_cost)
+        else:
+            fines_rental = None
+        rent_date_rental = date.today() if self.request.data.get('status_rental') == 'L' else None
+
         serializer.save(
-            daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
+            daily_cost_rental=daily_cost,
             outlet_branch_rental=vehicle.branch_vehicle,
-            rent_date_rental=rent_date_rental
+            rent_date_rental=rent_date_rental,
+            fines_rental=fines_rental
         )
+
+    def calculate_fines(self, daily_cost):
+        total_daily_cost = float(daily_cost) + float(self.request.data.get('additional_daily_cost_rental'))
+        return round(float(self.request.data.get('requested_days_rental')) * total_daily_cost * 0.2, 2)

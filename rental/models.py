@@ -58,6 +58,9 @@ class Rental(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+        if self.status_rental == 'C':
+            self.total_cost_rental = self.fines_rental
+
         if self.status_rental in ('D', 'E'):
             self.devolution_date_rental = date.today()
             self.actual_days_rental = self.devolution_date_rental - self.rent_date_rental
