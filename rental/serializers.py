@@ -16,6 +16,12 @@ class RentalSerializer(ModelSerializer):
 
         if validated_data.get('status_rental') == 'L':
             validated_data['appointment_date_rental'] = None
+        else:
+            if not validated_data['appointment_date_rental']:
+                raise ValidationError('Para agendamento de veiculos o campo Data de agendamento é obrigatório.')
+
+        validated_data['arrival_branch_rental'] = None
+        validated_data['distance_branch_rental'] = None
 
         return super().create(validated_data)
 
@@ -35,4 +41,4 @@ class RentalSerializer(ModelSerializer):
         fields = '__all__'
         read_only_fields = ['staff_rental', 'rent_date_rental', 'devolution_date_rental', 'actual_days_rental',
                             'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
-                            'outlet_branch_rental', 'arrival_branch_rental']
+                            'outlet_branch_rental', ]
