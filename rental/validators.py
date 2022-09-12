@@ -2,10 +2,9 @@ from datetime import datetime, timedelta
 
 STATUS_UPDATE = {
     'A': ('A', 'L', 'C'),
-    'L': ('L', 'D', 'E'),
+    'L': ('L', 'D',),
     'C': (),
     'D': (),
-    'E': (),
 }
 
 
@@ -13,11 +12,9 @@ ALLOW_FIELD_UPDATE = {
     'A': ('vehicle_rental', 'insurance_rental', 'status_rental', 'appointment_date_rental',
           'requested_days_rental', 'rent_deposit_rental', 'additional_daily_cost_rental',
           'driver_rental', ),
-    'F': ('status_rental', 'fines_rental', 'driver_rental'),
-    'L': ('status_rental', 'driver_rental', ),
-    'C': (),
-    'D': (),
-    'E': (),
+    'L': ('status_rental', 'rent_date_rental', 'driver_rental', ),
+    'C': ('status_rental', 'driver_rental', ),
+    'D': ('status_rental', 'arrival_branch_rental', 'distance_branch_rental', 'driver_rental',),
 }
 
 
@@ -41,9 +38,7 @@ def valid_rental_data_update(instance, validated_data):
         Validates if the required fields for the current status have been filled in and if the other fields remain empty
     """
     # Select the status rental
-    status_rental = instance.status_rental \
-        if instance.status_rental == 'A' and valid_appointment_update_or_cancellation(instance.appointment_date_rental)\
-        else 'F'
+    status_rental = validated_data.get('status_rental')
 
     # Checks if the read-only fields have been modified
     disallow_field_update = validated_data.keys() - ALLOW_FIELD_UPDATE[status_rental]
@@ -51,10 +46,12 @@ def valid_rental_data_update(instance, validated_data):
     for field in disallow_field_update:
         if getattr(instance, field) != validated_data.get(field):
             response = False
+            print(field)
 
     # Checks if the fields have been filled
     for field in ALLOW_FIELD_UPDATE[validated_data.get('status_rental')]:
         if not validated_data.get(field):
             response = False
+            print('a' + field)
 
     return response, ALLOW_FIELD_UPDATE[validated_data.get('status_rental')]

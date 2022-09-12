@@ -4,6 +4,7 @@ from branch.models import Branch
 from vehicle.models import Vehicle
 from staff.models import StaffMember
 from client.models import Client
+from .validators import valid_appointment_update_or_cancellation
 from datetime import date
 
 
@@ -23,9 +24,8 @@ class Rental(models.Model):
     STATUS = (
         ('A', 'Agendado'),
         ('L', 'Alocado'),
-        ('D', 'Devolvido'),
-        ('E', 'Devolvido com atraso'),
         ('C', 'Cancelado'),
+        ('D', 'Devolvido'),
     )
 
     vehicle_rental = models.ForeignKey(Vehicle, on_delete=models.DO_NOTHING, verbose_name='veículo')
@@ -59,17 +59,35 @@ class Rental(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+        if self.status_rental == 'L' and not self.rent_date_rental:
+            self.rent_date_rental = date.today()
+
         if self.status_rental == 'C':
+            self.actual_days_rental = 0
+            if not valid_appointment_update_or_cancellation(self.appointment_date_rental):
+                self.fines_rental = self.calculate_fines()
             self.total_cost_rental = self.fines_rental
 
-        if self.status_rental in ('D', 'E'):
+        if self.status_rental == 'D':
+            # Rate of return value
+            self.return_rate_rental = self.distance_branch_rental * 1.2
+            # Fine amount for breach of agreement
             self.devolution_date_rental = date.today()
             self.actual_days_rental = self.devolution_date_rental - self.rent_date_rental
-            self.fines_rental = abs(self.actual_days_rental - self.devolution_date_rental) * 0.2 * \
-                                   (self.daily_cost_rental + self.additional_daily_cost_rental)
-            self.return_rate_rental = 150.
+            self.fines_rental = self.calculate_fines()
+            # Insurance cost
+            total_cost_of_insurance = self.insurance_rental.price_insurance * self.actual_days_rental
+            # Total cost of rent
+            daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
+            self.total_cost_rental = (self.actual_days_rental * daily_cost_total) + self.fines_rental \
+                                     + self.return_rate_rental + total_cost_of_insurance
 
         self.save_base()
+
+    def calculate_fines(self):
+        daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
+        number_of_days = abs(self.actual_days_rental - self.requested_days_rental)
+        return round(number_of_days * daily_cost_total * 0.2, 2)
 
     def __str__(self):
         return f'{self.client_rental} - {self.vehicle_rental}'
