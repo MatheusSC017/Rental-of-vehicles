@@ -5,7 +5,7 @@ from vehicle.models import Vehicle
 from staff.models import StaffMember
 from client.models import Client
 from .validators import valid_appointment_update_or_cancellation
-from datetime import date
+from datetime import date, timedelta
 
 
 class Insurance(models.Model):
@@ -73,20 +73,29 @@ class Rental(models.Model):
             self.return_rate_rental = self.distance_branch_rental * 1.2
             # Fine amount for breach of agreement
             self.devolution_date_rental = date.today()
-            self.actual_days_rental = self.devolution_date_rental - self.rent_date_rental
+            self.actual_days_rental = (self.devolution_date_rental - self.rent_date_rental).days + 1
             self.fines_rental = self.calculate_fines()
             # Insurance cost
             total_cost_of_insurance = self.insurance_rental.price_insurance * self.actual_days_rental
             # Total cost of rent
             daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
-            self.total_cost_rental = (self.actual_days_rental * daily_cost_total) + self.fines_rental \
-                                     + self.return_rate_rental + total_cost_of_insurance
+            total_cost = self.actual_days_rental * daily_cost_total
+            self.total_cost_rental = sum([total_cost, self.fines_rental,
+                                          self.return_rate_rental, total_cost_of_insurance])
 
         self.save_base()
 
     def calculate_fines(self):
         daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
-        number_of_days = abs(self.actual_days_rental - self.requested_days_rental)
+
+        if self.status_rental == 'C':
+            number_of_days = self.requested_days_rental
+        else:
+            expected_return_date = self.rent_date_rental + timedelta(days=self.requested_days_rental - 1)
+            number_of_days = abs((self.devolution_date_rental - expected_return_date).days)
+            if self.appointment_date_rental:
+                number_of_days += abs((self.appointment_date_rental - self.rent_date_rental).days)
+
         return round(number_of_days * daily_cost_total * 0.2, 2)
 
     def __str__(self):

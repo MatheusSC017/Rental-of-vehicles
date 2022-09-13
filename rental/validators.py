@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 STATUS_UPDATE = {
     'A': ('A', 'L', 'C'),
     'L': ('L', 'D',),
-    'C': (),
-    'D': (),
+    'C': ('C',),
+    'D': ('D',),
 }
 
 
