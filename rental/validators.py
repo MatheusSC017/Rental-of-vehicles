@@ -1,10 +1,12 @@
+from rest_framework.utils import model_meta
 from datetime import datetime, timedelta
+import rental.models as rental_models
 
 STATUS_UPDATE = {
     'A': ('A', 'L', 'C'),
     'L': ('L', 'D',),
-    'C': ('C',),
-    'D': ('D',),
+    'C': (),
+    'D': (),
 }
 
 
@@ -12,9 +14,9 @@ ALLOW_FIELD_UPDATE = {
     'A': ('vehicle_rental', 'insurance_rental', 'status_rental', 'appointment_date_rental',
           'requested_days_rental', 'rent_deposit_rental', 'additional_daily_cost_rental',
           'driver_rental', ),
-    'L': ('status_rental', 'rent_date_rental', 'driver_rental', ),
-    'C': ('status_rental', 'driver_rental', ),
-    'D': ('status_rental', 'arrival_branch_rental', 'distance_branch_rental', 'driver_rental',),
+    'L': ('status_rental', 'driver_rental', ),
+    'C': ('status_rental', ),
+    'D': ('status_rental', 'arrival_branch_rental', 'distance_branch_rental',),
 }
 
 
@@ -37,21 +39,30 @@ def valid_rental_data_update(instance, validated_data):
     """
         Validates if the required fields for the current status have been filled in and if the other fields remain empty
     """
-    # Select the status rental
     status_rental = validated_data.get('status_rental')
+
+    # Select
+    info = model_meta.get_field_info(rental_models.Rental)
+    many_to_many = list()
+    for field_name, relation_info in info.relations.items():
+        if relation_info.to_many and field_name not in ALLOW_FIELD_UPDATE[status_rental]:
+            many_to_many.append(field_name)
 
     # Checks if the read-only fields have been modified
     disallow_field_update = validated_data.keys() - ALLOW_FIELD_UPDATE[status_rental]
     response = True
     for field in disallow_field_update:
-        if getattr(instance, field) != validated_data.get(field):
-            response = False
-            print(field)
+        if field in many_to_many:
+            equal_values = [client for client in instance.driver_rental.all()] == validated_data.get('driver_rental')
+            if not equal_values:
+                response = False
+        else:
+            if getattr(instance, field) != validated_data.get(field):
+                response = False
 
     # Checks if the fields have been filled
-    for field in ALLOW_FIELD_UPDATE[validated_data.get('status_rental')]:
+    for field in ALLOW_FIELD_UPDATE[status_rental]:
         if not validated_data.get(field):
             response = False
-            print('a' + field)
 
-    return response, ALLOW_FIELD_UPDATE[validated_data.get('status_rental')]
+    return response, ALLOW_FIELD_UPDATE[status_rental]

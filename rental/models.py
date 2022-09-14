@@ -91,10 +91,15 @@ class Rental(models.Model):
         if self.status_rental == 'C':
             number_of_days = self.requested_days_rental
         else:
-            expected_return_date = self.rent_date_rental + timedelta(days=self.requested_days_rental - 1)
-            number_of_days = abs((self.devolution_date_rental - expected_return_date).days)
+            number_of_days = 0
             if self.appointment_date_rental:
                 number_of_days += abs((self.appointment_date_rental - self.rent_date_rental).days)
+                initial_date = self.appointment_date_rental
+            else:
+                initial_date = self.rent_date_rental
+            expected_return_date = initial_date + timedelta(days=self.requested_days_rental - 1)
+            number_of_days += abs((self.devolution_date_rental - expected_return_date).days)
+
 
         return round(number_of_days * daily_cost_total * 0.2, 2)
 
