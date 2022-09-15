@@ -20,6 +20,15 @@ class Insurance(models.Model):
         verbose_name = 'seguro'
 
 
+class AdditionalItems(models.Model):
+    name_additionalitems = models.CharField(max_length=50, verbose_name='nome')
+    daily_cost_additionalitems = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
+
+    class Meta:
+        verbose_name = 'item adicional'
+        verbose_name_plural = 'itens adicionais'
+
+
 class Rental(models.Model):
     STATUS = (
         ('A', 'Agendado'),
@@ -50,6 +59,7 @@ class Rental(models.Model):
     daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
     additional_daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)],
                                                      verbose_name='custo adicional da diária')
+    additional_items_rental = models.ManyToManyField(AdditionalItems, verbose_name='itens adicionais')
     return_rate_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
                                            verbose_name='taxa de retorno')
     total_cost_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
@@ -99,7 +109,6 @@ class Rental(models.Model):
                 initial_date = self.rent_date_rental
             expected_return_date = initial_date + timedelta(days=self.requested_days_rental - 1)
             number_of_days += abs((self.devolution_date_rental - expected_return_date).days)
-
 
         return round(number_of_days * daily_cost_total * 0.2, 2)
 
