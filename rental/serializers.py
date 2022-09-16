@@ -1,11 +1,17 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
-from .models import Insurance, Rental
+from .models import Insurance, AdditionalItems, Rental
 from . import validators
 
 
 class InsuranceSerializer(ModelSerializer):
     class Meta:
         model = Insurance
+        fields = '__all__'
+
+
+class AdditionalItemsSerializer(ModelSerializer):
+    class Meta:
+        model = AdditionalItems
         fields = '__all__'
 
 
