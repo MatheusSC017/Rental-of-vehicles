@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.viewsets import ModelViewSet, GenericViewSet, mixins
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from vehicle.models import Vehicle
 from .permissions import OnlyStaffMemberPermission
@@ -19,14 +19,11 @@ class AdditionalItemsViewSet(ModelViewSet):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
-class RentalViewSet(mixins.CreateModelMixin,
-                    mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.ListModelMixin,
-                    GenericViewSet):
+class RentalViewSet(ModelViewSet):
     queryset = Rental.objects.all()
     serializer_class = RentalSerializer
     permission_classes = [OnlyStaffMemberPermission, ]
+    http_method_names = ['get', 'post', 'put', 'path', ]
 
     def perform_create(self, serializer):
         vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))

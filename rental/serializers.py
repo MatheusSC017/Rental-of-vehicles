@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
+from django.utils.translation import gettext_lazy as _
 from .models import Insurance, AdditionalItems, Rental
 from . import validators
 
@@ -18,13 +19,15 @@ class AdditionalItemsSerializer(ModelSerializer):
 class RentalSerializer(ModelSerializer):
     def create(self, validated_data):
         if not validators.valid_status_rental_create(validated_data.get('status_rental')):
-            raise ValidationError('Para cadastro de alocação informe como opção Agendado ou Alugado somente.')
+            message = _('For rental registration, choose scheduled or rented only.')
+            raise ValidationError(message)
 
         if validated_data.get('status_rental') == 'L':
             validated_data['appointment_date_rental'] = None
         else:
             if not validated_data['appointment_date_rental']:
-                raise ValidationError('Para agendamento de veiculos o campo Data de agendamento é obrigatório.')
+                message = _('For vehicle scheduling, the scheduling date field is required.')
+                raise ValidationError(message)
 
         validated_data['arrival_branch_rental'] = None
         validated_data['distance_branch_rental'] = None
@@ -33,12 +36,14 @@ class RentalSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         if not validators.valid_status_rental_update(instance.status_rental, validated_data.get('status_rental')):
-            raise ValidationError('A transição de status requirida não é válida.')
+            message = _('Required state transition is not valid.')
+            raise ValidationError(message)
 
         valid_update, allowed_field = validators.valid_rental_data_update(instance, validated_data)
         if not valid_update:
-            raise ValidationError('O estado que o veiculo se encontra só permite que os seguintes campos sejam '
-                                  f'alterados: {", ".join(allowed_field)}.')
+            message = _('For the current state of the rental, only the following fields can be '
+                        f'updated: {", ".join(allowed_field)}.')
+            raise ValidationError(message)
 
         return super().update(instance, validated_data)
 
