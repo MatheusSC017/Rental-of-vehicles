@@ -1,11 +1,12 @@
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
+from django.utils.translation import gettext_lazy as _
 import re
 
 
 @deconstructible
 class PhoneValidator:
-    message = 'Telefone inválido, favor informar um telefone no formato (12) 3 4567-8901'
+    message = _('Invalid phone number, please enter a phone number in the format (XX) X XXXX-XXXX')
     code = 'phone_validator'
 
     def __call__(self, value):

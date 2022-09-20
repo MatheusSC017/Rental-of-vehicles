@@ -141,9 +141,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
-# LOCALE_PATHS = (
-#     BASE_DIR / 'locale',
-# )
+LOCALE_PATHS = (
+    BASE_DIR / 'locale',
+)
 
 try:
     import local_settings

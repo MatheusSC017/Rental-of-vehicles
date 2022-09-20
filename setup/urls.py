@@ -15,13 +15,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from rental.views import InsuranceViewSet, AdditionalItemsViewSet, RentalViewSet
+from address.views import AddressViewSet
+from branch.views import BranchViewSet, BranchAddressViewSet, BranchVehicleViewSet
+from client.views import ClientViewSet, UserViewSet
+from vehicle.views import VehicleViewSet
+
+router = DefaultRouter()
+router.register('seguros', InsuranceViewSet)
+router.register('itens_adicionais', AdditionalItemsViewSet)
+router.register('alugueis', RentalViewSet)
+router.register('enderecos', AddressViewSet)
+router.register('filiais', BranchViewSet)
+# router.register('filiais/enderecos', BranchAddressViewSet)
+# router.register('filial-veiculos', BranchVehicleViewSet, 'filiais/<int:pk>/veiculos')
+router.register('clientes/usuarios', UserViewSet)
+router.register('clientes', ClientViewSet)
+router.register('veiculos', VehicleViewSet)
 
 urlpatterns = [
-    path('veiculos/', include('vehicle.urls')),
-    path('enderecos/', include('address.urls')),
-    path('clientes/', include('client.urls')),
-    path('filiais/', include('branch.urls')),
-    path('alugueis/', include('rental.urls')),
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls'))
 ]
