@@ -11,6 +11,9 @@ class Branch(models.Model):
     def __str__(self):
         return self.name_branch
 
+    def address_info(self):
+        return str(self.address_branch)
+
     class Meta:
         verbose_name = 'filial'
         verbose_name_plural = 'filiais'
