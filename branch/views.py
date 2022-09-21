@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet, generics
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 from django.db.models import Count
@@ -27,21 +27,27 @@ class BranchViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
-class BranchAddressViewSet(ReadOnlyModelViewSet):
+class BranchAddressViewSet(generics.ListAPIView):
+    """
     addresses = [b.address_branch.pk for b in Branch.objects.all()]
     queryset = Address.objects.filter(pk__in=addresses)
+    """
     serializer_class = AddressSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        branch = Branch.objects.filter(pk=pk)[0]
+        qs = Address.objects.filter(pk=branch.address_branch.pk)
+        return qs
 
-class BranchVehicleViewSet(ReadOnlyModelViewSet):
+
+class BranchVehicleViewSet(generics.ListAPIView):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get_queryset(self):
-        branch = self.kwargs.get('branch')
-
-        qs = Vehicle.objects.filter(branch_vehicle=branch)
-
+        pk = self.kwargs.get('pk')
+        qs = Vehicle.objects.filter(branch_vehicle=pk)
         return qs

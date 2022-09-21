@@ -23,19 +23,19 @@ from client.views import ClientViewSet, UserViewSet
 from vehicle.views import VehicleViewSet
 
 router = DefaultRouter()
-router.register('seguros', InsuranceViewSet)
-router.register('itens_adicionais', AdditionalItemsViewSet)
-router.register('alugueis', RentalViewSet)
-router.register('enderecos', AddressViewSet)
-router.register('filiais', BranchViewSet)
-# router.register('filiais/enderecos', BranchAddressViewSet)
-# router.register('filial-veiculos', BranchVehicleViewSet, 'filiais/<int:pk>/veiculos')
-router.register('clientes/usuarios', UserViewSet)
-router.register('clientes', ClientViewSet)
-router.register('veiculos', VehicleViewSet)
+router.register('seguros', InsuranceViewSet, 'seguros')
+router.register('itens_adicionais', AdditionalItemsViewSet, 'itens_adicionais')
+router.register('alugueis', RentalViewSet, 'alugueis')
+router.register('enderecos', AddressViewSet, 'enderecos')
+router.register('filiais', BranchViewSet, 'filiais')
+router.register('clientes/usuarios', UserViewSet, 'usuarios')
+router.register('clientes', ClientViewSet, 'clientes')
+router.register('veiculos', VehicleViewSet, 'veiculos')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('filiais/<int:pk>/endereco/', BranchAddressViewSet.as_view()),
+    path('filiais/<int:pk>/veiculos/', BranchVehicleViewSet.as_view()),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls'))
 ]
