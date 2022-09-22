@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-20 18:34-0300\n"
+"POT-Creation-Date: 2022-09-22 18:10-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,29 +20,39 @@ msgstr ""
 
 #: .\rental\serializers.py:22
 msgid "For rental registration, choose scheduled or rented only."
-msgstr ""
+msgstr "Para alocação do veiculo, escolha entre agendado e alugado como estado inicial"
 
 #: .\rental\serializers.py:29
 msgid "For vehicle scheduling, the scheduling date field is required."
-msgstr ""
+msgstr "Para agendamentos é necessário informar a data do mesmo."
 
 #: .\rental\serializers.py:39
 msgid "Required state transition is not valid."
-msgstr ""
+msgstr "A transição de estado requirida não é válida."
 
 #: .\rental\serializers.py:44
-msgid "For the current state of the rental, only the following fields can be "
-msgstr ""
+msgid "For the current state of the rental, only the following fields can be updated"
+msgstr "Para o estado atual apenas o campos a seguir podem ser alterados"
 
 #: .\validators\basic_user.py:9
-msgid ""
-"Invalid phone number, please enter a phone number in the format (XX) X XXXX-"
-"XXXX"
-msgstr ""
+msgid "Invalid phone number, please enter a phone number in the format (XX) X XXXX-XXXX"
+msgstr "Número de telefone inválido, por favor utilize o seguinte formato (XX) X XXXX-XXXX."
 
 #: .\validators\docbr.py:23
 msgid "The CPF entered is invalid."
-msgstr ""
+msgstr "O CPF informado é inválido."
+
+#: .\validators\docbr.py:30
+#, fuzzy
+#| msgid "The CPF entered is invalid."
+msgid "The CNH entered is invalid."
+msgstr "O CPF informado é inválido."
+
+#: .\validators\docbr.py:37
+#, fuzzy
+#| msgid "The CPF entered is invalid."
+msgid "The Renavam entered is invalid"
+msgstr "O CPF informado é inválido."
 
 #: .\venv\Lib\site-packages\django\contrib\messages\apps.py:15
 msgid "Messages"

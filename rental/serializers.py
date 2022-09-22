@@ -41,7 +41,7 @@ class RentalSerializer(ModelSerializer):
 
         valid_update, allowed_field = validators.valid_rental_data_update(instance, validated_data)
         if not valid_update:
-            message = _('For the current state of the rental, only the following fields can be '
+            message = _(f'For the current state of the rental, only the following fields can be '
                         f'updated: {", ".join(allowed_field)}.')
             raise ValidationError(message)
 
