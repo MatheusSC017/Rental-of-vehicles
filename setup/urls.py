@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from rental.views import InsuranceViewSet, AdditionalItemsViewSet, RentalViewSet
 from address.views import AddressViewSet
@@ -38,4 +40,4 @@ urlpatterns = [
     path('filiais/<int:pk>/veiculos/', BranchVehicleViewSet.as_view()),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls'))
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

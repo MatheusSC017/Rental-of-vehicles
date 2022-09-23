@@ -43,11 +43,12 @@ class Vehicle(models.Model):
     fuel_tank_vehicle = models.PositiveSmallIntegerField(verbose_name='capacidade do tanque')
     engine_vehicle = models.CharField(max_length=100, verbose_name='motor')
     color_vehicle = models.CharField(max_length=25, verbose_name='cor')
-    other_data_vehicle = models.CharField(max_length=500, blank=True, null=True, verbose_name='mais informações')
+    other_data_vehicle = models.JSONField(blank=True, null=True, verbose_name='mais informações')
     available_vehicle = models.BooleanField(default=True, verbose_name='disponível')
     branch_vehicle = models.ForeignKey(Branch, on_delete=models.DO_NOTHING, verbose_name='filial')
     classification_vehicle = models.ForeignKey(VehicleClassification, on_delete=models.DO_NOTHING,
                                                verbose_name='classificação')
+    image_vehicle = models.ImageField(null=True, blank=True, verbose_name='imagem')
 
     def __str__(self):
         return f'{self.brand_vehicle} / {self.model_vehicle} - {self.model_year_vehicle}'
