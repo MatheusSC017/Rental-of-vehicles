@@ -10,7 +10,7 @@ class VehicleViewSet(ModelViewSet):
     queryset = Vehicle.objects.all()
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
-    @method_decorator(cache_page(30))
+    @method_decorator(cache_page(60 * 60 * 2))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
