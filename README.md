@@ -1,6 +1,6 @@
 # API de aluguel de veiculos
 
-Está API busca a criação de um sistema de aluguel de veiculos, contando com endpoints que não é necessário ter autenticação, como por exemplo o endpoint de veiculos e filiais. Segue abaixo a lista de endpoints disponiveis:
+Este projeto tem como definição uma API de um sistema de uma locadora de veiculos, contando com os seguintes endpoints:
 
 - /enderecos/
 - /filiais/
@@ -9,3 +9,5 @@ Está API busca a criação de um sistema de aluguel de veiculos, contando com e
 - /veiculos/
 - /alugueis/
 - /alugueis/seguros/
+
+Usuários da API que não estejam logados poderão somente consultar as informações dos veiculos disponibilizados pela locadoras, assim como o nome e o endereço das filiais da mesma.
