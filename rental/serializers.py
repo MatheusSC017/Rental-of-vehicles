@@ -18,7 +18,7 @@ class AdditionalItemsSerializer(ModelSerializer):
 
 class RentalSerializer(ModelSerializer):
     def create(self, validated_data):
-        if not validators.valid_status_rental_create(validated_data.get('status_rental')):
+        if not validators.valid_rental_states_on_create(validated_data.get('status_rental')):
             message = _('For rental registration, choose scheduled or rented only.')
             raise ValidationError(message)
 
@@ -35,7 +35,7 @@ class RentalSerializer(ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        if not validators.valid_status_rental_update(instance.status_rental, validated_data.get('status_rental')):
+        if not validators.valid_rental_states_on_update(instance.status_rental, validated_data.get('status_rental')):
             message = _('Required state transition is not valid.')
             raise ValidationError(message)
 

@@ -20,12 +20,12 @@ ALLOW_FIELD_UPDATE = {
 }
 
 
-def valid_status_rental_create(status_rental):
+def valid_rental_states_on_create(status_rental):
     """ Check the initial status allowed """
     return status_rental in ('A', 'L')
 
 
-def valid_status_rental_update(old_status_rental, new_status_rental):
+def valid_rental_states_on_update(old_status_rental, new_status_rental):
     """ Validates if the required status transition is allowed """
     return new_status_rental in STATUS_UPDATE[old_status_rental]
 
