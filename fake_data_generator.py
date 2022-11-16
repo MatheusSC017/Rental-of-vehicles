@@ -67,14 +67,14 @@ def client_generator():
     gender = choice(gender_options)
     age = randrange(18, 99)
     finance = randrange(500, 30000)
-    phone = fake.cellphone_number()
+    phone = fake.cellphone_number()[4:]
     address = address_generator()
 
     client = Client.objects.create(
         user_client=user,
         cpf_person=cpf_client,
         rg_person=rg,
-        cnh_person=cnh_client,
+        cnh_client=cnh_client,
         gender_person=gender,
         age_person=age,
         finance_client=finance,
@@ -163,7 +163,7 @@ def vehicle_generator(branches, classifications):
 
 
 if __name__ == '__main__':
-    pass
+    client_generator()
     # for _ in range(500):
     #     client_generator()
     #
