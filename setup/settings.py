@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'MY SECRET KEY'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -157,6 +157,6 @@ LOCALE_PATHS = (
 )
 
 try:
-    import local_settings
-except:
+    from .local_settings import *
+finally:
     pass
