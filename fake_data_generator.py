@@ -163,13 +163,16 @@ def vehicle_generator(branches, classifications):
 
 
 if __name__ == '__main__':
-    client_generator()
-    # for _ in range(500):
-    #     client_generator()
-    #
-    # braches = list()
-    # for _ in range(30):
-    #     braches.append(branch_generator())
-    #
-    # for _ in range(150):
-    #     vehicle_generator(braches)
+    for _ in range(500):
+        client_generator()
+
+    braches = list()
+    for _ in range(30):
+        braches.append(branch_generator())
+
+    classifications = list()
+    for _ in range(5):
+        classifications.append(classification_generator())
+
+    for _ in range(150):
+        vehicle_generator(braches, classifications)
