@@ -5,12 +5,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'setup.settings')
 django.setup()
 
 import faker
+import json
 from validate_docbr import CPF, CNH, RENAVAM
-from random import randrange, choice
+from random import randrange, choice, choices
 from address.models import Address
 from client.models import Client
 from branch.models import Branch
-from vehicle.models import Vehicle
+from vehicle.models import Vehicle, VehicleClassification
 from django.contrib.auth.models import User
 
 fake = faker.Faker('pt_BR')
@@ -101,25 +102,45 @@ def branch_generator():
     return branch
 
 
-def vehicle_generator(branches):
-    type = choice('MC')
+def classification_generator():
+    title = ' '.join(fake.words(nb=3))
+    daily_cost = randrange(500, 5000) / 100
+
+    classification = VehicleClassification.objects.create(
+        title_classification=title,
+        daily_cost_classification=daily_cost
+    )
+
+    return classification
+
+
+def vehicle_generator(branches, classifications):
+    def json_generator():
+        data = dict()
+        for _ in range(randrange(0, 5)):
+            data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
+        return json.dumps(data)
+
+    type_vehicle = choice('MC')
     brand = ' '.join(fake.words(nb=1))
     model = ' '.join(fake.words(nb=2))
     year_manufacture = randrange(1960, 2020)
     model_year = year_manufacture + randrange(0, 5)
     mileage = float(randrange(0, 2000))
     renavam_vehicle = renavam.generate()
-    license_plate = fake.license_plate()
+    license_plate = fake.license_plate().replace('-', '')
     chassi = str(randrange(11111111111111111, 99999999999999999))
     fuel = choice('GEDH')
     fuel_tank = randrange(15, 50)
     engine = ' '.join(fake.words())
     color = fake.color_name()
-    other_data = fake.sentence()
+    other_data = json_generator()
+    available = choices([True, False], weights=(90, 10))[0]
     branch = choice(branches)
+    classification = choice(classifications)
 
     vehicle = Vehicle.objects.create(
-        type_vehicle=type,
+        type_vehicle=type_vehicle,
         brand_vehicle=brand,
         model_vehicle=model,
         year_manufacture_vehicle=year_manufacture,
@@ -133,19 +154,22 @@ def vehicle_generator(branches):
         engine_vehicle=engine,
         color_vehicle=color,
         other_data_vehicle=other_data,
-        branch_vehicle=branch
+        available_vehicle=available,
+        branch_vehicle=branch,
+        classification_vehicle=classification
     )
 
     return vehicle
 
 
 if __name__ == '__main__':
-    for _ in range(500):
-        client_generator()
-
-    braches = list()
-    for _ in range(30):
-        braches.append(branch_generator())
-
-    for _ in range(150):
-        vehicle_generator(braches)
+    pass
+    # for _ in range(500):
+    #     client_generator()
+    #
+    # braches = list()
+    # for _ in range(30):
+    #     braches.append(branch_generator())
+    #
+    # for _ in range(150):
+    #     vehicle_generator(braches)
