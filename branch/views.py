@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet, generics
+from rest_framework.viewsets import ModelViewSet, generics, GenericViewSet, mixins
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 from django.db.models import Count
@@ -33,7 +33,7 @@ class BranchViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
-class BranchAddressViewSet(generics.ListAPIView):
+class BranchAddressViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = AddressSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
@@ -48,7 +48,7 @@ class BranchAddressViewSet(generics.ListAPIView):
         return qs
 
 
-class BranchVehicleViewSet(generics.ListAPIView):
+class BranchVehicleViewSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]

@@ -19,7 +19,7 @@ class AdditionalItemsViewSet(ModelViewSet):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
-class RentalViewSet():
+class RentalViewSet(ModelViewSet):
     queryset = Rental.objects.all()
     serializer_class = RentalSerializer
     permission_classes = [OnlyStaffMemberPermission, ]

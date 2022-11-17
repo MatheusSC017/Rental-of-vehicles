@@ -41,7 +41,7 @@ def valid_rental_data_update(instance, validated_data):
     """
     status_rental = validated_data.get('status_rental')
 
-    # Select
+    # Select the many to many fields
     info = model_meta.get_field_info(rental_models.Rental)
     many_to_many = list()
     for field_name, relation_info in info.relations.items():
