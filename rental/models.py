@@ -59,7 +59,8 @@ class Rental(models.Model):
     daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
     additional_daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)],
                                                      verbose_name='custo adicional da diária')
-    additional_items_rental = models.ManyToManyField(AdditionalItems, null=True, blank=True, verbose_name='itens adicionais')
+    additional_items_rental = models.ManyToManyField(AdditionalItems, null=True, blank=True,
+                                                     verbose_name='itens adicionais')
     return_rate_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
                                            verbose_name='taxa de retorno')
     total_cost_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
