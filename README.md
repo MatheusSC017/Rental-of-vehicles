@@ -1,6 +1,6 @@
 # API de aluguel de veiculos
 
-Este projeto tem como definição uma API de um sistema de uma locadora de veiculos, contando com os seguintes endpoints:
+Este projeto tem como definição uma API de um sistema de uma locadora de veículos, contando com os seguintes endpoints:
 
 - /enderecos/
 - /filiais/

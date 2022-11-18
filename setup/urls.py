@@ -25,18 +25,18 @@ from client.views import ClientViewSet, UserViewSet
 from vehicle.views import VehicleViewSet
 
 router_root = DefaultRouter()
-router_root.register('seguros', InsuranceViewSet, 'seguros')
-router_root.register('itens_adicionais', AdditionalItemsViewSet, 'itens_adicionais')
-router_root.register('alugueis', RentalViewSet, 'alugueis')
-router_root.register('enderecos', AddressViewSet, 'enderecos')
-router_root.register('filiais', BranchViewSet, 'filiais')
-router_root.register('clientes/usuarios', UserViewSet, 'usuarios')
-router_root.register('clientes', ClientViewSet, 'clientes')
-router_root.register('veiculos', VehicleViewSet, 'veiculos')
+router_root.register('seguros', InsuranceViewSet, 'Insurances')
+router_root.register('itens_adicionais', AdditionalItemsViewSet, 'AdditionalItems')
+router_root.register('alugueis', RentalViewSet, 'Rentals')
+router_root.register('enderecos', AddressViewSet, 'Addresses')
+router_root.register('filiais', BranchViewSet, 'Branches')
+router_root.register('clientes/usuarios', UserViewSet, 'Users')
+router_root.register('clientes', ClientViewSet, 'Clients')
+router_root.register('veiculos', VehicleViewSet, 'Vehicles')
 
 router_branches = DefaultRouter()
-router_branches.register('endereco', BranchAddressViewSet, 'filiais_endereco')
-router_branches.register('veiculos', BranchVehicleViewSet, 'filiais_veiculos')
+router_branches.register('endereco', BranchAddressViewSet, 'BranchAddress')
+router_branches.register('veiculos', BranchVehicleViewSet, ' BranchVehicles')
 
 urlpatterns = [
     path('', include(router_root.urls)),
