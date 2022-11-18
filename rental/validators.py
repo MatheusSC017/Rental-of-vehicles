@@ -51,6 +51,7 @@ def valid_rental_data_update(instance, validated_data):
     # Checks if the read-only fields have been modified
     disallow_field_update = validated_data.keys() - ALLOW_FIELD_UPDATE[status_rental]
     response = True
+
     for field in disallow_field_update:
         if field in many_to_many:
             equal_values = [client for client in instance.driver_rental.all()] == validated_data.get('driver_rental')
@@ -60,9 +61,11 @@ def valid_rental_data_update(instance, validated_data):
             if getattr(instance, field) != validated_data.get(field):
                 response = False
 
+    # TODO: Refatorar Trecho de código, pois alguns campos permitidos para alteração podem ser nulos
     # Checks if the fields have been filled
-    for field in ALLOW_FIELD_UPDATE[status_rental]:
-        if not validated_data.get(field):
-            response = False
+    # for field in ALLOW_FIELD_UPDATE[status_rental]:
+    #     if not validated_data.get(field):
+    #         print(field)
+    #         response = False
 
     return response, ALLOW_FIELD_UPDATE[status_rental]
