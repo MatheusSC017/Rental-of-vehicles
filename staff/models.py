@@ -17,8 +17,8 @@ class StaffMember(Person):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        model_classes = [Address, Branch, Client, rental.models.Insurance, rental.models.Rental,
-                         Vehicle, VehicleClassification, User, ]
+        model_classes = [Address, Branch, Client, rental.models.Rental, rental.models.Insurance,
+                         rental.models.AdditionalItems, Vehicle, VehicleClassification, User, ]
         for model_class in model_classes:
             content_type = ContentType.objects.get_for_model(model_class)
             permissions = Permission.objects.filter(content_type=content_type)
