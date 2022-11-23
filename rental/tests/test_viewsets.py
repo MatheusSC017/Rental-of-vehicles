@@ -246,7 +246,7 @@ class RentalViewSetTestCase(APITestCase):
             requested_days_rental=3,
             rent_deposit_rental=150,
             daily_cost_rental=daily_cost,
-            additional_daily_cost_rental=2.5,
+            additional_daily_cost_rental=0.,
             insurance_rental=insurance
         )
         rental.driver_rental.set([self.client_user, ])
@@ -268,7 +268,6 @@ class RentalViewSetTestCase(APITestCase):
             'appointment_date_rental': str(timezone.now() + timezone.timedelta(days=randrange(1, 5)))[:10],
             'requested_days_rental': randrange(1, 5),
             'rent_deposit_rental': randrange(100, 500),
-            'additional_daily_cost_rental': randrange(50, 500) / 100,
             'driver_rental': self.client_user.pk
         }
         response = self.client.post(self.list_url, data=data)
@@ -289,7 +288,6 @@ class RentalViewSetTestCase(APITestCase):
             'appointment_date_rental': str(timezone.now())[:10],
             'requested_days_rental': 3,
             'rent_deposit_rental': 150,
-            'additional_daily_cost_rental': 2.5,
             'driver_rental': self.client_user.pk,
         }
         response = self.client.put(self.detail_url, data=data)

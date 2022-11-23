@@ -27,25 +27,26 @@ class RentalViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
-        pk_addional_items_list = [additional_item for additional_item
-                                  in self.request.data.get('additional_items_rental')]
-        additional_items_list = AdditionalItems.objects.filter(pk__in=pk_addional_items_list)
         serializer.save(
             staff_rental=self.request.user.staffmember,
             outlet_branch_rental=vehicle.branch_vehicle,
             daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
-            additional_daily_cost_rental=sum([additional_item.daily_cost_additionalitems
-                                              for additional_item in additional_items_list])
+            additional_daily_cost_rental=self.calculate_additional_daily_cost()
         )
 
     def perform_update(self, serializer):
         vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
-        pk_addional_items_list = [additional_item for additional_item
-                                  in self.request.data.get('additional_items_rental')]
-        additional_items_list = AdditionalItems.objects.filter(pk__in=pk_addional_items_list)
         serializer.save(
             daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
             outlet_branch_rental=vehicle.branch_vehicle,
-            additional_daily_cost_rental=sum([additional_item.daily_cost_additionalitems
-                                              for additional_item in additional_items_list])
+            additional_daily_cost_rental=self.calculate_additional_daily_cost()
         )
+
+    def calculate_additional_daily_cost(self):
+        try:
+            pk_addional_items_list = [additional_item for additional_item
+                                      in self.request.data.get('additional_items_rental')]
+            additional_items_list = AdditionalItems.objects.filter(pk__in=pk_addional_items_list)
+            return sum([additional_item.daily_cost_additionalitems for additional_item in additional_items_list])
+        except TypeError:
+            return 0.

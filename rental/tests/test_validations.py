@@ -19,8 +19,7 @@ class ValidationsTestCase(APITestCase):
     def setUp(self) -> None:
         self.allow_field_update = {
             'A': ('vehicle_rental', 'insurance_rental', 'status_rental', 'appointment_date_rental',
-                  'requested_days_rental', 'rent_deposit_rental', 'additional_daily_cost_rental',
-                  'driver_rental', ),
+                  'requested_days_rental', 'rent_deposit_rental', 'driver_rental', ),
             'L': ('status_rental', 'driver_rental', ),
             'C': ('status_rental', ),
             'D': ('status_rental', 'arrival_branch_rental', 'distance_branch_rental',),
