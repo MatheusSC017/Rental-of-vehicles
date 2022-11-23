@@ -15,7 +15,7 @@ import faker
 import json
 
 
-class InsuranceTestCase(APITestCase):
+class InsuranceViewSetTestCase(APITestCase):
     @staticmethod
     def json_generator():
         fake = faker.Faker('pt_BR')
@@ -48,11 +48,11 @@ class InsuranceTestCase(APITestCase):
         self.list_url = reverse('Insurances-list')
         self.detail_url = reverse('Insurances-detail', kwargs={'pk': self.insurance.pk})
 
-    def test_request_to_insurances_list(self):
+    def test_request_to_insurances_list(self) -> None:
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_insurance_creation(self):
+    def test_request_to_insurance_creation(self) -> None:
         self.client.force_login(self.user)
         data = {
             'title_insurance': ' '.join(self.fake.words(nb=2)),
@@ -62,11 +62,11 @@ class InsuranceTestCase(APITestCase):
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_request_to_insurances_detail(self):
+    def test_request_to_insurances_detail(self) -> None:
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_insurance_update(self):
+    def test_request_to_insurance_update(self) -> None:
         self.client.force_login(self.user)
         data = {
             'title_insurance': ' '.join(self.fake.words(nb=2)),
@@ -76,13 +76,13 @@ class InsuranceTestCase(APITestCase):
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_insurance_delete(self):
+    def test_request_to_insurance_delete(self) -> None:
         self.client.force_login(self.user)
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class AdditionalItemsTestCase(APITestCase):
+class AdditionalItemsViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         self.fake = faker.Faker('pt_BR')
 
@@ -106,11 +106,11 @@ class AdditionalItemsTestCase(APITestCase):
         self.list_url = reverse('AdditionalItems-list')
         self.detail_url = reverse('AdditionalItems-detail', kwargs={'pk': self.additional_item.pk})
 
-    def test_request_to_additional_items_list(self):
+    def test_request_to_additional_items_list(self) -> None:
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_additional_items_creation(self):
+    def test_request_to_additional_items_creation(self) -> None:
         self.client.force_login(self.user)
         data = {
             'name_additionalitems': ' '.join(self.fake.words(nb=2)),
@@ -119,11 +119,11 @@ class AdditionalItemsTestCase(APITestCase):
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_request_to_additional_items_detail(self):
+    def test_request_to_additional_items_detail(self) -> None:
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_additional_items_update(self):
+    def test_request_to_additional_items_update(self) -> None:
         self.client.force_login(self.user)
         data = {
             'name_additionalitems': ' '.join(self.fake.words(nb=2)),
@@ -132,13 +132,13 @@ class AdditionalItemsTestCase(APITestCase):
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_additional_items_delete(self):
+    def test_request_to_additional_items_delete(self) -> None:
         self.client.force_login(self.user)
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class RentalTestCase(APITestCase):
+class RentalViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         fake = faker.Faker('pt_BR')
         cpf = CPF()
@@ -254,12 +254,12 @@ class RentalTestCase(APITestCase):
         self.list_url = reverse('Rentals-list')
         self.detail_url = reverse('Rentals-detail', kwargs={'pk': rental.pk})
 
-    def test_request_to_rental_list(self):
+    def test_request_to_rental_list(self) -> None:
         self.client.force_login(self.user_staff)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_rental_creation(self):
+    def test_request_to_rental_creation(self) -> None:
         self.client.force_login(self.user_staff)
         data = {
             'vehicle_rental': self.vehicle.renavam_vehicle,
@@ -275,12 +275,12 @@ class RentalTestCase(APITestCase):
         print(response.content_type)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_request_to_rental_detail(self):
+    def test_request_to_rental_detail(self) -> None:
         self.client.force_login(self.user_staff)
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_rental_update(self):
+    def test_request_to_rental_update(self) -> None:
         self.client.force_login(self.user_staff)
         data = {
             'vehicle_rental': self.vehicle.renavam_vehicle,
@@ -295,7 +295,7 @@ class RentalTestCase(APITestCase):
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_to_rental_delete(self):
+    def test_request_to_rental_delete(self) -> None:
         self.client.force_login(self.user_staff)
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
