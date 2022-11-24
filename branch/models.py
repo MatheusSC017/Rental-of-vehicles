@@ -11,6 +11,9 @@ class Branch(models.Model):
     def __str__(self):
         return self.name_branch
 
+    def __repr__(self):
+        return self.pk
+
     def address_info(self):
         return str(self.address_branch)
 

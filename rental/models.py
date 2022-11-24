@@ -16,6 +16,9 @@ class Insurance(models.Model):
     def __str__(self):
         return self.title_insurance
 
+    def __repr__(self):
+        return self.pk
+
     class Meta:
         verbose_name = 'seguro'
 
@@ -23,6 +26,12 @@ class Insurance(models.Model):
 class AdditionalItems(models.Model):
     name_additionalitems = models.CharField(max_length=50, verbose_name='nome')
     daily_cost_additionalitems = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
+
+    def __str__(self):
+        return self.name_additionalitems
+
+    def __repr__(self):
+        return self.pk
 
     class Meta:
         verbose_name = 'item adicional'

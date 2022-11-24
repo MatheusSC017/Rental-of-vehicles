@@ -53,5 +53,8 @@ class Vehicle(models.Model):
     def __str__(self):
         return f'{self.brand_vehicle} / {self.model_vehicle} - {self.model_year_vehicle}'
 
+    def __repr__(self):
+        return self.renavam_vehicle
+
     class Meta:
         verbose_name = 'veículo'

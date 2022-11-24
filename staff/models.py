@@ -28,6 +28,9 @@ class StaffMember(Person):
     def __str__(self):
         return f'{self.user_staffmember.first_name} {self.user_staffmember.last_name}'
 
+    def __repr__(self):
+        return self.cpf_person
+
     class Meta:
         verbose_name = 'membro da equipe'
         verbose_name_plural = 'membros da equipe'
