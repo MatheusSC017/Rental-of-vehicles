@@ -22,7 +22,7 @@ from rental.views import InsuranceViewSet, AdditionalItemsViewSet, RentalViewSet
 from address.views import AddressViewSet
 from branch.views import BranchViewSet, BranchAddressViewSet, BranchVehicleViewSet
 from client.views import ClientViewSet, UserViewSet
-from vehicle.views import VehicleViewSet
+from vehicle.views import VehicleViewSet, VehicleClassificationViewSet
 
 router_root = DefaultRouter()
 router_root.register('seguros', InsuranceViewSet, 'Insurances')
@@ -33,6 +33,7 @@ router_root.register('filiais', BranchViewSet, 'Branches')
 router_root.register('clientes/usuarios', UserViewSet, 'Users')
 router_root.register('clientes', ClientViewSet, 'Clients')
 router_root.register('veiculos', VehicleViewSet, 'Vehicles')
+router_root.register('classificacoes', VehicleClassificationViewSet, 'Classifications')
 
 router_branches = DefaultRouter()
 router_branches.register('endereco', BranchAddressViewSet, 'BranchAddress')

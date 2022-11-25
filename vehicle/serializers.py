@@ -1,5 +1,11 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Vehicle
+from .models import Vehicle, VehicleClassification
+
+
+class VehicleClassificationSerializer(ModelSerializer):
+    class Meta:
+        model = VehicleClassification
+        fields = '__all__'
 
 
 class VehicleSerializer(ModelSerializer):
