@@ -185,7 +185,7 @@ class RentalSerializerTestCase(TestCase):
         for key in self.keys:
             if key in many_to_many:
                 self.assertEqual(set(data.get(key)),
-                                 set([object.__repr__() for object in getattr(self.rental, key).all()]),
+                                 set([field.__repr__() for field in getattr(self.rental, key).all()]),
                                  msg=f"The content of {key} is wrong")
             elif key in objects:
                 self.assertEqual(str(data.get(key)), str(getattr(self.rental, key).__repr__()),
