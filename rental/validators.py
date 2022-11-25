@@ -65,7 +65,6 @@ def valid_rental_data_update(instance, validated_data):
     # Checks if the fields have been filled
     # for field in ALLOW_FIELD_UPDATE[status_rental]:
     #     if not validated_data.get(field):
-    #         print(field)
     #         response = False
 
     return response, ALLOW_FIELD_UPDATE[status_rental]

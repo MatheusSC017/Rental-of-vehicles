@@ -251,6 +251,16 @@ class RentalViewSetTestCase(APITestCase):
         )
         rental.driver_rental.set([self.client_user, ])
 
+        self.data = {
+            'vehicle_rental': self.vehicle.renavam_vehicle,
+            'client_rental': self.client_user.cpf_person,
+            'status_rental': 'L',
+            'appointment_date_rental': str(timezone.now())[:10],
+            'requested_days_rental': 3,
+            'rent_deposit_rental': 150,
+            'driver_rental': self.client_user.pk
+        }
+
         self.list_url = reverse('Rentals-list')
         self.detail_url = reverse('Rentals-detail', kwargs={'pk': rental.pk})
 
@@ -261,36 +271,22 @@ class RentalViewSetTestCase(APITestCase):
 
     def test_request_to_rental_creation(self) -> None:
         self.client.force_login(self.user_staff)
-        data = {
-            'vehicle_rental': self.vehicle.renavam_vehicle,
-            'client_rental': self.client_user.cpf_person,
-            'status_rental': 'A',
-            'appointment_date_rental': str(timezone.now() + timezone.timedelta(days=randrange(1, 5)))[:10],
-            'requested_days_rental': randrange(1, 5),
-            'rent_deposit_rental': randrange(100, 500),
-            'driver_rental': self.client_user.pk
-        }
-        response = self.client.post(self.list_url, data=data)
-        print(response.content_type)
+        response = self.client.post(self.list_url, data=self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Rental.objects.count(), 2)
+        self.assertEqual(Rental.objects.all()[1].status_rental, 'L')
+        self.assertEqual(Rental.objects.all()[1].appointment_date_rental, None)
 
     def test_request_to_rental_detail(self) -> None:
         self.client.force_login(self.user_staff)
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Rental.objects.all()[0].status_rental, 'A')
+        self.assertNotEqual(Rental.objects.all()[0].appointment_date_rental, None)
 
     def test_request_to_rental_update(self) -> None:
         self.client.force_login(self.user_staff)
-        data = {
-            'vehicle_rental': self.vehicle.renavam_vehicle,
-            'client_rental': self.client_user.cpf_person,
-            'status_rental': 'L',
-            'appointment_date_rental': str(timezone.now())[:10],
-            'requested_days_rental': 3,
-            'rent_deposit_rental': 150,
-            'driver_rental': self.client_user.pk,
-        }
-        response = self.client.put(self.detail_url, data=data)
+        response = self.client.put(self.detail_url, data=self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_request_to_rental_delete(self) -> None:
