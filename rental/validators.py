@@ -1,5 +1,6 @@
 from rest_framework.utils import model_meta
 from datetime import datetime, timedelta
+from django.utils import timezone
 import rental.models as rental_models
 
 STATUS_UPDATE = {
@@ -68,3 +69,15 @@ def valid_rental_data_update(instance, validated_data):
     #         response = False
 
     return response, ALLOW_FIELD_UPDATE[status_rental]
+
+
+def valid_appointment_creation(appointment_date):
+    if not appointment_date:
+        return False
+
+    appointment_date = timezone.make_aware(datetime.strptime(str(appointment_date), '%Y-%m-%d'))
+    now = timezone.make_aware(datetime.strptime(str(timezone.now())[:10], '%Y-%m-%d'))
+    if appointment_date < now:
+        return False
+
+    return True

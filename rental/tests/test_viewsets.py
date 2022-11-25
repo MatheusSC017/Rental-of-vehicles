@@ -1,4 +1,5 @@
 from rest_framework.test import APITestCase
+from rest_framework.response import Response
 from rest_framework import status
 from django.urls import reverse
 from django.utils import timezone
@@ -11,6 +12,7 @@ from vehicle.models import Vehicle, VehicleClassification
 from ..models import Rental, Insurance, AdditionalItems
 from random import choice, choices, randrange
 from validate_docbr import CPF, CNH, RENAVAM
+from copy import deepcopy
 import faker
 import json
 
@@ -270,19 +272,13 @@ class RentalViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_request_to_rental_creation(self) -> None:
-        self.client.force_login(self.user_staff)
-        response = self.client.post(self.list_url, data=self.data)
+        response = self.create_rent(self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Rental.objects.count(), 2)
-        self.assertEqual(Rental.objects.all()[1].status_rental, 'L')
-        self.assertEqual(Rental.objects.all()[1].appointment_date_rental, None)
 
     def test_request_to_rental_detail(self) -> None:
         self.client.force_login(self.user_staff)
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Rental.objects.all()[0].status_rental, 'A')
-        self.assertNotEqual(Rental.objects.all()[0].appointment_date_rental, None)
 
     def test_request_to_rental_update(self) -> None:
         self.client.force_login(self.user_staff)
@@ -293,3 +289,35 @@ class RentalViewSetTestCase(APITestCase):
         self.client.force_login(self.user_staff)
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_rental_creation_with_rented_status(self) -> None:
+        self.create_rent(self.data)
+        self.assertEqual(Rental.objects.count(), 2)
+        self.assertEqual(Rental.objects.all()[1].status_rental, 'L')
+        self.assertEqual(Rental.objects.all()[1].appointment_date_rental, None)
+
+    def test_rental_creation_with_scheduled_status(self) -> None:
+        data = deepcopy(self.data)
+        data['status_rental'] = 'A'
+        self.create_rent(data)
+        self.assertEqual(Rental.objects.count(), 2)
+        self.assertEqual(Rental.objects.all()[1].status_rental, 'A')
+        self.assertNotEqual(Rental.objects.all()[1].appointment_date_rental, None)
+
+    def test_rental_creation_with_scheduled_status_and_without_appointament_date(self) -> None:
+        data = deepcopy(self.data)
+        data['status_rental'] = 'A'
+        data['appointment_date_rental'] = ''
+        response = self.create_rent(data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_rental_creation_with_scheduled_status_and_wrong_appointament_date(self) -> None:
+        data = deepcopy(self.data)
+        data['status_rental'] = 'A'
+        data['appointment_date_rental'] = str(timezone.now() - timezone.timedelta(days=3))[:10]
+        response = self.create_rent(data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def create_rent(self, data) -> Response:
+        self.client.force_login(self.user_staff)
+        return self.client.post(self.list_url, data=data)
