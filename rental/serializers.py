@@ -25,7 +25,6 @@ class RentalSerializer(ModelSerializer):
         if validated_data.get('status_rental') == 'L':
             validated_data['appointment_date_rental'] = None
         else:
-            print(validated_data.get('appointment_date_rental'))
             if not validated_data.get('appointment_date_rental'):
                 message = _('For vehicle scheduling, the scheduling date field is required.')
                 raise ValidationError(message)

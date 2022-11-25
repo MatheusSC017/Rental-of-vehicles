@@ -10,6 +10,62 @@ from validate_docbr import RENAVAM
 import faker
 
 
+class VehicleClassificationViewSetTestCase(APITestCase):
+    def setUp(self) -> None:
+        self.fake = faker.Faker('pt_BR')
+
+        username = self.fake.first_name() + str(randrange(10000, 99999))
+        self.user = User.objects.create_user(
+            username=username,
+            email=username + '@email.com',
+            password=username
+        )
+
+        content_type = ContentType.objects.get_for_model(VehicleClassification)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for permission in permissions:
+            self.user.user_permissions.add(permission)
+
+        self.vehicle_classification = VehicleClassification.objects.create(
+            title_classification=' '.join(self.fake.words(nb=2)),
+            daily_cost_classification=randrange(5, 50)
+        )
+
+        self.list_url = reverse('Classifications-list')
+        self.detail_url = reverse('Classifications-detail', kwargs={'pk': self.vehicle_classification.pk})
+
+    def test_request_to_classification_list(self) -> None:
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_request_to_classification_creation(self) -> None:
+        self.client.force_login(self.user)
+        data = {
+            'title_classification': ' '.join(self.fake.words(nb=2)),
+            'daily_cost_classification': randrange(5, 50)
+        }
+        response = self.client.post(self.list_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_request_to_classification_detail(self) -> None:
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_request_to_classification_update(self) -> None:
+        self.client.force_login(self.user)
+        data = {
+            'title_classification': ' '.join(self.fake.words(nb=2)),
+            'daily_cost_classification': randrange(5, 50)
+        }
+        response = self.client.put(self.detail_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_request_to_classification_delete(self) -> None:
+        self.client.force_login(self.user)
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
 class VehicleViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         self.fake = faker.Faker('pt_BR')
