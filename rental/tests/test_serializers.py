@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.utils import timezone
-from rest_framework.utils import model_meta
+from utils.mixins.serializers import GetRelationOfTheFieldMixin
 from ..serializers import InsuranceSerializer, AdditionalItemsSerializer, RentalSerializer
 from ..models import Insurance, AdditionalItems, Rental
 from django.contrib.auth.models import User, Permission, ContentType
@@ -54,7 +54,7 @@ class AdditionalItemsSerializerTestCase(TestCase):
         self.assertEqual(data['daily_cost_additionalitems'], self.additional_item.daily_cost_additionalitems)
 
 
-class RentalSerializerTestCase(TestCase):
+class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
     def setUp(self) -> None:
         fake = faker.Faker('pt_BR')
         cpf = CPF()
@@ -193,16 +193,3 @@ class RentalSerializerTestCase(TestCase):
             else:
                 self.assertEqual(data.get(key), getattr(self.rental, key),
                                  msg=f"The content of {key} is wrong")
-
-    @staticmethod
-    def get_many_to_many_and_objects_fields(model) -> (list(), list()):
-        info = model_meta.get_field_info(model)
-        many_to_many = list()
-        objects = list()
-        for field_name, relation_info in info.relations.items():
-            if relation_info.to_many:
-                many_to_many.append(field_name)
-            else:
-                objects.append(field_name)
-
-        return many_to_many, objects

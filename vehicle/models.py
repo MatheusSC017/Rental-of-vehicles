@@ -11,6 +11,9 @@ class VehicleClassification(models.Model):
     def __str__(self):
         return self.title_classification
 
+    def __repr__(self):
+        return self.id
+
     class Meta:
         verbose_name = 'classificação'
         verbose_name_plural = 'classificações'
