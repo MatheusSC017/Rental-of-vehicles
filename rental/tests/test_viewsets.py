@@ -64,7 +64,7 @@ class InsuranceViewSetTestCase(APITestCase):
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_request_to_insurances_detail(self) -> None:
+    def test_request_to_insurance_detail(self) -> None:
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
