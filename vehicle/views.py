@@ -17,12 +17,16 @@ class VehicleClassificationViewSet(ModelViewSet):
 
 
 class VehicleViewSet(ModelViewSet):
-    queryset = Vehicle.objects.all()
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
     @method_decorator(cache_page(60 * 60 * 2))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        if self.request.query_params.get('show_all'):
+            return Vehicle.objects.all()
+        return Vehicle.objects.filter(available_vehicle=True)
 
     def get_serializer_class(self):
         """ By default the latest version is chosen if no version is specified """
