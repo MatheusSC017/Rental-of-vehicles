@@ -26,7 +26,7 @@ class InsuranceSerializerTestCase(TestCase):
 
     def test_verify_serializer_fields(self) -> None:
         data = self.serializer.data
-        self.assertEqual(set(data.keys()), set(['id', 'title_insurance', 'coverage_insurance', 'price_insurance']))
+        self.assertEqual(set(data.keys()), {'id', 'title_insurance', 'coverage_insurance', 'price_insurance'})
 
     def test_verify_contents_of_serializer_fields(self) -> None:
         data = self.serializer.data
@@ -46,7 +46,7 @@ class AdditionalItemsSerializerTestCase(TestCase):
 
     def test_verify_serializer_fields(self) -> None:
         data = self.serializer.data
-        self.assertEqual(set(data.keys()), set(['id', 'name_additionalitems', 'daily_cost_additionalitems']))
+        self.assertEqual(set(data.keys()), {'id', 'name_additionalitems', 'daily_cost_additionalitems'})
 
     def test_verify_contents_of_serializer_fields(self) -> None:
         data = self.serializer.data
@@ -167,12 +167,11 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
         )
         self.rental.driver_rental.set(self.clients)
 
-        self.keys = set(['id', 'vehicle_rental', 'insurance_rental', 'staff_rental', 'client_rental', 'status_rental',
-                         'outlet_branch_rental', 'arrival_branch_rental', 'distance_branch_rental',
-                         'appointment_date_rental', 'rent_date_rental', 'devolution_date_rental',
-                         'requested_days_rental', 'actual_days_rental', 'fines_rental', 'rent_deposit_rental',
-                         'daily_cost_rental', 'additional_daily_cost_rental', 'additional_items_rental',
-                         'return_rate_rental', 'total_cost_rental', 'driver_rental', ])
+        self.keys = {'id', 'vehicle_rental', 'insurance_rental', 'staff_rental', 'client_rental', 'status_rental',
+                     'outlet_branch_rental', 'arrival_branch_rental', 'distance_branch_rental', 'driver_rental',
+                     'appointment_date_rental', 'rent_date_rental', 'devolution_date_rental', 'requested_days_rental',
+                     'actual_days_rental', 'rent_deposit_rental', 'daily_cost_rental', 'total_cost_rental',
+                     'additional_daily_cost_rental', 'additional_items_rental', 'return_rate_rental', 'fines_rental', }
         self.serializer = RentalSerializer(self.rental)
 
     def test_verify_serializer_fields(self) -> None:

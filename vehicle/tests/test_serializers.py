@@ -19,7 +19,7 @@ class VehicleClassificationSerializerTestCase(TestCase):
 
     def test_verify_serializer_fields(self) -> None:
         data = self.serializer.data
-        self.assertEqual(set(data.keys()), set(['id', 'title_classification', 'daily_cost_classification', ]))
+        self.assertEqual(set(data.keys()), {'id', 'title_classification', 'daily_cost_classification', })
 
     def test_verify_contents_of_serializer_fields(self) -> None:
         data = self.serializer.data
@@ -72,10 +72,10 @@ class VehicleSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
             classification_vehicle=classification
         )
 
-        self.keys = set(['type_vehicle', 'brand_vehicle', 'model_vehicle', 'year_manufacture_vehicle',
-                         'model_year_vehicle', 'mileage_vehicle', 'renavam_vehicle', 'license_plate_vehicle',
-                         'chassi_vehicle', 'fuel_vehicle', 'fuel_tank_vehicle', 'engine_vehicle', 'color_vehicle',
-                         'other_data_vehicle', 'available_vehicle', 'branch_vehicle', 'classification_vehicle', ])
+        self.keys = {'type_vehicle', 'brand_vehicle', 'model_vehicle', 'year_manufacture_vehicle', 'model_year_vehicle',
+                     'mileage_vehicle', 'renavam_vehicle', 'license_plate_vehicle', 'chassi_vehicle', 'fuel_vehicle',
+                     'fuel_tank_vehicle', 'engine_vehicle', 'color_vehicle', 'other_data_vehicle', 'available_vehicle',
+                     'branch_vehicle', 'classification_vehicle', }
 
         self.serializer = VehicleSerializer(self.vehicle)
 
