@@ -44,8 +44,8 @@ class RentalViewSet(ModelViewSet):
 
     def calculate_additional_daily_cost(self):
         try:
-            pk_addional_items_list = [additional_item for additional_item
-                                      in self.request.data.get('additional_items_rental')]
+            pk_addional_items_list = [int(additional_item) for additional_item
+                                      in dict(self.request.data).get('additional_items_rental')]
             additional_items_list = AdditionalItems.objects.filter(pk__in=pk_addional_items_list)
             return sum([additional_item.daily_cost_additionalitems for additional_item in additional_items_list])
         except TypeError:

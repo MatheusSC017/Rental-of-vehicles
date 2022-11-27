@@ -238,6 +238,11 @@ class RentalViewSetTestCase(APITestCase):
             price_insurance=randrange(100, 2000) / 100
         )
 
+        self.additional_items = [AdditionalItems.objects.create(
+            name_additionalitems=' '.join(fake.words(nb=2)),
+            daily_cost_additionalitems=randrange(100, 2000) / 100
+        ) for _ in range(3)]
+
         rental = Rental.objects.create(
             vehicle_rental=self.vehicle,
             staff_rental=staffmember,
@@ -260,7 +265,7 @@ class RentalViewSetTestCase(APITestCase):
             'appointment_date_rental': str(timezone.now())[:10],
             'requested_days_rental': 3,
             'rent_deposit_rental': 150,
-            'driver_rental': self.client_user.pk
+            'driver_rental': self.client_user.pk,
         }
 
         self.list_url = reverse('Rentals-list')
@@ -290,6 +295,20 @@ class RentalViewSetTestCase(APITestCase):
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    def test_function_check_to_calculate_additional_daily_cost(self) -> None:
+        data = deepcopy(self.data)
+        data['additional_items_rental'] = list(map(lambda i: i.pk, self.additional_items))
+        response = self.create_rent(data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Rental.objects.count(), 2)
+
+        add_items = [add_item.get('id') for add_item in Rental.objects.all()[1].additional_items_rental.values()]
+        self.assertEqual(set(add_items), set([add_item.pk for add_item in self.additional_items]))
+
+        add_daily_cost = Rental.objects.all()[1].additional_daily_cost_rental
+        self.assertEqual(add_daily_cost, sum([add_item.daily_cost_additionalitems
+                                              for add_item in self.additional_items]))
+
     def test_rental_creation_with_rented_status(self) -> None:
         self.create_rent(self.data)
         self.assertEqual(Rental.objects.count(), 2)
@@ -299,7 +318,8 @@ class RentalViewSetTestCase(APITestCase):
     def test_rental_creation_with_scheduled_status(self) -> None:
         data = deepcopy(self.data)
         data['status_rental'] = 'A'
-        self.create_rent(data)
+        response = self.create_rent(data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Rental.objects.count(), 2)
         self.assertEqual(Rental.objects.all()[1].status_rental, 'A')
         self.assertNotEqual(Rental.objects.all()[1].appointment_date_rental, None)
