@@ -24,6 +24,7 @@ class BranchViewSet(ModelViewSet):
 class BranchAddressViewSet(mixins.ListModelMixin, GenericViewSet):
     serializer_class = AddressSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    http_method_names = ['get', ]
 
     @method_decorator(cache_page(60 * 60 * 2))
     def dispatch(self, request, *args, **kwargs):
