@@ -35,7 +35,10 @@ class RentalViewSet(ModelViewSet):
         serializer.save(**self.fetch_values_to_fill_fields())
 
     def fetch_values_to_fill_fields(self) -> dict:
-        vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
+        branch = self.request.user.staffmember.branch_staffmember
+        vehicle = get_object_or_404(Vehicle,
+                                    renavam_vehicle=self.request.data.get('vehicle_rental'),
+                                    branch_vehicle=branch)
         return {
             'daily_cost_rental': vehicle.classification_vehicle.daily_cost_classification,
             'outlet_branch_rental': vehicle.branch_vehicle,

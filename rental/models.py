@@ -78,8 +78,6 @@ class Rental(models.Model):
     driver_rental = models.ManyToManyField(Client, related_name='driver_rental', verbose_name='condutores')
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
         if self.status_rental == 'L' and not self.rent_date_rental:
             self.rent_date_rental = date.today()
 
@@ -90,6 +88,9 @@ class Rental(models.Model):
             self.total_cost_rental = self.fines_rental
 
         if self.status_rental == 'D':
+            # Set arrival branch if it is None
+            if self.arrival_branch_rental is None:
+                self.arrival_branch_rental = self.outlet_branch_rental
             # Rate of return value
             self.return_rate_rental = self.distance_branch_rental * 1.2 if self.distance_branch_rental else 0.
             # Fine amount for breach of agreement
@@ -105,7 +106,7 @@ class Rental(models.Model):
             self.total_cost_rental = sum([total_cost, self.fines_rental,
                                           self.return_rate_rental, total_cost_of_insurance])
 
-        self.save_base()
+        super().save(*args, **kwargs)
 
     def calculate_fines(self):
         daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
