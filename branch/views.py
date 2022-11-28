@@ -38,9 +38,9 @@ class BranchAddressViewSet(mixins.ListModelMixin, GenericViewSet):
 
 
 class BranchVehicleViewSet(mixins.ListModelMixin, GenericViewSet):
-    queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    http_method_names = ['get', ]
 
     @method_decorator(cache_page(60 * 60 * 2))
     def dispatch(self, request, *args, **kwargs):
