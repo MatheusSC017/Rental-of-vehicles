@@ -46,7 +46,8 @@ class Rental(models.Model):
         ('D', 'Devolvido'),
     )
 
-    vehicle_rental = models.ForeignKey(Vehicle, on_delete=models.DO_NOTHING, verbose_name='veículo')
+    vehicle_rental = models.ForeignKey(Vehicle, on_delete=models.DO_NOTHING, verbose_name='veículo',
+                                       limit_choices_to={'available_vehicle': True})
     insurance_rental = models.ForeignKey(Insurance, blank=True, null=True, on_delete=models.DO_NOTHING,
                                          verbose_name='seguro')
     staff_rental = models.ForeignKey(StaffMember, on_delete=models.DO_NOTHING, verbose_name='funcionário')
