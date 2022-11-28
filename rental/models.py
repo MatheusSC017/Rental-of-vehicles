@@ -91,13 +91,14 @@ class Rental(models.Model):
 
         if self.status_rental == 'D':
             # Rate of return value
-            self.return_rate_rental = self.distance_branch_rental * 1.2
+            self.return_rate_rental = self.distance_branch_rental * 1.2 if self.distance_branch_rental else 0.
             # Fine amount for breach of agreement
             self.devolution_date_rental = date.today()
             self.actual_days_rental = (self.devolution_date_rental - self.rent_date_rental).days + 1
             self.fines_rental = self.calculate_fines()
             # Insurance cost
-            total_cost_of_insurance = self.insurance_rental.price_insurance * self.actual_days_rental
+            total_cost_of_insurance = self.insurance_rental.price_insurance * self.actual_days_rental \
+                if self.insurance_rental else 0.
             # Total cost of rent
             daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
             total_cost = self.actual_days_rental * daily_cost_total

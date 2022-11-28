@@ -26,23 +26,23 @@ class RentalViewSet(ModelViewSet):
     http_method_names = ['get', 'post', 'put', 'path', ]
 
     def perform_create(self, serializer):
-        vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
         serializer.save(
             staff_rental=self.request.user.staffmember,
-            outlet_branch_rental=vehicle.branch_vehicle,
-            daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
-            additional_daily_cost_rental=self.calculate_additional_daily_cost()
+            **self.fetch_values_to_fill_fields()
         )
 
     def perform_update(self, serializer):
-        vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
-        serializer.save(
-            daily_cost_rental=vehicle.classification_vehicle.daily_cost_classification,
-            outlet_branch_rental=vehicle.branch_vehicle,
-            additional_daily_cost_rental=self.calculate_additional_daily_cost()
-        )
+        serializer.save(**self.fetch_values_to_fill_fields())
 
-    def calculate_additional_daily_cost(self):
+    def fetch_values_to_fill_fields(self) -> dict:
+        vehicle = get_object_or_404(Vehicle, renavam_vehicle=self.request.data.get('vehicle_rental'))
+        return {
+            'daily_cost_rental': vehicle.classification_vehicle.daily_cost_classification,
+            'outlet_branch_rental': vehicle.branch_vehicle,
+            'additional_daily_cost_rental': self.calculate_additional_daily_cost()
+        }
+
+    def calculate_additional_daily_cost(self) -> float:
         try:
             pk_addional_items_list = [int(additional_item) for additional_item
                                       in dict(self.request.data).get('additional_items_rental')]
