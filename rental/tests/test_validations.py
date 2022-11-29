@@ -151,8 +151,8 @@ class ValidationsTestCase(APITestCase):
         expected_output_values = [
             [True, True, True, False],
             [False, True, False, True],
-            [False, False, False, False],
-            [False, False, False, False],
+            [False, False, True, False],
+            [False, False, False, True],
         ]
         for i, old_value in enumerate(old_values):
             output_values = [validators.valid_rental_states_on_update(old_value, new_value) for new_value in new_values]
