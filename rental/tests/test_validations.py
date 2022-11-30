@@ -120,16 +120,11 @@ class ValidationsTestCase(APITestCase):
             client_rental=self.clients[0],
             status_rental='A',
             outlet_branch_rental=self.branches[0],
-            arrival_branch_rental=self.branches[1],
-            distance_branch_rental=randrange(0, 5000),
-            appointment_date_rental=timezone.now(),
-            rent_date_rental=timezone.now(),
-            devolution_date_rental=timezone.now() + timezone.timedelta(days=randrange(1, 5)),
-            requested_days_rental=randrange(1, 5),
-            actual_days_rental=randrange(1, 5),
-            rent_deposit_rental=randrange(100, 500),
+            appointment_date_rental=str(timezone.now() + timezone.timedelta(days=10))[:10],
+            requested_days_rental=3,
+            rent_deposit_rental=150,
             daily_cost_rental=randrange(500, 5000) / 100,
-            additional_daily_cost_rental=randrange(50, 500) / 100,
+            additional_daily_cost_rental=0.
         )
         self.rental.driver_rental.set([self.clients[0], ])
 
@@ -217,3 +212,25 @@ class ValidationsTestCase(APITestCase):
         for i, entry in enumerate(entry_dates):
             self.assertEqual(validators.valid_appointment_creation(entry), expected_response[i])
 
+    def test_the_validation_of_renting_a_vehicle(self) -> None:
+        self.assertTrue(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 5))
+
+    def test_the_validation_of_renting_a_vehicle_with_a_vehicle_already_rented(self) -> None:
+        self.assertTrue(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 5))
+        Rental.objects.create(
+            vehicle_rental=self.vehicles[0],
+            staff_rental=self.staffmembers[0],
+            client_rental=self.clients[0],
+            status_rental='L',
+            outlet_branch_rental=self.branches[0],
+            requested_days_rental=3,
+            rent_deposit_rental=150,
+            daily_cost_rental=randrange(500, 5000) / 100,
+            additional_daily_cost_rental=0.
+        )
+        self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 5))
+
+    def test_the_validation_of_renting_a_vehicle_with_a_vehicle_already_scheduled(self) -> None:
+        self.assertTrue(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 5))
+        self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 7))
+        self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 10))
