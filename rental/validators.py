@@ -76,7 +76,7 @@ def valid_appointment_creation(appointment_date):
 
     appointment_date = timezone.make_aware(datetime.strptime(str(appointment_date), '%Y-%m-%d'))
     now = timezone.make_aware(datetime.strptime(str(timezone.now())[:10], '%Y-%m-%d'))
-    if appointment_date < now:
+    if appointment_date <= now:
         return False
 
     return True

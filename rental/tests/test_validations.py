@@ -17,13 +17,7 @@ import json
 
 class ValidationsTestCase(APITestCase):
     def setUp(self) -> None:
-        self.allow_field_update = {
-            'A': ('vehicle_rental', 'insurance_rental', 'status_rental', 'appointment_date_rental',
-                  'requested_days_rental', 'rent_deposit_rental', 'driver_rental', ),
-            'L': ('status_rental', 'driver_rental', ),
-            'C': ('status_rental', ),
-            'D': ('status_rental', 'arrival_branch_rental', 'distance_branch_rental',),
-        }
+        self.allow_field_update = validators.ALLOW_FIELD_UPDATE
 
         fake = faker.Faker('pt_BR')
         cpf = CPF()
@@ -211,4 +205,15 @@ class ValidationsTestCase(APITestCase):
                 self.assertEqual(validators.valid_rental_data_update(self.rental, validated_data)[0], response)
 
     def test_appointament_creation_date(self) -> None:
-        pass
+        entry_dates = [
+            '',
+            None,
+            str(timezone.now() - timedelta(days=3))[:10],
+            str(timezone.now())[:10],
+            str(timezone.now() + timedelta(days=3))[:10],
+        ]
+        expected_response = [False, False, False, False, True]
+
+        for i, entry in enumerate(entry_dates):
+            self.assertEqual(validators.valid_appointment_creation(entry), expected_response[i])
+
