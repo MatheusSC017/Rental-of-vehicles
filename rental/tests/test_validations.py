@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from datetime import date, timedelta
 from django.utils import timezone
-from django.contrib.auth.models import User, Permission, ContentType
+from django.contrib.auth.models import User
 from address.models import Address
 from client.models import Client
 from staff.models import StaffMember
@@ -209,3 +209,6 @@ class ValidationsTestCase(APITestCase):
                 validated_data[key] = value
                 response = key in self.allow_field_update[validated_data['status_rental']]
                 self.assertEqual(validators.valid_rental_data_update(self.rental, validated_data)[0], response)
+
+    def test_appointament_creation_date(self) -> None:
+        pass

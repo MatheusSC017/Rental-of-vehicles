@@ -52,7 +52,7 @@ class InsuranceViewSetTestCase(APITestCase):
 
     def test_request_to_insurances_list(self) -> None:
         response = self.client.get(self.list_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_insurance_creation(self) -> None:
         self.client.force_login(self.user)
@@ -62,11 +62,11 @@ class InsuranceViewSetTestCase(APITestCase):
             'price_insurance': randrange(100, 2000) / 100
         }
         response = self.client.post(self.list_url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
 
     def test_request_to_insurance_detail(self) -> None:
         response = self.client.get(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_insurance_update(self) -> None:
         self.client.force_login(self.user)
@@ -76,12 +76,12 @@ class InsuranceViewSetTestCase(APITestCase):
             'price_insurance': randrange(100, 2000) / 100
         }
         response = self.client.put(self.detail_url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_insurance_delete(self) -> None:
         self.client.force_login(self.user)
         response = self.client.delete(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, msg=response.data)
 
 
 class AdditionalItemsViewSetTestCase(APITestCase):
@@ -110,7 +110,7 @@ class AdditionalItemsViewSetTestCase(APITestCase):
 
     def test_request_to_additional_items_list(self) -> None:
         response = self.client.get(self.list_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_additional_items_creation(self) -> None:
         self.client.force_login(self.user)
@@ -119,11 +119,11 @@ class AdditionalItemsViewSetTestCase(APITestCase):
             'daily_cost_additionalitems': randrange(100, 2000) / 100
         }
         response = self.client.post(self.list_url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
 
     def test_request_to_additional_items_detail(self) -> None:
         response = self.client.get(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_additional_items_update(self) -> None:
         self.client.force_login(self.user)
@@ -132,12 +132,12 @@ class AdditionalItemsViewSetTestCase(APITestCase):
             'daily_cost_additionalitems': randrange(100, 2000) / 100
         }
         response = self.client.put(self.detail_url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_additional_items_delete(self) -> None:
         self.client.force_login(self.user)
         response = self.client.delete(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, msg=response.data)
 
 
 class RentalViewSetTestCase(APITestCase):
@@ -212,14 +212,15 @@ class RentalViewSetTestCase(APITestCase):
         )
 
         year_manufacture = randrange(1960, 2020)
-        self.vehicle = Vehicle.objects.create(
+        renavam_value = str(renavam.generate())
+        vehicle = Vehicle.objects.create(
             type_vehicle=choice('MC'),
             brand_vehicle=' '.join(fake.words(nb=1)),
             model_vehicle=' '.join(fake.words(nb=2)),
             year_manufacture_vehicle=year_manufacture,
             model_year_vehicle=year_manufacture + randrange(0, 5),
             mileage_vehicle=float(randrange(0, 2000)),
-            renavam_vehicle=renavam.generate(),
+            renavam_vehicle=renavam_value,
             license_plate_vehicle=fake.license_plate().replace('-', ''),
             chassi_vehicle=str(randrange(11111111111111111, 99999999999999999)),
             fuel_vehicle=choice('GEDH'),
@@ -244,12 +245,12 @@ class RentalViewSetTestCase(APITestCase):
         ) for _ in range(3)]
 
         rental = Rental.objects.create(
-            vehicle_rental=self.vehicle,
+            vehicle_rental=vehicle,
             staff_rental=staffmember,
             client_rental=self.client_user,
             status_rental='A',
             outlet_branch_rental=branch,
-            appointment_date_rental=timezone.now(),
+            appointment_date_rental=str(timezone.now() + timezone.timedelta(days=10))[:10],
             requested_days_rental=3,
             rent_deposit_rental=150,
             daily_cost_rental=daily_cost,
@@ -259,7 +260,7 @@ class RentalViewSetTestCase(APITestCase):
         rental.driver_rental.set([self.client_user, ])
 
         self.data = {
-            'vehicle_rental': self.vehicle.renavam_vehicle,
+            'vehicle_rental': renavam_value,
             'client_rental': self.client_user.cpf_person,
             'status_rental': 'L',
             'appointment_date_rental': str(timezone.now())[:10],
@@ -274,32 +275,35 @@ class RentalViewSetTestCase(APITestCase):
     def test_request_to_rental_list(self) -> None:
         self.client.force_login(self.user_staff)
         response = self.client.get(self.list_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_rental_creation(self) -> None:
         response = self.create_rent(self.data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
 
     def test_request_to_rental_detail(self) -> None:
         self.client.force_login(self.user_staff)
         response = self.client.get(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_rental_update(self) -> None:
+        data = deepcopy(self.data)
+        data['status_rental'] = 'A'
+        data['appointment_date_rental'] = str(timezone.now() + timezone.timedelta(days=15))[:10]
         self.client.force_login(self.user_staff)
-        response = self.client.put(self.detail_url, data=self.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.put(self.detail_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_rental_delete(self) -> None:
         self.client.force_login(self.user_staff)
         response = self.client.delete(self.detail_url)
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED, msg=response.data)
 
     def test_function_check_to_calculate_additional_daily_cost(self) -> None:
         data = deepcopy(self.data)
         data['additional_items_rental'] = list(map(lambda i: i.pk, self.additional_items))
         response = self.create_rent(data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
 
         add_items = [add_item.get('id') for add_item in Rental.objects.all()[1].additional_items_rental.values()]
@@ -310,7 +314,8 @@ class RentalViewSetTestCase(APITestCase):
                                               for add_item in self.additional_items]))
 
     def test_rental_creation_with_rented_status(self) -> None:
-        self.create_rent(self.data)
+        response = self.create_rent(self.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
         self.assertEqual(Rental.objects.all()[1].status_rental, 'L')
         self.assertEqual(Rental.objects.all()[1].appointment_date_rental, None)
@@ -319,7 +324,7 @@ class RentalViewSetTestCase(APITestCase):
         data = deepcopy(self.data)
         data['status_rental'] = 'A'
         response = self.create_rent(data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
         self.assertEqual(Rental.objects.all()[1].status_rental, 'A')
         self.assertNotEqual(Rental.objects.all()[1].appointment_date_rental, None)
@@ -329,14 +334,14 @@ class RentalViewSetTestCase(APITestCase):
         data['status_rental'] = 'A'
         data['appointment_date_rental'] = ''
         response = self.create_rent(data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
     def test_rental_creation_with_scheduled_status_and_wrong_appointament_date(self) -> None:
         data = deepcopy(self.data)
         data['status_rental'] = 'A'
         data['appointment_date_rental'] = str(timezone.now() - timezone.timedelta(days=3))[:10]
         response = self.create_rent(data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
     def create_rent(self, data) -> Response:
         self.client.force_login(self.user_staff)
