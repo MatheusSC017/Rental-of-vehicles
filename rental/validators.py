@@ -1,22 +1,22 @@
 from rest_framework.utils import model_meta
 from datetime import datetime, timedelta
+from django.db.models import Q, F
 from django.utils import timezone
 import rental.models as rental_models
 
 STATUS_UPDATE = {
     'A': ('A', 'L', 'C'),
     'L': ('L', 'D',),
-    'C': ('C', ),
-    'D': ('D', ),
+    'C': ('C',),
+    'D': ('D',),
 }
-
 
 ALLOW_FIELD_UPDATE = {
     'A': ('vehicle_rental', 'insurance_rental', 'status_rental', 'appointment_date_rental',
           'requested_days_rental', 'rent_deposit_rental',
-          'driver_rental', ),
-    'L': ('status_rental', 'driver_rental', ),
-    'C': ('status_rental', ),
+          'driver_rental',),
+    'L': ('status_rental', 'driver_rental',),
+    'C': ('status_rental',),
     'D': ('status_rental', 'arrival_branch_rental', 'distance_branch_rental',),
 }
 
@@ -81,3 +81,19 @@ def valid_appointment_creation(appointment_date):
         return False
 
     return True
+
+
+def valid_rented_vehicle(renavam_vehicle, requested_days):
+    # Check if there are rentals with the status of rented
+    rented = Q(status_rental='L')
+    # Check for scheduled rentals within the new rental schedule plus 3 days
+    initial_date = Q(
+        Q(appointment_date_rental__gte=timezone.now()),
+        Q(appointment_date_rental__lte=timezone.now() + timezone.timedelta(days=requested_days + 3))
+    )
+    rentals = rental_models.Rental.objects.filter(
+        Q(vehicle_rental=renavam_vehicle),
+        rented |
+        initial_date
+    )
+    return not rentals
