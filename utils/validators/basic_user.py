@@ -10,7 +10,7 @@ class PhoneValidator:
     code = 'phone_validator'
 
     def __call__(self, value):
-        search = re.findall('^\(?[0-9]{2}\)? ?9? ?[0-9]{4}[ -]?[0-9]{4}$', value)
+        search = re.findall('^\(?[0-9]{2}|[0-9]{3}\)? ?9? ?[0-9]{4}[ -]?[0-9]{4}$', value)
 
         if not search:
             raise ValidationError(self.message, code=self.code)

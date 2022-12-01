@@ -263,7 +263,7 @@ class RentalViewSetTestCase(APITestCase):
             'vehicle_rental': renavam_value,
             'client_rental': self.client_user.cpf_person,
             'status_rental': 'L',
-            'appointment_date_rental': str(timezone.now())[:10],
+            'appointment_date_rental': str(timezone.now() + timezone.timedelta(days=1))[:10],
             'requested_days_rental': 3,
             'rent_deposit_rental': 150,
             'driver_rental': self.client_user.pk,

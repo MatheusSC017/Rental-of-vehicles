@@ -4,8 +4,8 @@ from django.conf import settings
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
-import validators.basic_user
-import validators.docbr
+import utils.validators.docbr
+import utils.validators.basic_user
 
 
 class Migration(migrations.Migration):
@@ -22,11 +22,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='StaffMember',
             fields=[
-                ('cpf_person', models.CharField(max_length=11, primary_key=True, serialize=False, validators=[validators.docbr.CPFValidator()], verbose_name='CPF')),
+                ('cpf_person', models.CharField(max_length=11, primary_key=True, serialize=False, validators=[
+                    utils.validators.docbr.CPFValidator()], verbose_name='CPF')),
                 ('rg_person', models.CharField(max_length=20, verbose_name='RG')),
                 ('gender_person', models.CharField(choices=[('M', 'Masculino'), ('F', 'Feminino'), ('N', 'Não desejo me identificar')], max_length=1, verbose_name='sexo')),
                 ('age_person', models.PositiveSmallIntegerField(validators=[django.core.validators.MinValueValidator(18)], verbose_name='idade')),
-                ('phone_person', models.CharField(max_length=16, validators=[validators.basic_user.PhoneValidator()], verbose_name='telefone')),
+                ('phone_person', models.CharField(max_length=16, validators=[
+                    utils.validators.basic_user.PhoneValidator()], verbose_name='telefone')),
                 ('salary_staffmember', models.FloatField(validators=[django.core.validators.MinValueValidator(0)], verbose_name='salário')),
                 ('address_person', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='address.address', verbose_name='endereço')),
                 ('branch_staffmember', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='branch.branch', verbose_name='filial')),

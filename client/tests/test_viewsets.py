@@ -73,7 +73,7 @@ class ClientViewSetTestCase(APITestCase):
         data['user_client'] = self.users[2].pk
         self.client.force_login(self.users[0])
         response = self.client.post(self.list_url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
 
     def test_request_to_client_detail(self) -> None:
         self.client.force_login(self.users[0])

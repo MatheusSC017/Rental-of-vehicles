@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from address.models import Address
-from validators.docbr import CPFValidator, CNHValidator
-from validators.basic_user import PhoneValidator
+from utils.validators.docbr import CPFValidator, CNHValidator
+from utils.validators.basic_user import PhoneValidator
 
 
 class Person(models.Model):

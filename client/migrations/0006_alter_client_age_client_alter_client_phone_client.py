@@ -2,7 +2,7 @@
 
 import django.core.validators
 from django.db import migrations, models
-import validators.basic_user
+from utils import validators
 
 
 class Migration(migrations.Migration):

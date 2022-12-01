@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from branch.models import Branch
-from validators.docbr import RENAVAMValidator
+from utils.validators.docbr import RENAVAMValidator
 
 
 class VehicleClassification(models.Model):
