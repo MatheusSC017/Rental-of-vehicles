@@ -104,7 +104,7 @@ class VehicleViewSetTestCase(APITestCase):
             daily_cost_classification=5.
         )
 
-        self.vehicle = Vehicle.objects.create(
+        vehicles = [Vehicle.objects.create(
             type_vehicle='C',
             brand_vehicle='FIAT',
             model_vehicle='UNO',
@@ -113,21 +113,29 @@ class VehicleViewSetTestCase(APITestCase):
             mileage_vehicle=1000,
             renavam_vehicle=self.renavam.generate(),
             license_plate_vehicle=self.fake.license_plate().replace('-', ''),
-            chassi_vehicle='12345678901234567',
+            chassi_vehicle=randrange(11111111111111111, 99999999999999999),
             fuel_vehicle='G',
             fuel_tank_vehicle=40,
             engine_vehicle='1.3, 59 CV',
             color_vehicle='Red',
             branch_vehicle=self.branch,
+            available_vehicle=available,
             classification_vehicle=self.vehicle_classification
-        )
+        ) for available in [True, False]]
 
         self.list_url = reverse('Vehicles-list')
-        self.detail_url = reverse('Vehicles-detail', kwargs={'pk': self.vehicle.renavam_vehicle})
+        self.detail_url = reverse('Vehicles-detail', kwargs={'pk': vehicles[0].renavam_vehicle})
 
-    def test_request_to_vehicle_list(self) -> None:
+    def test_request_to_vehicle_available_list(self) -> None:
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)
+
+    def test_request_to_vehicle_all_list(self) -> None:
+        response = self.client.get(self.list_url, {'show_all': 1})
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 2)
 
     def test_request_to_vehicle_creation(self) -> None:
         self.client.force_login(self.user)
