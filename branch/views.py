@@ -48,5 +48,6 @@ class BranchVehicleViewSet(mixins.ListModelMixin, GenericViewSet):
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
-        qs = Vehicle.objects.filter(branch_vehicle=pk)
-        return qs
+        if self.request.query_params.get('show_all'):
+            return Vehicle.objects.filter(branch_vehicle=pk)
+        return Vehicle.objects.filter(branch_vehicle=pk, available_vehicle=True)
