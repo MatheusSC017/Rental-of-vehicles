@@ -19,6 +19,8 @@ ALLOW_FIELD_UPDATE = {
     'D': ('status_rental', 'arrival_branch_rental', 'distance_branch_rental',),
 }
 
+TOLERANCE_DAYS = 3
+
 
 def valid_rental_states_on_create(status_rental):
     """ Check the initial status allowed """
@@ -88,11 +90,43 @@ def valid_rented_vehicle(renavam_vehicle, requested_days):
     # Check for scheduled rentals within the new rental schedule plus 3 days
     initial_date = Q(
         Q(appointment_date_rental__gte=timezone.now()),
-        Q(appointment_date_rental__lte=timezone.now() + timezone.timedelta(days=requested_days + 3))
+        Q(appointment_date_rental__lte=timezone.now() + timezone.timedelta(days=requested_days + TOLERANCE_DAYS))
     )
     rentals = rental_models.Rental.objects.filter(
         Q(vehicle_rental=renavam_vehicle),
         rented |
         initial_date
+    )
+    return not rentals
+
+
+def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days):
+    appointment_date = timezone.make_aware(datetime.strptime(str(appointment_date), '%Y-%m-%d'))
+    # Check if there are any rentals with the allocation date within the new rental schedule plus X days
+    initial_date = Q(
+        Q(appointment_date_rental__gte=appointment_date - timezone.timedelta(days=TOLERANCE_DAYS)),
+        Q(appointment_date_rental__lte=appointment_date + timezone.timedelta(days=requested_days + TOLERANCE_DAYS))
+    )
+    # Check if there are any rentals with the devolution date within the new rental schedule plus X days
+    end_date = Q(
+        Q(appointment_date_rental__gte=(appointment_date -
+                                        timezone.timedelta(days=TOLERANCE_DAYS) -
+                                        timezone.timedelta(days=F('requested_days_rental')))),
+        Q(appointment_date_rental__lte=(appointment_date +
+                                        timezone.timedelta(days=requested_days + TOLERANCE_DAYS) -
+                                        timezone.timedelta(days=F('requested_days_rental'))))
+    )
+    other_date = Q(
+        Q(appointment_date_rental__lte=appointment_date - timezone.timedelta(days=TOLERANCE_DAYS)),
+        Q(appointment_date_rental__gte=(appointment_date +
+                                        timezone.timedelta(days=requested_days + TOLERANCE_DAYS) -
+                                        timezone.timedelta(days=F('requested_days_rental'))))
+    )
+
+    rentals = rental_models.Rental.objects.filter(
+        Q(vehicle_rental=renavam_vehicle),
+        initial_date |
+        end_date |
+        other_date
     )
     return not rentals
