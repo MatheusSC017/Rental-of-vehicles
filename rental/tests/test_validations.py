@@ -234,3 +234,19 @@ class ValidationsTestCase(APITestCase):
         self.assertTrue(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 5))
         self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 7))
         self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 10))
+
+    def test_the_validation_of_scheduling_a_vehicle(self) -> None:
+        appointment_date = str(timezone.now() + timezone.timedelta(days=3))[:10]
+        self.assertTrue(validators.valid_scheduled_vehicle(self.vehicles[0].renavam_vehicle, appointment_date, 3))
+
+    def test_the_validation_of_scheduling_a_vehicle_with_a_vehicle_already_scheduled(self) -> None:
+        entry_data = [
+            (str(timezone.now() + timezone.timedelta(days=4))[:10], 3),
+            (str(timezone.now() + timezone.timedelta(days=9))[:10], 3),
+            (str(timezone.now() + timezone.timedelta(days=12))[:10], 7),
+            (str(timezone.now() + timezone.timedelta(days=16))[:10], 3),
+            (str(timezone.now() + timezone.timedelta(days=11))[:10], 1),
+            (str(timezone.now() + timezone.timedelta(days=3))[:10], 30),
+        ]
+        for entry in entry_data:
+            self.assertFalse(validators.valid_scheduled_vehicle(self.vehicles[0].renavam_vehicle, entry[0], entry[1]))

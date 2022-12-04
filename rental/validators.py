@@ -109,24 +109,19 @@ def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days):
     )
     # Check if there are any rentals with the devolution date within the new rental schedule plus X days
     end_date = Q(
-        Q(appointment_date_rental__gte=(appointment_date -
-                                        timezone.timedelta(days=TOLERANCE_DAYS) -
-                                        timezone.timedelta(days=F('requested_days_rental')))),
-        Q(appointment_date_rental__lte=(appointment_date +
-                                        timezone.timedelta(days=requested_days + TOLERANCE_DAYS) -
-                                        timezone.timedelta(days=F('requested_days_rental'))))
+        Q(devolution_date_expected_rental__gte=(appointment_date - timezone.timedelta(days=TOLERANCE_DAYS))),
+        Q(devolution_date_expected_rental__lte=(appointment_date +
+                                                timezone.timedelta(days=requested_days + TOLERANCE_DAYS)))
     )
+    # Check if there are any rentals with a schedule tha overlaps with the new schedule
     other_date = Q(
         Q(appointment_date_rental__lte=appointment_date - timezone.timedelta(days=TOLERANCE_DAYS)),
-        Q(appointment_date_rental__gte=(appointment_date +
-                                        timezone.timedelta(days=requested_days + TOLERANCE_DAYS) -
-                                        timezone.timedelta(days=F('requested_days_rental'))))
+        Q(devolution_date_expected_rental__gte=(appointment_date +
+                                                timezone.timedelta(days=requested_days + TOLERANCE_DAYS)))
     )
 
-    rentals = rental_models.Rental.objects.filter(
-        Q(vehicle_rental=renavam_vehicle),
-        initial_date |
-        end_date |
-        other_date
-    )
+    rentals = rental_models.Rental.objects.filter(Q(vehicle_rental=renavam_vehicle),
+                                                  initial_date |
+                                                  end_date |
+                                                  other_date)
     return not rentals

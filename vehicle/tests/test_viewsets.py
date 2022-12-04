@@ -133,7 +133,6 @@ class VehicleViewSetTestCase(APITestCase):
 
     def test_request_to_vehicle_all_list(self) -> None:
         response = self.client.get(self.list_url, {'show_all': 1})
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 2)
 

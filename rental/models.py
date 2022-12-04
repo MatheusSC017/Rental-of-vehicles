@@ -1,11 +1,12 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.utils import timezone
 from branch.models import Branch
 from vehicle.models import Vehicle
 from staff.models import StaffMember
 from client.models import Client
 from .validators import valid_appointment_update_or_cancellation
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 
 
 class Insurance(models.Model):
@@ -62,6 +63,7 @@ class Rental(models.Model):
     appointment_date_rental = models.DateField(null=True, blank=True, verbose_name='data de agendamento')
     rent_date_rental = models.DateField(null=True, blank=True, verbose_name='data de alocação')
     devolution_date_rental = models.DateField(null=True, blank=True, verbose_name='data de devolução')
+    devolution_date_expected_rental = models.DateField(verbose_name='data de devolução esperada')
     requested_days_rental = models.PositiveSmallIntegerField(verbose_name='prazo requisitado')
     actual_days_rental = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name='prazo real')
     fines_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)], verbose_name='multas')
@@ -78,7 +80,14 @@ class Rental(models.Model):
     driver_rental = models.ManyToManyField(Client, related_name='driver_rental', verbose_name='condutores')
 
     def save(self, *args, **kwargs):
+        if self.status_rental == 'A':
+            self.devolution_date_expected = str(timezone.make_aware(
+                datetime.strptime(str(self.appointment_date_rental), '%Y-%m-%d')
+            ) + timezone.timedelta(days=self.requested_days_rental))[:10]
+
         if self.status_rental == 'L' and not self.rent_date_rental:
+            self.devolution_date_expected = str(timezone.now() +
+                                                timezone.timedelta(days=self.requested_days_rental))[:10]
             self.rent_date_rental = date.today()
 
         if self.status_rental == 'C':
@@ -107,6 +116,17 @@ class Rental(models.Model):
                                           self.return_rate_rental, total_cost_of_insurance])
 
         super().save(*args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.status_rental == 'A':
+            self.devolution_date_expected_rental = str(timezone.make_aware(
+                datetime.strptime(str(self.appointment_date_rental), '%Y-%m-%d')
+            ) + timezone.timedelta(days=self.requested_days_rental))[:10]
+
+        if self.status_rental == 'L':
+            self.devolution_date_expected_rental = str(timezone.now() +
+                                                       timezone.timedelta(days=self.requested_days_rental))[:10]
 
     def calculate_fines(self):
         daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental

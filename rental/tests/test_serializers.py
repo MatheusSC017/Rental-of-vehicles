@@ -171,7 +171,8 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
                      'outlet_branch_rental', 'arrival_branch_rental', 'distance_branch_rental', 'driver_rental',
                      'appointment_date_rental', 'rent_date_rental', 'devolution_date_rental', 'requested_days_rental',
                      'actual_days_rental', 'rent_deposit_rental', 'daily_cost_rental', 'total_cost_rental',
-                     'additional_daily_cost_rental', 'additional_items_rental', 'return_rate_rental', 'fines_rental', }
+                     'additional_daily_cost_rental', 'additional_items_rental', 'return_rate_rental', 'fines_rental',
+                     'devolution_date_expected_rental'}
         self.serializer = RentalSerializer(self.rental)
 
     def test_verify_serializer_fields(self) -> None:
