@@ -32,6 +32,11 @@ class RentalSerializer(ModelSerializer):
             if not validators.valid_appointment_creation(validated_data.get('appointment_date_rental')):
                 message = _('For vehicle scheduling, a valid scheduling date field is required.')
                 raise ValidationError(message)
+            if not validators.valid_scheduled_vehicle(validated_data.get('vehicle_rental'),
+                                                      validated_data.get('appointment_date_rental'),
+                                                      validated_data.get('requested_days_rental')):
+                message = _('The chosen vehicle is already rented or there is an appointment scheduled for it.')
+                raise ValidationError(message)
 
         validated_data['arrival_branch_rental'] = None
         validated_data['distance_branch_rental'] = None

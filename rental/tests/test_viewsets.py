@@ -212,7 +212,6 @@ class RentalViewSetTestCase(APITestCase):
         )
 
         year_manufacture = randrange(1960, 2020)
-        renavam_value = str(renavam.generate())
         vehicle = Vehicle.objects.create(
             type_vehicle=choice('MC'),
             brand_vehicle=' '.join(fake.words(nb=1)),
@@ -220,7 +219,7 @@ class RentalViewSetTestCase(APITestCase):
             year_manufacture_vehicle=year_manufacture,
             model_year_vehicle=year_manufacture + randrange(0, 5),
             mileage_vehicle=float(randrange(0, 2000)),
-            renavam_vehicle=renavam_value,
+            renavam_vehicle=renavam.generate(),
             license_plate_vehicle=fake.license_plate().replace('-', ''),
             chassi_vehicle=str(randrange(11111111111111111, 99999999999999999)),
             fuel_vehicle=choice('GEDH'),
@@ -260,7 +259,7 @@ class RentalViewSetTestCase(APITestCase):
         rental.driver_rental.set([self.client_user, ])
 
         self.data = {
-            'vehicle_rental': renavam_value,
+            'vehicle_rental': vehicle.renavam_vehicle,
             'client_rental': self.client_user.cpf_person,
             'status_rental': 'L',
             'appointment_date_rental': str(timezone.now() + timezone.timedelta(days=1))[:10],
