@@ -17,26 +17,33 @@ class AdditionalItemsSerializer(ModelSerializer):
 
 
 class RentalSerializer(ModelSerializer):
+    error_messages_rental = {
+        'invalid_status_creation': _('For rental registration, choose scheduled or rented only.'),
+        'invalid_scheduled_date': _('For vehicle scheduling, a valid scheduling date field is required.'),
+        'vehicle_already_scheduled': _('The chosen vehicle is already rented or there is '
+                                       'an appointment scheduled for it.'),
+        'invalid_status_transition': _('Required state transition is not valid.'),
+        'invalid_field_update': _('For the current state of the rental, only the following fields can be updated: '),
+    }
+
     def create(self, validated_data):
         if not validators.valid_rental_states_on_create(validated_data.get('status_rental')):
-            message = _('For rental registration, choose scheduled or rented only.')
-            raise ValidationError(message)
+            raise ValidationError(self.error_messages_rental.get('invalid_status_creation'))
 
         if validated_data.get('status_rental') == 'L':
             validated_data['appointment_date_rental'] = None
+
             if not validators.valid_rented_vehicle(validated_data.get('vehicle_rental'),
                                                    validated_data.get('requested_days_rental')):
-                message = _('The chosen vehicle is already rented or there is an appointment scheduled for it.')
-                raise ValidationError(message)
+                raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
         else:
             if not validators.valid_appointment_creation(validated_data.get('appointment_date_rental')):
-                message = _('For vehicle scheduling, a valid scheduling date field is required.')
-                raise ValidationError(message)
+                raise ValidationError(self.error_messages_rental.get('invalid_scheduled_date'))
+
             if not validators.valid_scheduled_vehicle(validated_data.get('vehicle_rental'),
                                                       validated_data.get('appointment_date_rental'),
                                                       validated_data.get('requested_days_rental')):
-                message = _('The chosen vehicle is already rented or there is an appointment scheduled for it.')
-                raise ValidationError(message)
+                raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
 
         validated_data['arrival_branch_rental'] = None
         validated_data['distance_branch_rental'] = None
@@ -45,14 +52,11 @@ class RentalSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         if not validators.valid_rental_states_on_update(instance.status_rental, validated_data.get('status_rental')):
-            message = _('Required state transition is not valid.')
-            raise ValidationError(message)
+            raise ValidationError(self.error_messages_rental.get('invalid_status_transition'))
 
         valid_update, allowed_field = validators.valid_rental_data_update(instance, validated_data)
         if not valid_update:
-            message = _(f'For the current state of the rental, only the following fields can be '
-                        f'updated: {", ".join(allowed_field)}.')
-            raise ValidationError(message)
+            raise ValidationError(self.error_messages_rental.get('invalid_field_update') + ", ".join(allowed_field))
 
         return super().update(instance, validated_data)
 
