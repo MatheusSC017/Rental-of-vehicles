@@ -10,7 +10,7 @@ class AddressViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         self.fake = faker.Faker('pt_BR')
 
-        username = self.fake.first_name() + '123456789'
+        username = self.fake.first_name().replace(' ', '_') + '123456789'
         self.user = User.objects.create_user(
             username=username,
             email=username + '@email.com',

@@ -43,7 +43,7 @@ def address_generator():
 def user_generator():
     first_name = fake.first_name()
     last_name = fake.last_name()
-    username = first_name + str(randrange(10000, 99999))
+    username = first_name.replace(' ', '_') + str(randrange(10000, 99999))
     email = username + '@email.com.br'
     password = username
     user = User.objects.create_user(

@@ -29,7 +29,7 @@ class InsuranceViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         self.fake = faker.Faker('pt_BR')
 
-        username = self.fake.first_name() + str(randrange(10000, 99999))
+        username = self.fake.first_name().replace(' ', '_') + str(randrange(10000, 99999))
         self.user = User.objects.create_user(
             username=username,
             email=username + '@email.com.br',
@@ -88,7 +88,7 @@ class AdditionalItemsViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         self.fake = faker.Faker('pt_BR')
 
-        username = self.fake.first_name() + str(randrange(10000, 99999))
+        username = self.fake.first_name().replace(' ', '_') + str(randrange(10000, 99999))
         self.user = User.objects.create_user(
             username=username,
             email=username + '@email.com.br',
@@ -153,7 +153,7 @@ class RentalViewSetTestCase(APITestCase):
                 data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
             return json.dumps(data)
 
-        usernames = [fake.first_name() + str(randrange(10000, 99999)) for _ in range(2)]
+        usernames = [fake.first_name().replace(' ', '_') + str(randrange(10000, 99999)) for _ in range(2)]
         self.user_staff, user_client = [User.objects.create_user(
             username=username,
             email=username + '@email.com.br',

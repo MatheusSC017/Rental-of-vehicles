@@ -67,7 +67,7 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
                 data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
             return json.dumps(data)
 
-        usernames = [fake.first_name() + str(randrange(10000, 99999)) for _ in range(3)]
+        usernames = [fake.first_name().replace(' ', '_') + str(randrange(10000, 99999)) for _ in range(3)]
         self.user_staff, user_client_1, user_client_2 = [User.objects.create_user(
             username=username,
             email=username + '@email.com.br',

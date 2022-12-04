@@ -16,7 +16,7 @@ class ClientViewSetTestCase(APITestCase):
         self.cpf = CPF()
         self.cnh = CNH()
 
-        usernames = [self.fake.first_name() + str(randrange(111111, 999999)) for _ in range(3)]
+        usernames = [self.fake.first_name().replace(' ', '_') + str(randrange(111111, 999999)) for _ in range(3)]
         self.users = [User.objects.create_user(
             username=username,
             email=username + '@email.com',
@@ -90,6 +90,65 @@ class ClientViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_request_to_client_delete(self) -> None:
+        self.client.force_login(self.users[0])
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class UserViewSetTestCase(APITestCase):
+    def setUp(self) -> None:
+        fake = faker.Faker('pt_BR')
+
+        usernames = [fake.first_name().replace(' ', '_') + str(randrange(11111, 99999)) for _ in range(2)]
+        self.users = [User.objects.create_user(
+            username=username,
+            email=username + '@email.com',
+            password=username
+        ) for username in usernames]
+
+        content_type = ContentType.objects.get_for_model(User)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for permission in permissions:
+            self.users[0].user_permissions.add(permission)
+
+        self.new_data = {
+            'username': 'UsuarioDeTeste',
+            'email': 'UsuarioDeTeste@email.com',
+            'first_name': 'Usuario',
+            'last_name': 'DeTeste',
+            'password': 'SenhaTesteUsuario123'
+        }
+
+        self.list_url = reverse('Users-list')
+        self.detail_url = reverse('Users-detail', kwargs={'pk': self.users[1].pk})
+
+    def test_request_to_user_list_with_anonymous_user(self) -> None:
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_request_to_user_list(self) -> None:
+        self.client.force_login(self.users[0])
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_test_request_to_user_creation(self) -> None:
+        self.client.force_login(self.users[0])
+        response = self.client.post(self.list_url, data=self.new_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_request_to_user_detail(self) -> None:
+        self.client.force_login(self.users[0])
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_request_to_user_update(self) -> None:
+        data = copy.deepcopy(self.new_data)
+        data['username'] = self.users[1].username
+        self.client.force_login(self.users[0])
+        response = self.client.put(self.detail_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
+
+    def test_request_to_user_delete(self) -> None:
         self.client.force_login(self.users[0])
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

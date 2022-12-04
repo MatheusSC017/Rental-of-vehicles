@@ -14,7 +14,7 @@ class VehicleClassificationViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         self.fake = faker.Faker('pt_BR')
 
-        username = self.fake.first_name() + str(randrange(10000, 99999))
+        username = self.fake.first_name().replace(' ', '_') + str(randrange(10000, 99999))
         self.user = User.objects.create_user(
             username=username,
             email=username + '@email.com',
@@ -71,7 +71,7 @@ class VehicleViewSetTestCase(APITestCase):
         self.fake = faker.Faker('pt_BR')
         self.renavam = RENAVAM()
 
-        username = self.fake.first_name() + str(randrange(10000, 99999))
+        username = self.fake.first_name().replace(' ', '_') + str(randrange(10000, 99999))
         self.user = User.objects.create_user(
             username=username,
             email=username + '@email.com',

@@ -14,7 +14,7 @@ class ClientSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
         fake = faker.Faker('pt_BR')
         cnh = CNH()
 
-        username = fake.first_name() + '123456789'
+        username = fake.first_name().replace(' ', '_') + '123456789'
         user = User.objects.create_user(
             username=username,
             email=username + '@email.com',

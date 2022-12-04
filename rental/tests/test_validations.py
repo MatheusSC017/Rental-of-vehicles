@@ -30,7 +30,7 @@ class ValidationsTestCase(APITestCase):
                 data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
             return json.dumps(data)
 
-        username = [fake.first_name() + str(randrange(10000, 99999)) for _ in range(4)]
+        username = [fake.first_name().replace(' ', '_') + str(randrange(10000, 99999)) for _ in range(4)]
         users = [User.objects.create_user(
             username=username[i],
             email=username[i] + '@email.com.br',

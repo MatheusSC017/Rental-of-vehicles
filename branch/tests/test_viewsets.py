@@ -12,7 +12,7 @@ class BranchViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         fake = faker.Faker('pt_BR')
 
-        username = fake.first_name() + '123456789'
+        username = fake.first_name().replace(' ', '_') + '123456789'
         self.user = User.objects.create_user(
             username=username,
             email=username + '@email.com',
@@ -83,7 +83,7 @@ class BranchAddressViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         fake = faker.Faker('pt_BR')
 
-        username = fake.first_name() + '123456789'
+        username = fake.first_name().replace(' ', '_') + '123456789'
         self.user = User.objects.create_user(
             username=username,
             email=username + '@email.com',
@@ -127,7 +127,7 @@ class BranchVehicleViewSetTestCase(APITestCase):
     def setUp(self) -> None:
         fake = faker.Faker('pt_BR')
 
-        username = fake.first_name() + '123456789'
+        username = fake.first_name().replace(' ', '_') + '123456789'
         self.user = User.objects.create_user(
             username=username,
             email=username + '@email.com',
