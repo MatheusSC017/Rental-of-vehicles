@@ -1,5 +1,5 @@
 from django.test import TestCase
-from ..serializers import ClientSerializer
+from ..serializers import ClientSerializer, UserSerializer
 from django.contrib.auth.models import User
 from ..models import Client
 from address.models import Address
@@ -59,3 +59,28 @@ class ClientSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
                 self.assertEqual(data[key], getattr(self.client, key).id)
             else:
                 self.assertEqual(data[key], getattr(self.client, key))
+
+
+class UserSerializerTestCase(TestCase):
+    def setUp(self) -> None:
+        fake = faker.Faker('pt_BR')
+
+        username = fake.first_name().replace(' ', '_') + str(randrange(11111, 99999))
+        self.user = User.objects.create_user(
+            username=username,
+            email=username + '@email.com',
+            password=username
+        )
+
+        self.keys = {'pk', 'username', 'email', 'first_name', 'last_name'}
+
+        self.serializer = UserSerializer(self.user)
+
+    def test_verify_serializer_fields(self) -> None:
+        data = self.serializer.data
+        self.assertEqual(set(data.keys()), self.keys)
+
+    def test_verify_contents_of_serializer_fields(self) -> None:
+        data = self.serializer.data
+        for key in self.keys:
+            self.assertEqual(data[key], getattr(self.user, key))
