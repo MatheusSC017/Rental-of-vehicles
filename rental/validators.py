@@ -89,6 +89,7 @@ def valid_rented_vehicle(renavam_vehicle, requested_days):
     rented = Q(status_rental='L')
     # Check for scheduled rentals within the new rental schedule plus 3 days
     initial_date = Q(
+        Q(status_rental__in=('A', 'L')),
         Q(appointment_date_rental__gte=timezone.now()),
         Q(appointment_date_rental__lte=timezone.now() + timezone.timedelta(days=requested_days + TOLERANCE_DAYS))
     )
@@ -121,6 +122,7 @@ def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days):
     )
 
     rentals = rental_models.Rental.objects.filter(Q(vehicle_rental=renavam_vehicle),
+                                                  Q(status_rental__in=('A', 'L')),
                                                   initial_date |
                                                   end_date |
                                                   other_date)
