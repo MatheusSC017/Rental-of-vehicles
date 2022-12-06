@@ -182,7 +182,13 @@ def insurance_generator():
 
 
 def additional_item_generator():
-    pass
+    name = ' '.join(fake.words(nb=3))
+    daily_cost = randrange(10, 500) / 100
+
+    AdditionalItems.objects.create(
+        name_additionalitems=name,
+        daily_cost_additionalitems=daily_cost
+    )
 
 
 if __name__ == '__main__':
@@ -199,5 +205,9 @@ if __name__ == '__main__':
 
     for _ in range(150):
         vehicle_generator(branches_list, classifications_list)
+
     for _ in range(10):
         insurance_generator()
+
+    for _ in range(10):
+        additional_item_generator()
