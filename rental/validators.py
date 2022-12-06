@@ -84,7 +84,7 @@ def valid_appointment_creation(appointment_date):
     return True
 
 
-def valid_rented_vehicle(renavam_vehicle, requested_days):
+def valid_rented_vehicle(renavam_vehicle, requested_days, id_rental=None):
     # Check if there are rentals with the status of rented
     rented = Q(status_rental='L')
     # Check for scheduled rentals within the new rental schedule plus 3 days
@@ -98,10 +98,14 @@ def valid_rented_vehicle(renavam_vehicle, requested_days):
         rented |
         initial_date
     )
+
+    if id_rental:
+        return not rentals.exclude(id=id_rental)
+
     return not rentals
 
 
-def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days):
+def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days, id_rental=None):
     appointment_date = timezone.make_aware(datetime.strptime(str(appointment_date), '%Y-%m-%d'))
     # Check if there are any rentals with the allocation date within the new rental schedule plus X days
     initial_date = Q(
@@ -126,4 +130,8 @@ def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days):
                                                   initial_date |
                                                   end_date |
                                                   other_date)
+
+    if id_rental:
+        return not rentals.exclude(id=id_rental)
+
     return not rentals
