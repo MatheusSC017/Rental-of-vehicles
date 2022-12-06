@@ -12,6 +12,7 @@ from address.models import Address
 from client.models import Client
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
+from rental.models import Insurance, AdditionalItems
 from django.contrib.auth.models import User
 
 fake = faker.Faker('pt_BR')
@@ -162,6 +163,28 @@ def vehicle_generator(branches, classifications):
     return vehicle
 
 
+def insurance_generator():
+    def json_generator():
+        data = dict()
+        for _ in range(randrange(3, 7)):
+            data[fake.words(nb=1)[0]] = f'R$ {randrange(1000, 1000000):.2f}'
+        return json.dumps(data)
+
+    title = ' '.join(fake.words(nb=3))
+    coverage = json_generator()
+    price = randrange(100, 2000) / 100
+
+    Insurance.objects.create(
+        title_insurance=title,
+        coverage_insurance=coverage,
+        price_insurance=price
+    )
+
+
+def additional_item_generator():
+    pass
+
+
 if __name__ == '__main__':
     for _ in range(500):
         client_generator()
@@ -176,3 +199,5 @@ if __name__ == '__main__':
 
     for _ in range(150):
         vehicle_generator(branches_list, classifications_list)
+    for _ in range(10):
+        insurance_generator()
