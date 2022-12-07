@@ -250,3 +250,77 @@ class ValidationsTestCase(APITestCase):
         ]
         for entry in entry_data:
             self.assertFalse(validators.valid_scheduled_vehicle(self.vehicles[0].renavam_vehicle, entry[0], entry[1]))
+
+    def test_the_validation_of_renting_a_vehicle_to_change_requested_days(self) -> None:
+        rental = Rental.objects.create(
+            vehicle_rental=self.vehicles[0],
+            staff_rental=self.staffmembers[0],
+            client_rental=self.clients[0],
+            status_rental='L',
+            outlet_branch_rental=self.branches[0],
+            requested_days_rental=3,
+            rent_deposit_rental=150,
+            daily_cost_rental=randrange(500, 5000) / 100,
+            additional_daily_cost_rental=0.
+        )
+        self.assertTrue(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 5, rental.pk))
+
+    def test_the_validation_of_renting_a_vehicle_to_change_requested_days_with_a_vehicle_already_schedule(self) -> None:
+        rental = Rental.objects.create(
+            vehicle_rental=self.vehicles[0],
+            staff_rental=self.staffmembers[0],
+            client_rental=self.clients[0],
+            status_rental='L',
+            outlet_branch_rental=self.branches[0],
+            requested_days_rental=3,
+            rent_deposit_rental=150,
+            daily_cost_rental=randrange(500, 5000) / 100,
+            additional_daily_cost_rental=0.
+        )
+        self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam_vehicle, 10, rental.pk))
+
+    def test_the_validation_of_scheduling_a_vehicle_to_change_requested_days(self) -> None:
+        rental = Rental.objects.create(
+            vehicle_rental=self.vehicles[0],
+            staff_rental=self.staffmembers[0],
+            client_rental=self.clients[0],
+            status_rental='A',
+            appointment_date_rental=str(timezone.now() + timezone.timedelta(days=3))[:10],
+            outlet_branch_rental=self.branches[0],
+            requested_days_rental=3,
+            rent_deposit_rental=150,
+            daily_cost_rental=randrange(500, 5000) / 100,
+            additional_daily_cost_rental=0.
+        )
+        appointment_date = str(timezone.now() + timezone.timedelta(days=17))[:10]
+        self.assertTrue(validators.valid_scheduled_vehicle(renavam_vehicle=self.vehicles[0].renavam_vehicle,
+                                                           requested_days=3,
+                                                           appointment_date=appointment_date,
+                                                           id_rental=rental.pk))
+
+    def test_the_validation_of_scheduling_to_change_requested_days_with_a_vehicle_already_scheduled(self) -> None:
+        rental = Rental.objects.create(
+            vehicle_rental=self.vehicles[0],
+            staff_rental=self.staffmembers[0],
+            client_rental=self.clients[0],
+            status_rental='A',
+            appointment_date_rental=str(timezone.now() + timezone.timedelta(days=3))[:10],
+            outlet_branch_rental=self.branches[0],
+            requested_days_rental=3,
+            rent_deposit_rental=150,
+            daily_cost_rental=randrange(500, 5000) / 100,
+            additional_daily_cost_rental=0.
+        )
+
+        entry_values = [
+            (str(timezone.now() + timezone.timedelta(days=5))[:10], 6),
+            (str(timezone.now() + timezone.timedelta(days=11))[:10], 10),
+            (str(timezone.now() + timezone.timedelta(days=5))[:10], 15),
+            (str(timezone.now() + timezone.timedelta(days=11))[:10], 1),
+        ]
+
+        for appointment_date, requested_days in entry_values:
+            self.assertFalse(validators.valid_scheduled_vehicle(renavam_vehicle=self.vehicles[0].renavam_vehicle,
+                                                                requested_days=requested_days,
+                                                                appointment_date=appointment_date,
+                                                                id_rental=rental.pk))
