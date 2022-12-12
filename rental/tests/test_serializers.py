@@ -11,6 +11,7 @@ from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
 from random import choice, choices, randrange
 from validate_docbr import CPF, CNH, RENAVAM
+from unidecode import unidecode
 import faker
 import json
 
@@ -70,7 +71,7 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
         usernames = [fake.first_name().replace(' ', '_') + str(randrange(10000, 99999)) for _ in range(3)]
         self.user_staff, user_client_1, user_client_2 = [User.objects.create_user(
             username=username,
-            email=username + '@email.com.br',
+            email=unidecode(username + '@email.com.br'),
             password=username
         ) for username in usernames]
 

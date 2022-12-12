@@ -14,6 +14,7 @@ from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
 from rental.models import Insurance, AdditionalItems
 from django.contrib.auth.models import User
+from unidecode import unidecode
 
 fake = faker.Faker('pt_BR')
 cpf = CPF()
@@ -45,7 +46,7 @@ def user_generator():
     first_name = fake.first_name()
     last_name = fake.last_name()
     username = first_name.replace(' ', '_') + str(randrange(10000, 99999))
-    email = username + '@email.com.br'
+    email = unidecode(username + '@email.com.br')
     password = username
     user = User.objects.create_user(
         username=username,

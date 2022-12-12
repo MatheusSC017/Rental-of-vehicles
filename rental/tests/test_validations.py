@@ -11,6 +11,7 @@ from ..models import Rental, Insurance, AdditionalItems
 from .. import validators
 from random import choice, choices, randrange
 from validate_docbr import CPF, CNH, RENAVAM
+from unidecode import unidecode
 import faker
 import json
 
@@ -33,7 +34,7 @@ class ValidationsTestCase(APITestCase):
         username = [fake.first_name().replace(' ', '_') + str(randrange(10000, 99999)) for _ in range(4)]
         users = [User.objects.create_user(
             username=username[i],
-            email=username[i] + '@email.com.br',
+            email=unidecode(username[i] + '@email.com.br'),
             password=username[i]
         ) for i in range(4)]
 

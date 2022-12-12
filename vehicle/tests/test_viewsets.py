@@ -7,6 +7,7 @@ from branch.models import Branch
 from address.models import Address
 from random import randrange
 from validate_docbr import RENAVAM
+from unidecode import unidecode
 import faker
 
 
@@ -17,7 +18,7 @@ class VehicleClassificationViewSetTestCase(APITestCase):
         username = self.fake.first_name().replace(' ', '_') + str(randrange(10000, 99999))
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         )
 
@@ -74,7 +75,7 @@ class VehicleViewSetTestCase(APITestCase):
         username = self.fake.first_name().replace(' ', '_') + str(randrange(10000, 99999))
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         )
 

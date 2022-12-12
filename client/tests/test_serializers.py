@@ -6,6 +6,7 @@ from address.models import Address
 from utils.mixins.serializers import GetRelationOfTheFieldMixin
 from random import choice, randrange
 from validate_docbr import CNH
+from unidecode import unidecode
 import faker
 
 
@@ -17,7 +18,7 @@ class ClientSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
         username = fake.first_name().replace(' ', '_') + '123456789'
         user = User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         )
 
@@ -68,7 +69,7 @@ class UserSerializerTestCase(TestCase):
         username = fake.first_name().replace(' ', '_') + str(randrange(11111, 99999))
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         )
 

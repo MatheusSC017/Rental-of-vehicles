@@ -6,6 +6,7 @@ from ..models import Client
 from address.models import Address
 from random import choice, randrange
 from validate_docbr import CPF, CNH
+from unidecode import unidecode
 import faker
 import copy
 
@@ -19,7 +20,7 @@ class ClientViewSetTestCase(APITestCase):
         usernames = [self.fake.first_name().replace(' ', '_') + str(randrange(111111, 999999)) for _ in range(3)]
         self.users = [User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         ) for username in usernames]
 
@@ -102,7 +103,7 @@ class UserViewSetTestCase(APITestCase):
         usernames = [fake.first_name().replace(' ', '_') + str(randrange(11111, 99999)) for _ in range(2)]
         self.users = [User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         ) for username in usernames]
 

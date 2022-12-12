@@ -3,6 +3,7 @@ from rest_framework import status
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission, ContentType
 from ..models import Address
+from unidecode import unidecode
 import faker
 
 
@@ -13,7 +14,7 @@ class AddressViewSetTestCase(APITestCase):
         username = self.fake.first_name().replace(' ', '_') + '123456789'
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         )
 

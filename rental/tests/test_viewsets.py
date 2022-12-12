@@ -13,6 +13,7 @@ from ..models import Rental, Insurance, AdditionalItems
 from random import choice, choices, randrange
 from validate_docbr import CPF, CNH, RENAVAM
 from copy import deepcopy
+from unidecode import unidecode
 import faker
 import json
 
@@ -32,7 +33,7 @@ class InsuranceViewSetTestCase(APITestCase):
         username = self.fake.first_name().replace(' ', '_') + str(randrange(10000, 99999))
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com.br',
+            email=unidecode(username + '@email.com.br'),
             password=username
         )
 
@@ -91,7 +92,7 @@ class AdditionalItemsViewSetTestCase(APITestCase):
         username = self.fake.first_name().replace(' ', '_') + str(randrange(10000, 99999))
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com.br',
+            email=unidecode(username + '@email.com.br'),
             password=username
         )
 
@@ -156,7 +157,7 @@ class RentalViewSetTestCase(APITestCase):
         usernames = [fake.first_name().replace(' ', '_') + str(randrange(10000, 99999)) for _ in range(2)]
         self.user_staff, user_client = [User.objects.create_user(
             username=username,
-            email=username + '@email.com.br',
+            email=unidecode(username + '@email.com.br'),
             password=username
         ) for username in usernames]
 

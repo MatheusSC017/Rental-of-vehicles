@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, Permission, ContentType
 from ..models import Branch
 from address.models import Address
 from vehicle.models import Vehicle
+from unidecode import unidecode
 import faker
 
 
@@ -15,7 +16,7 @@ class BranchViewSetTestCase(APITestCase):
         username = fake.first_name().replace(' ', '_') + '123456789'
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         )
 
@@ -86,7 +87,7 @@ class BranchAddressViewSetTestCase(APITestCase):
         username = fake.first_name().replace(' ', '_') + '123456789'
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         )
 
@@ -130,7 +131,7 @@ class BranchVehicleViewSetTestCase(APITestCase):
         username = fake.first_name().replace(' ', '_') + '123456789'
         self.user = User.objects.create_user(
             username=username,
-            email=username + '@email.com',
+            email=unidecode(username + '@email.com'),
             password=username
         )
 
