@@ -207,8 +207,11 @@ class ValidationsTestCase(APITestCase):
             str(timezone.now() - timedelta(days=3))[:10],
             str(timezone.now())[:10],
             str(timezone.now() + timedelta(days=3))[:10],
+            str(timezone.now() + timedelta(days=15))[:10],
+            str(timezone.now() + timedelta(days=100))[:10],
+            str(timezone.now() + timedelta(days=400))[:10],
         ]
-        expected_response = [False, False, False, False, True]
+        expected_response = [False, False, False, False, True, True, True, False]
 
         for i, entry in enumerate(entry_dates):
             self.assertEqual(validators.valid_appointment_creation(entry), expected_response[i])

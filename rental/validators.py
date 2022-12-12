@@ -81,6 +81,9 @@ def valid_appointment_creation(appointment_date):
     if appointment_date <= now:
         return False
 
+    if appointment_date > (now + timezone.timedelta(days=365)):
+        return False
+
     return True
 
 
