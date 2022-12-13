@@ -1,6 +1,7 @@
 from rest_framework.utils import model_meta
 from datetime import datetime, timedelta
-from django.db.models import Q, F
+from django.db.models import Q
+from django.db.models.expressions import RawSQL
 from django.utils import timezone
 import rental.models as rental_models
 
@@ -117,22 +118,23 @@ def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days, i
     )
     # Check if there are any rentals with the devolution date within the new rental schedule plus X days
     end_date = Q(
-        Q(devolution_date_expected_rental__gte=(appointment_date - timezone.timedelta(days=TOLERANCE_DAYS))),
-        Q(devolution_date_expected_rental__lte=(appointment_date +
-                                                timezone.timedelta(days=requested_days + TOLERANCE_DAYS)))
+        Q(devolution_date_expected__gte=(appointment_date - timezone.timedelta(days=TOLERANCE_DAYS))),
+        Q(devolution_date_expected__lte=(appointment_date + timezone.timedelta(days=requested_days + TOLERANCE_DAYS)))
     )
     # Check if there are any rentals with a schedule tha overlaps with the new schedule
     other_date = Q(
         Q(appointment_date_rental__lte=appointment_date - timezone.timedelta(days=TOLERANCE_DAYS)),
-        Q(devolution_date_expected_rental__gte=(appointment_date +
-                                                timezone.timedelta(days=requested_days + TOLERANCE_DAYS)))
+        Q(devolution_date_expected__gte=(appointment_date + timezone.timedelta(days=requested_days + TOLERANCE_DAYS)))
     )
 
-    rentals = rental_models.Rental.objects.filter(Q(vehicle_rental=renavam_vehicle),
-                                                  Q(status_rental__in=('A', 'L')),
-                                                  initial_date |
-                                                  end_date |
-                                                  other_date)
+    rentals = rental_models.Rental.objects.annotate(
+        devolution_date_expected=RawSQL('DATE_ADD(appointment_date_rental, INTERVAL requested_days_rental DAY)', ()),
+    )
+    rentals = rentals.filter(Q(vehicle_rental=renavam_vehicle),
+                             Q(status_rental__in=('A', 'L')),
+                             initial_date |
+                             end_date |
+                             other_date)
 
     if id_rental:
         return not rentals.exclude(id=id_rental)

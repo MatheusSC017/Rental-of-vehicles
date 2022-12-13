@@ -289,7 +289,7 @@ class RentalViewSetTestCase(APITestCase):
     def test_request_to_rental_update(self) -> None:
         data = deepcopy(self.data)
         data['status_rental'] = 'A'
-        data['appointment_date_rental'] = str(timezone.now() + timezone.timedelta(days=15))[:10]
+        data['appointment_date_rental'] = str(timezone.now() + timezone.timedelta(days=20))[:10]
         self.client.force_login(self.user_staff)
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
