@@ -59,16 +59,16 @@ class RentalSerializer(ModelSerializer):
             raise ValidationError(self.error_messages_rental.get('invalid_field_update') + ", ".join(allowed_field))
 
         if validated_data.get('status_rental') == 'A':
-            if not validators.valid_scheduled_vehicle(instance.vehicle_rental,
-                                                      instance.appointment_date_rental,
-                                                      instance.requested_days_rental,
-                                                      instance.pk):
+            if not validators.valid_scheduled_vehicle(validated_data.get('vehicle_rental'),
+                                                      validated_data.get('appointment_date_rental'),
+                                                      validated_data.get('requested_days_rental'),
+                                                      validated_data.get('pk')):
                 raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
 
         if validated_data.get('status_rental') == 'L':
-            if not validators.valid_rented_vehicle(instance.vehicle_rental,
-                                                   instance.requested_days_rental,
-                                                   instance.pk):
+            if not validators.valid_rented_vehicle(validated_data.get('vehicle_rental'),
+                                                   validated_data.get('requested_days_rental'),
+                                                   validated_data.get('pk')):
                 raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
 
         return super().update(instance, validated_data)

@@ -115,7 +115,7 @@ class Rental(models.Model):
             self.total_cost_rental = sum([total_cost, self.fines_rental,
                                           self.return_rate_rental, total_cost_of_insurance])
 
-        super().save(*args, **kwargs)
+        super(Rental, self).save(*args, **kwargs)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
