@@ -78,4 +78,4 @@ class RentalSerializer(ModelSerializer):
         fields = '__all__'
         read_only_fields = ['staff_rental', 'rent_date_rental', 'devolution_date_rental', 'actual_days_rental',
                             'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
-                            'outlet_branch_rental', 'additional_daily_cost_rental', 'devolution_date_expected_rental']
+                            'outlet_branch_rental', 'additional_daily_cost_rental', ]
