@@ -84,11 +84,11 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rental-of-vehicles',
-        'USER': 'root',
+        'NAME': '',
+        'USER': '',
         'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
