@@ -229,7 +229,7 @@ class RentalViewSetTestCase(APITestCase):
             engine_vehicle=' '.join(fake.words()),
             color_vehicle=fake.color_name(),
             other_data_vehicle=json_generator(),
-            available_vehicle=choices([True, False], weights=(90, 10))[0],
+            available_vehicle=True,
             branch_vehicle=branch,
             classification_vehicle=classification
         )
