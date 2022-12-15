@@ -40,14 +40,16 @@ class AdditionalItemsSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.additional_item = AdditionalItems.objects.create(
             name_additionalitems='Additional Item Name',
-            daily_cost_additionalitems=2.5
+            daily_cost_additionalitems=2.5,
+            stock_additionalitems=3
         )
 
         self.serializer = AdditionalItemsSerializer(self.additional_item)
 
     def test_verify_serializer_fields(self) -> None:
         data = self.serializer.data
-        self.assertEqual(set(data.keys()), {'id', 'name_additionalitems', 'daily_cost_additionalitems'})
+        self.assertEqual(set(data.keys()), {'id', 'name_additionalitems', 'daily_cost_additionalitems',
+                                            'stock_additionalitems'})
 
     def test_verify_contents_of_serializer_fields(self) -> None:
         data = self.serializer.data

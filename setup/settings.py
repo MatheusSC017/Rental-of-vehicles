@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
+        'NAME': 'rental-of-vehicles',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',

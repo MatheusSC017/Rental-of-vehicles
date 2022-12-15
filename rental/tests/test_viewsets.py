@@ -103,7 +103,8 @@ class AdditionalItemsViewSetTestCase(APITestCase):
 
         self.additional_item = AdditionalItems.objects.create(
             name_additionalitems=' '.join(self.fake.words(nb=2)),
-            daily_cost_additionalitems=randrange(100, 2000) / 100
+            daily_cost_additionalitems=randrange(100, 2000) / 100,
+            stock_additionalitems=randrange(1, 5)
         )
 
         self.list_url = reverse('AdditionalItems-list')
@@ -241,7 +242,8 @@ class RentalViewSetTestCase(APITestCase):
 
         self.additional_items = [AdditionalItems.objects.create(
             name_additionalitems=' '.join(fake.words(nb=2)),
-            daily_cost_additionalitems=randrange(100, 2000) / 100
+            daily_cost_additionalitems=randrange(100, 2000) / 100,
+            stock_additionalitems=randrange(1, 5)
         ) for _ in range(3)]
 
         rental = Rental.objects.create(

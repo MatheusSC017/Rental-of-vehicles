@@ -27,6 +27,7 @@ class Insurance(models.Model):
 class AdditionalItems(models.Model):
     name_additionalitems = models.CharField(max_length=50, verbose_name='nome')
     daily_cost_additionalitems = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
+    stock_additionalitems = models.PositiveSmallIntegerField(default=1, verbose_name='quantidade em estoque')
 
     def __str__(self):
         return self.name_additionalitems
