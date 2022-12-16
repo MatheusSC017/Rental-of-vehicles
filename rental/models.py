@@ -71,8 +71,6 @@ class Rental(models.Model):
     daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
     additional_daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)],
                                                      verbose_name='custo adicional da diária')
-    additional_items_rental = models.ManyToManyField(AdditionalItems, null=True, blank=True,
-                                                     verbose_name='itens adicionais')
     return_rate_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
                                            verbose_name='taxa de retorno')
     total_cost_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
@@ -144,3 +142,13 @@ class Rental(models.Model):
     class Meta:
         verbose_name = 'aluguel'
         verbose_name_plural = 'alugueis'
+
+
+class RentalAdditionalItem(models.Model):
+    rental_relationship = models.ForeignKey(Rental, on_delete=models.CASCADE, verbose_name='Aluguel')
+    additional_item_relationship = models.ForeignKey(AdditionalItems, on_delete=models.CASCADE,
+                                                     verbose_name='Item adicional')
+    number_relationship = models.PositiveSmallIntegerField(default=1, verbose_name='Número de itens')
+
+    class Meta:
+        unique_together = [['rental_relationship', 'additional_item_relationship']]
