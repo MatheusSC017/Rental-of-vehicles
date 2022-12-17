@@ -158,5 +158,5 @@ LOCALE_PATHS = (
 
 try:
     from .local_settings import *
-finally:
+except ModuleNotFoundError:
     pass
