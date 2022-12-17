@@ -49,6 +49,7 @@ class RentalViewSet(ModelViewSet):
         try:
             pk_addional_items_list = [int(additional_item) for additional_item
                                       in dict(self.request.data).get('additional_items_rental')]
+            print(pk_addional_items_list)
             additional_items_list = AdditionalItems.objects.filter(pk__in=pk_addional_items_list)
             return sum([additional_item.daily_cost_additionalitems for additional_item in additional_items_list])
         except TypeError:

@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from django.utils.translation import gettext_lazy as _
-from .models import Insurance, AdditionalItems, Rental
+from .models import Insurance, AdditionalItems, Rental, RentalAdditionalItem
 from . import validators
 
 
@@ -16,6 +16,13 @@ class AdditionalItemsSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class RentalAdditionalItemSerializer(ModelSerializer):
+    class Meta:
+        model = RentalAdditionalItem
+        fields = '__all__'
+        read_only_fields = ['rental_relationship', ]
+
+
 class RentalSerializer(ModelSerializer):
     error_messages_rental = {
         'invalid_status_creation': _('For rental registration, choose scheduled or rented only.'),
@@ -25,6 +32,15 @@ class RentalSerializer(ModelSerializer):
         'invalid_status_transition': _('Required state transition is not valid.'),
         'invalid_field_update': _('For the current state of the rental, only the following fields can be updated: '),
     }
+
+    additional_items_rental = RentalAdditionalItemSerializer(many=True)
+
+    class Meta:
+        model = Rental
+        fields = '__all__'
+        read_only_fields = ['staff_rental', 'rent_date_rental', 'devolution_date_rental', 'actual_days_rental',
+                            'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
+                            'outlet_branch_rental', 'additional_daily_cost_rental']
 
     def create(self, validated_data):
         if not validators.valid_rental_states_on_create(validated_data.get('status_rental')):
@@ -48,7 +64,12 @@ class RentalSerializer(ModelSerializer):
         validated_data['arrival_branch_rental'] = None
         validated_data['distance_branch_rental'] = None
 
-        return super().create(validated_data)
+        additional_items_data = validated_data.pop('additional_items_rental')
+        rental = super().create(validated_data)
+        for additional_item in additional_items_data:
+            RentalAdditionalItem.objects.create(rental_relationship=rental, **additional_item)
+        return rental
+        # return super().create(validated_data)
 
     def update(self, instance, validated_data):
         if not validators.valid_rental_states_on_update(instance.status_rental, validated_data.get('status_rental')):
@@ -71,11 +92,9 @@ class RentalSerializer(ModelSerializer):
                                                    validated_data.get('pk')):
                 raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
 
+        # additional_items_data = validated_data.pop('additional_items_rental')
+        # rental = super().update(instance, validated_data)
+        # for additional_item in additional_items_data:
+        #     RentalAdditionalItem.objects.update(rental_relationship=rental, **additional_item)
+        # return rental
         return super().update(instance, validated_data)
-
-    class Meta:
-        model = Rental
-        fields = '__all__'
-        read_only_fields = ['staff_rental', 'rent_date_rental', 'devolution_date_rental', 'actual_days_rental',
-                            'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
-                            'outlet_branch_rental', 'additional_daily_cost_rental', ]
