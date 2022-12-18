@@ -47,10 +47,15 @@ class RentalViewSet(ModelViewSet):
 
     def calculate_additional_daily_cost(self) -> float:
         try:
-            pk_addional_items_list = [int(additional_item) for additional_item
-                                      in dict(self.request.data).get('additional_items_rental')]
-            print(pk_addional_items_list)
-            additional_items_list = AdditionalItems.objects.filter(pk__in=pk_addional_items_list)
-            return sum([additional_item.daily_cost_additionalitems for additional_item in additional_items_list])
+            # Get the list of additional items requested
+            relationship_additional_items_list = [additional_item for additional_item
+                                                  in dict(self.request.data).get('additional_items_rental')]
+            # The next step will be to create a list with the subtotal for each additional item
+            additional_items_list = (
+                AdditionalItems.objects.filter(pk=item['additional_item_relationship'])[0].daily_cost_additionalitems *
+                item['number_relationship']
+                for item in relationship_additional_items_list
+            )
+            return sum(additional_items_list)
         except TypeError:
             return 0.
