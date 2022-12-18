@@ -14,8 +14,7 @@ STATUS_UPDATE = {
 
 ALLOW_FIELD_UPDATE = {
     'A': ('vehicle_rental', 'insurance_rental', 'status_rental', 'appointment_date_rental', 'requested_days_rental',
-          'rent_deposit_rental', 'driver_rental', 'additional_items_rental', 'additional_daily_cost_rental',
-          'additional_items_rental', ),
+          'rent_deposit_rental', 'driver_rental', 'additional_items_rental', 'additional_daily_cost_rental', ),
     'L': ('status_rental', 'driver_rental', ),
     'C': ('status_rental',),
     'D': ('status_rental', 'arrival_branch_rental', 'distance_branch_rental',),
@@ -139,5 +138,4 @@ def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days, i
 
     if id_rental:
         return not rentals.exclude(id=id_rental)
-
     return not rentals
