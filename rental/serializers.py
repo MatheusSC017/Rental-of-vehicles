@@ -66,8 +66,7 @@ class RentalSerializer(ModelSerializer):
 
         additional_items_data = validated_data.pop('additional_items_rental')
         rental = super().create(validated_data)
-        for additional_item in additional_items_data:
-            RentalAdditionalItem.objects.create(rental_relationship=rental, **additional_item)
+        self._create_additional_items_relationship(rental, additional_items_data)
         return rental
 
     def update(self, instance, validated_data):
@@ -115,3 +114,40 @@ class RentalSerializer(ModelSerializer):
             RentalAdditionalItem.objects.create(rental_relationship=instance, **additional_item)
 
         return super().update(instance, validated_data)
+
+    def _update_additional_items_relationship(self, instance, additional_items_data) -> None:
+        """
+        This function will be to update the relationship between additional item and rent
+        :param instance: Get an instance of the Rental model class
+        :param additional_items_data: Get data for new rental additional items
+        :return: None
+        """
+        current_additional_items_data = RentalAdditionalItem.objects.filter(rental_relationship=instance.pk)
+        new_additional_items_data = [item['additional_item_relationship'] for item in additional_items_data]
+
+        for current_item in current_additional_items_data:
+            # If the current additional item is not present in the list of new additional items, it must be deleted
+            if current_item.additional_item_relationship not in new_additional_items_data:
+                current_item.delete()
+            # if it is present in the list of additional new items, the quantity value must be updated
+            else:
+                new_data = [item for item in additional_items_data if item['additional_item_relationship'] ==
+                            current_item.additional_item_relationship][0]
+                # The code in the line below deletes the updated record from the list of additional new items
+                additional_items_data = [item for item in additional_items_data if item['additional_item_relationship']
+                                         != current_item.additional_item_relationship]
+                current_item.number_relationship = new_data['number_relationship']
+                current_item.save()
+        # The last step will be create new relationships for rent and additional items
+        self._create_additional_items_relationship(instance, additional_items_data)
+
+    @staticmethod
+    def _create_additional_items_relationship(rental, additional_items_data) -> None:
+        """
+        This function will be to create the relationship between additional item and rent
+        :param rental: Get an instance of the Rental model class
+        :param additional_items_data: Get data for create rental additional items
+        :return: None
+        """
+        for additional_item in additional_items_data:
+            RentalAdditionalItem.objects.create(rental_relationship=rental, **additional_item)
