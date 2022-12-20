@@ -31,6 +31,7 @@ class RentalSerializer(ModelSerializer):
                                        'an appointment scheduled for it.'),
         'invalid_status_transition': _('Required state transition is not valid.'),
         'invalid_field_update': _('For the current state of the rental, only the following fields can be updated: '),
+        'invalid_additional_items_updated': _('For the current rental status, additional items cannot be changed')
     }
 
     additional_items_rental = RentalAdditionalItemSerializer(many=True)
@@ -92,26 +93,10 @@ class RentalSerializer(ModelSerializer):
                                                    instance.pk):
                 raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
 
-        current_additional_items_data = RentalAdditionalItem.objects.filter(rental_relationship=instance.pk)
-        new_additional_items_data = [item['additional_item_relationship'] for item in additional_items_data]
+        if instance.status_rental != 'A' and validators.additional_items_updated(instance.pk, validated_data):
+            raise ValidationError(self.error_messages_rental.get('invalid_additional_items_updated'))
 
-        # The next step will be to update the relationship between additional item and rent
-        for current_item in current_additional_items_data:
-            # If the current additional item is not present in the list of new additional items, it must be deleted
-            if current_item.additional_item_relationship not in new_additional_items_data:
-                current_item.delete()
-            # if it is present in the list of additional new items, the quantity value must be updated
-            else:
-                new_data = [item for item in additional_items_data if item['additional_item_relationship'] ==
-                            current_item.additional_item_relationship][0]
-                # The code in the line below deletes the updated record from the list of additional new items
-                additional_items_data = [item for item in additional_items_data if item['additional_item_relationship']
-                                         != current_item.additional_item_relationship]
-                current_item.number_relationship = new_data['number_relationship']
-                current_item.save()
-        # The last step will be create new relationships for rent and additional items
-        for additional_item in additional_items_data:
-            RentalAdditionalItem.objects.create(rental_relationship=instance, **additional_item)
+        self._update_additional_items_relationship(instance, additional_items_data)
 
         return super().update(instance, validated_data)
 

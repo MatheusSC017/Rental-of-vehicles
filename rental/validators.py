@@ -178,3 +178,27 @@ def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days, i
     if id_rental:
         return not rentals.exclude(id=id_rental)
     return not rentals
+
+
+def additional_items_updated(rental_pk, additional_items_data) -> bool:
+    """
+    Check if additional items have been updated
+    :param rental_pk: Get the primary key of the rental being updated
+    :param additional_items_data: Get data for new rental additional items
+    :return: Returns True if additional items have been updated, False otherwise
+    """
+    current_additional_items_data = rental_models.RentalAdditionalItem.objects.filter(rental_relationship=rental_pk)
+    new_additional_items_data = {item['additional_item_relationship']: item['number_relationship']
+                                 for item in additional_items_data}
+    # Check that the current number of items equal of the new number of items
+    number_of_items = current_additional_items_data.len() == len(new_additional_items_data)
+    # Check that both lists are the same
+
+    is_present_and_equal_quantity = (current_item.additional_item_relationship in new_additional_items_data.keys() and
+                                     current_item.number_relationship ==
+                                     new_additional_items_data[current_item.additional_item_relationship]
+                                     for current_item in current_additional_items_data)
+    equal_lists = sum(is_present_and_equal_quantity) == current_additional_items_data.len()
+
+    return number_of_items and equal_lists
+
