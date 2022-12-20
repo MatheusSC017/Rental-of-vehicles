@@ -23,24 +23,41 @@ ALLOW_FIELD_UPDATE = {
 TOLERANCE_DAYS = 3
 
 
-def valid_rental_states_on_create(status_rental):
-    """ Check the initial status allowed """
+def valid_rental_states_on_create(status_rental) -> bool:
+    """
+    Check the initial status allowed
+    :param status_rental: A letter indicating the status of the rent
+    :return: A boolean indicating if the status on create of the rent is valid or not
+    """
     return status_rental in ('A', 'L')
 
 
-def valid_rental_states_on_update(old_status_rental, new_status_rental):
-    """ Validates if the required status transition is allowed """
+def valid_rental_states_on_update(old_status_rental, new_status_rental) -> bool:
+    """
+    Validates if the required status transition is allowed
+    :param old_status_rental: This field get the current status of the rent
+    :param new_status_rental: This field get the new status of the rent
+    :return: A boolean indicating if the status transition is valid or not
+    """
     return new_status_rental in STATUS_UPDATE[old_status_rental]
 
 
-def valid_appointment_update_or_cancellation(appointment_date):
-    """ Verifies that the 3-day deadline for the schedule for updates and cancellations has been respected """
+def valid_appointment_update_or_cancellation(appointment_date) -> bool:
+    """
+    Verifies that the 3-day deadline for the schedule for updates and cancellations has been respected
+    :param appointment_date: A string indicating the appointment date
+    :return: A boolean indicating whether the appointment date minus 3 days is greater than today
+    """
     return datetime.strptime(str(appointment_date), '%Y-%m-%d') - timedelta(days=3) > datetime.today()
 
 
-def valid_rental_data_update(instance, validated_data):
+def valid_rental_data_update(instance, validated_data) -> bool:
     """
-        Validates if the required fields for the current status have been filled in and if the other fields remain empty
+    This validation verifies that only the allowed fields are updated, to ensure that the rest of the fields
+    (autocomplete or post-completion) remain unchanged
+    :param instance: An instance of the rental model class
+    :param validated_data: A dictionary with the new values of the fields
+    :return: Returns True if updates are accepted or False otherwise
     """
     status_rental = validated_data.get('status_rental')
 
@@ -73,7 +90,12 @@ def valid_rental_data_update(instance, validated_data):
     return response, ALLOW_FIELD_UPDATE[status_rental]
 
 
-def valid_appointment_creation(appointment_date):
+def valid_appointment_creation(appointment_date) -> bool:
+    """
+    Validates if the appointment date chosen is valid, that is, greater than today and less than today plus one year
+    :param appointment_date: A string indicating the appointment date chosen
+    :return: True if the appointment date is valid and False otherwise
+    """
     if not appointment_date:
         return False
 
@@ -88,7 +110,15 @@ def valid_appointment_creation(appointment_date):
     return True
 
 
-def valid_rented_vehicle(renavam_vehicle, requested_days, id_rental=None):
+def valid_rented_vehicle(renavam_vehicle, requested_days, id_rental=None) -> bool:
+    """
+    Check that the rental date coincides a rental or appointment for the same vehicle
+    :param renavam_vehicle: A string indicating the value of the vehicle's renavam
+    :param requested_days: A positive integer for represents the number of days required
+    :param id_rental: If you need to validate a rental update, you must provide the rental id for exclude it of the
+    search
+    :return: return True if the rental not match other rentals or appointments and False otherwise
+    """
     # Check if there are rentals with the status of rented
     rented = Q(status_rental='L')
     # Check for scheduled rentals within the new rental schedule plus 3 days
@@ -109,7 +139,16 @@ def valid_rented_vehicle(renavam_vehicle, requested_days, id_rental=None):
     return not rentals
 
 
-def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days, id_rental=None):
+def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days, id_rental=None) -> bool:
+    """
+    Check that the appointment date coincides a rental or appointment for the same vehicle
+    :param renavam_vehicle: A string indicating the value of the vehicle's renavam
+    :param appointment_date: The new appointment date for the rental you need create or update
+    :param requested_days: A positive integer for represents the number of days required
+    :param id_rental: If you need to validate a appointment update, you must provide the rental id for exclude it of the
+    search
+    :return: return True if the appointment not match other rentals or appointments and False otherwise
+    """
     appointment_date = timezone.make_aware(datetime.strptime(str(appointment_date), '%Y-%m-%d'))
     # Check if there are any rentals with the allocation date within the new rental schedule plus X days
     initial_date = Q(
