@@ -191,14 +191,12 @@ def additional_items_updated(rental_pk, additional_items_data) -> bool:
     new_additional_items_data = {item['additional_item_relationship']: item['number_relationship']
                                  for item in additional_items_data}
     # Check that the current number of items equal of the new number of items
-    number_of_items = current_additional_items_data.len() == len(new_additional_items_data)
+    number_of_items = current_additional_items_data.count() == len(new_additional_items_data)
     # Check that both lists are the same
-
     is_present_and_equal_quantity = (current_item.additional_item_relationship in new_additional_items_data.keys() and
                                      current_item.number_relationship ==
                                      new_additional_items_data[current_item.additional_item_relationship]
                                      for current_item in current_additional_items_data)
-    equal_lists = sum(is_present_and_equal_quantity) == current_additional_items_data.len()
-
-    return number_of_items and equal_lists
+    equal_lists = sum(is_present_and_equal_quantity) == current_additional_items_data.count()
+    return not (number_of_items and equal_lists)
 
