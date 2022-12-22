@@ -113,6 +113,8 @@ class RentalSerializer(ModelSerializer):
         for current_item in current_additional_items_data:
             # If the current additional item is not present in the list of new additional items, it must be deleted
             if current_item.additional_item_relationship not in new_additional_items_data:
+                self._update_stock_additional_items(additional_item=current_item.additional_item_relationship,
+                                                    old_items_number=current_item.number_relationship)
                 current_item.delete()
             # if it is present in the list of additional new items, the quantity value must be updated
             else:
@@ -121,13 +123,18 @@ class RentalSerializer(ModelSerializer):
                 # The code in the line below deletes the updated record from the list of additional new items
                 additional_items_data = [item for item in additional_items_data if item['additional_item_relationship']
                                          != current_item.additional_item_relationship]
+
+                self._update_stock_additional_items(additional_item=current_item.additional_item_relationship,
+                                                    items_number=new_data['number_relationship'],
+                                                    old_items_number=current_item.number_relationship)
+
                 current_item.number_relationship = new_data['number_relationship']
                 current_item.save()
+
         # The last step will be create new relationships for rent and additional items
         self._create_additional_items_relationship(instance, additional_items_data)
 
-    @staticmethod
-    def _create_additional_items_relationship(rental, additional_items_data) -> None:
+    def _create_additional_items_relationship(self, rental, additional_items_data) -> None:
         """
         This function will be to create the relationship between additional item and rent
         :param rental: Get an instance of the Rental model class
@@ -135,4 +142,12 @@ class RentalSerializer(ModelSerializer):
         :return: None
         """
         for additional_item in additional_items_data:
+            self._update_stock_additional_items(additional_item=additional_item['additional_item_relationship'],
+                                                items_number=additional_item['number_relationship'])
             RentalAdditionalItem.objects.create(rental_relationship=rental, **additional_item)
+
+    @staticmethod
+    def _update_stock_additional_items(additional_item, items_number=0, old_items_number=0):
+        additional_item.stock_additionalitems = additional_item.stock_additionalitems - items_number + old_items_number
+        additional_item.save()
+

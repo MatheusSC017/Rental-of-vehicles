@@ -349,6 +349,9 @@ class RentalViewSetTestCase(APITestCase):
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
+    def test_update_stock_additional_items(self) -> None:
+        pass
+
     def create_rent(self, data) -> Response:
         self.client.force_login(self.user_staff)
         return self.client.post(self.list_url, data=data, format='json')
