@@ -349,8 +349,25 @@ class RentalViewSetTestCase(APITestCase):
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
-    def test_update_stock_additional_items(self) -> None:
-        pass
+    def test_stock_update_of_additional_items_when_creating_rent(self) -> None:
+        data = deepcopy(self.data)
+        additional_items = [(item, randrange(1, 4)) for item in self.additional_items]
+        data['additional_items_rental'] = list(map(lambda i: {"additional_item_relationship": i[0].pk,
+                                                              "number_relationship": i[1]}, additional_items))
+
+        current_stock = [item.stock_additionalitems for item in self.additional_items]
+
+        response = self.create_rent(data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
+        self.assertEqual(Rental.objects.count(), 2)
+
+        add_items = [add_item['additional_item_relationship_id'] for add_item
+                     in Rental.objects.all()[1].additional_items_rental.values()]
+        self.assertEqual(set(add_items), set([add_item.pk for add_item in self.additional_items]))
+
+        new_stock = [item.stock_additionalitems for item in AdditionalItems.objects.all()]
+        for i, stock in enumerate(new_stock):
+            self.assertEqual(stock, current_stock[i] - additional_items[i][1])
 
     def create_rent(self, data) -> Response:
         self.client.force_login(self.user_staff)
