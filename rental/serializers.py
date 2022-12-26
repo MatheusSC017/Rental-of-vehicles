@@ -80,23 +80,26 @@ class RentalSerializer(ModelSerializer):
         if not valid_update:
             raise ValidationError(self.error_messages_rental.get('invalid_field_update') + ", ".join(allowed_field))
 
-        if validated_data.get('status_rental') == 'A':
-            if not validators.valid_scheduled_vehicle(validated_data.get('vehicle_rental'),
-                                                      validated_data.get('appointment_date_rental'),
-                                                      validated_data.get('requested_days_rental'),
-                                                      instance.pk):
-                raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
+        if validated_data.get('status_rental') in ('A', 'L',):
+            if validated_data.get('status_rental') == 'A':
+                if not validators.valid_scheduled_vehicle(validated_data.get('vehicle_rental'),
+                                                          validated_data.get('appointment_date_rental'),
+                                                          validated_data.get('requested_days_rental'),
+                                                          instance.pk):
+                    raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
 
-        if validated_data.get('status_rental') == 'L':
-            if not validators.valid_rented_vehicle(validated_data.get('vehicle_rental'),
-                                                   validated_data.get('requested_days_rental'),
-                                                   instance.pk):
-                raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
+            if validated_data.get('status_rental') == 'L':
+                if not validators.valid_rented_vehicle(validated_data.get('vehicle_rental'),
+                                                       validated_data.get('requested_days_rental'),
+                                                       instance.pk):
+                    raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
 
-        if instance.status_rental != 'A' and validators.additional_items_updated(instance.pk, validated_data):
-            raise ValidationError(self.error_messages_rental.get('invalid_additional_items_updated'))
+            if instance.status_rental != 'A' and validators.additional_items_updated(instance.pk, validated_data):
+                raise ValidationError(self.error_messages_rental.get('invalid_additional_items_updated'))
 
-        self._update_additional_items_relationship(instance, additional_items_data)
+            self._update_additional_items_relationship(instance, additional_items_data)
+        else:
+            self._inventory_update_for_rental_devolution_or_cancellation(instance)
 
         return super().update(instance, validated_data)
 
@@ -107,10 +110,9 @@ class RentalSerializer(ModelSerializer):
         :param additional_items_data: Get data for new rental additional items
         :return: None
         """
-        current_additional_items_data = RentalAdditionalItem.objects.filter(rental_relationship=instance.pk)
         new_additional_items_data = [item['additional_item_relationship'] for item in additional_items_data]
 
-        for current_item in current_additional_items_data:
+        for current_item in instance.additional_items_rental.all():
             # If the current additional item is not present in the list of new additional items, it must be deleted
             if current_item.additional_item_relationship not in new_additional_items_data:
                 self._update_stock_additional_items(additional_item=current_item.additional_item_relationship,
@@ -145,6 +147,11 @@ class RentalSerializer(ModelSerializer):
             self._update_stock_additional_items(additional_item=additional_item['additional_item_relationship'],
                                                 items_number=additional_item['number_relationship'])
             RentalAdditionalItem.objects.create(rental_relationship=rental, **additional_item)
+
+    def _inventory_update_for_rental_devolution_or_cancellation(self, instance) -> None:
+        for item in instance.additional_items_rental.all():
+            self._update_stock_additional_items(additional_item=item.additional_item_relationship,
+                                                old_items_number=item.number_relationship)
 
     @staticmethod
     def _update_stock_additional_items(additional_item, items_number=0, old_items_number=0):
