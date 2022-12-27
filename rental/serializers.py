@@ -103,16 +103,16 @@ class RentalSerializer(ModelSerializer):
 
         return super().update(instance, validated_data)
 
-    def _update_additional_items_relationship(self, instance, additional_items_data) -> None:
+    def _update_additional_items_relationship(self, rental, additional_items_data) -> None:
         """
         This function will be to update the relationship between additional item and rent
-        :param instance: Get an instance of the Rental model class
+        :param rental: Get an instance of the Rental model class
         :param additional_items_data: Get data for new rental additional items
         :return: None
         """
         new_additional_items_data = [item['additional_item_relationship'] for item in additional_items_data]
 
-        for current_item in instance.additional_items_rental.all():
+        for current_item in rental.additional_items_rental.all():
             # If the current additional item is not present in the list of new additional items, it must be deleted
             if current_item.additional_item_relationship not in new_additional_items_data:
                 self._update_stock_additional_items(additional_item=current_item.additional_item_relationship,
@@ -133,8 +133,8 @@ class RentalSerializer(ModelSerializer):
                 current_item.number_relationship = new_data['number_relationship']
                 current_item.save()
 
-        # The last step will be create new relationships for rent and additional items
-        self._create_additional_items_relationship(instance, additional_items_data)
+        # The last step will be to create new relationships for rent and additional items
+        self._create_additional_items_relationship(rental, additional_items_data)
 
     def _create_additional_items_relationship(self, rental, additional_items_data) -> None:
         """
@@ -148,13 +148,24 @@ class RentalSerializer(ModelSerializer):
                                                 items_number=additional_item['number_relationship'])
             RentalAdditionalItem.objects.create(rental_relationship=rental, **additional_item)
 
-    def _inventory_update_for_rental_devolution_or_cancellation(self, instance) -> None:
-        for item in instance.additional_items_rental.all():
+    def _inventory_update_for_rental_devolution_or_cancellation(self, rental) -> None:
+        """
+        This function will be used to update the stock when there is a devolution or cancellation of the rent
+        :param rental: Get an instance of the Rental model class
+        :return: None
+        """
+        for item in rental.additional_items_rental.all():
             self._update_stock_additional_items(additional_item=item.additional_item_relationship,
                                                 old_items_number=item.number_relationship)
 
     @staticmethod
     def _update_stock_additional_items(additional_item, items_number=0, old_items_number=0):
+        """
+        This function will be used to update the stock of an additional item
+        :param additional_item: Get an instance of the AdditionalItem model class
+        :param items_number: Gets the new amount of items that will be rented
+        :param old_items_number: Gets the old amount of items that was being rented
+        :return: None
+        """
         additional_item.stock_additionalitems = additional_item.stock_additionalitems - items_number + old_items_number
         additional_item.save()
-

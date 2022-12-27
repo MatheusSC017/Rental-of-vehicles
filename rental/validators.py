@@ -1,3 +1,5 @@
+from typing import Any
+
 from rest_framework.utils import model_meta
 from datetime import datetime, timedelta
 from django.db.models import Q
@@ -51,17 +53,18 @@ def valid_appointment_update_or_cancellation(appointment_date) -> bool:
     return datetime.strptime(str(appointment_date), '%Y-%m-%d') - timedelta(days=3) > datetime.today()
 
 
-def valid_rental_data_update(instance, validated_data) -> bool:
+def valid_rental_data_update(instance, validated_data) -> tuple[bool, Any]:
     """
     This validation verifies that only the allowed fields are updated, to ensure that the rest of the fields
     (autocomplete or post-completion) remain unchanged
     :param instance: An instance of the rental model class
     :param validated_data: A dictionary with the new values of the fields
-    :return: Returns True if updates are accepted or False otherwise
+    :return: Returns two values, the first is a boolean which is True if updates are accepted or False otherwise.
+    The second value is a list of allowed fields to update
     """
     status_rental = validated_data.get('status_rental')
 
-    # Select the many to many fields
+    # Select the many-to-many fields
     info = model_meta.get_field_info(rental_models.Rental)
     many_to_many = list()
     for field_name, relation_info in info.relations.items():
@@ -81,7 +84,7 @@ def valid_rental_data_update(instance, validated_data) -> bool:
             if getattr(instance, field) != validated_data.get(field):
                 response = False
 
-    # TODO: Refatorar Trecho de código, pois alguns campos permitidos para alteração podem ser nulos
+    # TODO: Refactor code snippet as some fields allowed to change may be null
     # Checks if the fields have been filled
     # for field in ALLOW_FIELD_UPDATE[status_rental]:
     #     if not validated_data.get(field):
@@ -145,8 +148,8 @@ def valid_scheduled_vehicle(renavam_vehicle, appointment_date, requested_days, i
     :param renavam_vehicle: A string indicating the value of the vehicle's renavam
     :param appointment_date: The new appointment date for the rental you need create or update
     :param requested_days: A positive integer for represents the number of days required
-    :param id_rental: If you need to validate a appointment update, you must provide the rental id for exclude it of the
-    search
+    :param id_rental: If you need to validate an appointment update, you must provide the rental id for exclude it of
+    the search
     :return: return True if the appointment not match other rentals or appointments and False otherwise
     """
     appointment_date = timezone.make_aware(datetime.strptime(str(appointment_date), '%Y-%m-%d'))
@@ -199,4 +202,3 @@ def additional_items_updated(rental_pk, additional_items_data) -> bool:
                                      for current_item in current_additional_items_data)
     equal_lists = sum(is_present_and_equal_quantity) == current_additional_items_data.count()
     return not (number_of_items and equal_lists)
-
