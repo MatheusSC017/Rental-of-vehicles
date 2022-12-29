@@ -5,18 +5,28 @@ from . import validators
 
 
 class InsuranceSerializer(ModelSerializer):
+    """
+    This class should serialize data from instances of the Insurance model class
+    """
     class Meta:
         model = Insurance
         fields = '__all__'
 
 
 class AdditionalItemsSerializer(ModelSerializer):
+    """
+    This class should serialize data from instances of the Additional Items model class
+    """
     class Meta:
         model = AdditionalItems
         fields = '__all__'
 
 
 class RentalAdditionalItemSerializer(ModelSerializer):
+    """
+    This class should serialize data from instances of the model class from the table "through" the Rent and Additional
+    Items
+    """
     class Meta:
         model = RentalAdditionalItem
         fields = '__all__'
@@ -24,6 +34,9 @@ class RentalAdditionalItemSerializer(ModelSerializer):
 
 
 class RentalSerializer(ModelSerializer):
+    """
+    This class should serialize data from instances of the Rental model class
+    """
     error_messages_rental = {
         'invalid_status_creation': _('For rental registration, choose scheduled or rented only.'),
         'invalid_scheduled_date': _('For vehicle scheduling, a valid scheduling date field is required.'),
@@ -43,7 +56,12 @@ class RentalSerializer(ModelSerializer):
                             'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
                             'outlet_branch_rental', 'additional_daily_cost_rental']
 
-    def create(self, validated_data):
+    def create(self, validated_data) -> Rental:
+        """
+        This function will be applying the necessary validations to verify if the create request is valid
+        :param validated_data: The data for create a instance of the Rental model class
+        :return: An instance of the Rental model class
+        """
         if not validators.valid_rental_states_on_create(validated_data.get('status_rental')):
             raise ValidationError(self.error_messages_rental.get('invalid_status_creation'))
 
@@ -70,7 +88,13 @@ class RentalSerializer(ModelSerializer):
         self._create_additional_items_relationship(rental, additional_items_data)
         return rental
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data) -> Rental:
+        """
+        This function will be applying the necessary validations to verify if the update request is valid
+        :param instance: An instance of the Rental model class
+        :param validated_data: The new data for the instance of the Rental model class
+        :return: An instance of the Rental model class with the new data
+        """
         additional_items_data = validated_data.pop('additional_items_rental')
 
         if not validators.valid_rental_states_on_update(instance.status_rental, validated_data.get('status_rental')):
