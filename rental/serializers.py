@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.db import transaction
 from .models import Insurance, AdditionalItems, Rental, RentalAdditionalItem
 from . import validators
 
@@ -44,7 +45,8 @@ class RentalSerializer(ModelSerializer):
                                        'an appointment scheduled for it.'),
         'invalid_status_transition': _('Required state transition is not valid.'),
         'invalid_field_update': _('For the current state of the rental, only the following fields can be updated: '),
-        'invalid_additional_items_updated': _('For the current rental status, additional items cannot be changed')
+        'invalid_additional_items_updated': _('For the current rental status, additional items cannot be changed'),
+        'invalid_additional_item_order': _('Order number for additional item is greater than stock'),
     }
 
     additional_items_rental = RentalAdditionalItemSerializer(many=True)
@@ -56,6 +58,7 @@ class RentalSerializer(ModelSerializer):
                             'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
                             'outlet_branch_rental', 'additional_daily_cost_rental']
 
+    @transaction.atomic
     def create(self, validated_data) -> Rental:
         """
         This function will be applying the necessary validations to verify if the create request is valid
@@ -88,6 +91,7 @@ class RentalSerializer(ModelSerializer):
         self._create_additional_items_relationship(rental, additional_items_data)
         return rental
 
+    @transaction.atomic
     def update(self, instance, validated_data) -> Rental:
         """
         This function will be applying the necessary validations to verify if the update request is valid
@@ -182,8 +186,7 @@ class RentalSerializer(ModelSerializer):
             self._update_stock_additional_items(additional_item=item.additional_item_relationship,
                                                 old_items_number=item.number_relationship)
 
-    @staticmethod
-    def _update_stock_additional_items(additional_item, items_number=0, old_items_number=0):
+    def _update_stock_additional_items(self, additional_item, items_number=0, old_items_number=0):
         """
         This function will be used to update the stock of an additional item
         :param additional_item: Get an instance of the AdditionalItem model class
@@ -192,4 +195,6 @@ class RentalSerializer(ModelSerializer):
         :return: None
         """
         additional_item.stock_additionalitems = additional_item.stock_additionalitems - items_number + old_items_number
+        if additional_item.stock_additionalitems < 0:
+            raise ValidationError(self.error_messages_rental.get('invalid_additional_item_order'))
         additional_item.save()
