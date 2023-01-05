@@ -182,13 +182,17 @@ def insurance_generator():
     )
 
 
-def additional_item_generator():
+def additional_item_generator(branches):
     name = ' '.join(fake.words(nb=3))
     daily_cost = randrange(10, 500) / 100
+    stock = randrange(1, 15)
 
     AdditionalItems.objects.create(
         name_additionalitems=name,
-        daily_cost_additionalitems=daily_cost
+        daily_cost_additionalitems=daily_cost,
+        branch_additionalitems=choice(branches),
+        stock_additionalitems=stock
+
     )
 
 
@@ -210,5 +214,5 @@ if __name__ == '__main__':
     for _ in range(10):
         insurance_generator()
 
-    for _ in range(10):
-        additional_item_generator()
+    for _ in range(100):
+        additional_item_generator(branches_list)

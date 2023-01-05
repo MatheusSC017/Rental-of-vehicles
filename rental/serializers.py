@@ -28,6 +28,7 @@ class RentalAdditionalItemSerializer(ModelSerializer):
     This class should serialize data from instances of the model class from the table "through" the Rent and Additional
     Items
     """
+
     class Meta:
         model = RentalAdditionalItem
         fields = '__all__'
@@ -47,6 +48,7 @@ class RentalSerializer(ModelSerializer):
         'invalid_field_update': _('For the current state of the rental, only the following fields can be updated: '),
         'invalid_additional_items_updated': _('For the current rental status, additional items cannot be changed'),
         'invalid_additional_item_order': _('Order number for additional item is greater than stock'),
+        'invalid_branch': _('The additional item must belong to the same branch where the vehicle was picked up.'),
     }
 
     additional_items_rental = RentalAdditionalItemSerializer(many=True)
@@ -57,6 +59,12 @@ class RentalSerializer(ModelSerializer):
         read_only_fields = ['staff_rental', 'rent_date_rental', 'devolution_date_rental', 'actual_days_rental',
                             'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
                             'outlet_branch_rental', 'additional_daily_cost_rental']
+
+    def validate(self, attrs):
+        for item in attrs['additional_items_rental']:
+            if item['additional_item_relationship'].branch_additionalitems != attrs['vehicle_rental'].branch_vehicle:
+                raise ValidationError(self.error_messages_rental.get('invalid_branch'))
+        return attrs
 
     @transaction.atomic
     def create(self, validated_data) -> Rental:
