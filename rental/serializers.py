@@ -61,6 +61,11 @@ class RentalSerializer(ModelSerializer):
                             'outlet_branch_rental', 'additional_daily_cost_rental']
 
     def validate(self, attrs):
+        """ Validate the attributes
+        Check if the chosen additional items belong to the same branch as the vehicle
+        :param attrs: get an instance of collections.OrderedDict with the attributes
+        :return: return an instance of collections.OrderedDict with the attributes
+        """
         for item in attrs['additional_items_rental']:
             if item['additional_item_relationship'].branch_additionalitems != attrs['vehicle_rental'].branch_vehicle:
                 raise ValidationError(self.error_messages_rental.get('invalid_branch'))
@@ -70,7 +75,7 @@ class RentalSerializer(ModelSerializer):
     def create(self, validated_data) -> Rental:
         """
         This function will be applying the necessary validations to verify if the create request is valid
-        :param validated_data: The data for create a instance of the Rental model class
+        :param validated_data: The data for create an instance of the Rental model class
         :return: An instance of the Rental model class
         """
         if not validators.valid_rental_states_on_create(validated_data.get('status_rental')):
