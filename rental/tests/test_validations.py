@@ -7,7 +7,7 @@ from client.models import Client
 from staff.models import StaffMember
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
-from ..models import Rental, Insurance, AdditionalItems
+from ..models import Rental, Insurance, AdditionalItems, RentalAdditionalItem
 from .. import validators
 from random import choice, choices, randrange
 from validate_docbr import CPF, CNH, RENAVAM
@@ -113,7 +113,7 @@ class ValidationsTestCase(APITestCase):
         self.additional_items = [AdditionalItems.objects.create(
             name_additionalitems=' '.join(fake.words(nb=2)),
             daily_cost_additionalitems=randrange(50, 500) / 100,
-            stock_additionalitems=randrange(1, 5)
+            stock_additionalitems=randrange(5, 10)
         ) for _ in range(2)]
 
         self.rental = Rental.objects.create(
@@ -182,7 +182,6 @@ class ValidationsTestCase(APITestCase):
             'rent_deposit_rental': randrange(600, 1000),
             'daily_cost_rental': randrange(6000, 10000) / 100,
             'additional_daily_cost_rental': randrange(600, 1000) / 100,
-            'additional_items_rental': self.additional_items,
             'driver_rental': self.clients
         }
         keys = ['vehicle_rental', 'insurance_rental', 'staff_rental', 'client_rental', 'status_rental',
@@ -329,3 +328,20 @@ class ValidationsTestCase(APITestCase):
                                                                 requested_days=requested_days,
                                                                 appointment_date=appointment_date,
                                                                 id_rental=rental.pk))
+
+    def test_function_additional_items_updated_no_additional_items(self):
+        self.assertFalse(validators.additional_items_updated(self.rental.pk, []))
+        self.assertTrue(validators.additional_items_updated(self.rental.pk,
+                                                            [{'additional_item_relationship': self.additional_items[0],
+                                                              'number_relationship': randrange(1, 3)}, ]))
+
+    def test_function_additional_items_updated(self):
+        additional_items_data = [{'additional_item_relationship': item, 'number_relationship': randrange(1, 3)}
+                                 for item in self.additional_items]
+        for additional_item in additional_items_data:
+            RentalAdditionalItem.objects.create(rental_relationship=self.rental, **additional_item)
+        self.assertFalse(validators.additional_items_updated(self.rental.pk, additional_items_data))
+        additional_items_data[1]['number_relationship'] = randrange(4, 5)
+        self.assertTrue(validators.additional_items_updated(self.rental.pk, additional_items_data))
+        additional_items_data.pop()
+        self.assertTrue(validators.additional_items_updated(self.rental.pk, additional_items_data))

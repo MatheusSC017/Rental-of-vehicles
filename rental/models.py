@@ -1,10 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
-from branch.models import Branch
-from vehicle.models import Vehicle
-from staff.models import StaffMember
-from client.models import Client
 from .validators import valid_appointment_update_or_cancellation
 from datetime import datetime, date, timedelta
 
@@ -28,6 +24,7 @@ class AdditionalItems(models.Model):
     name_additionalitems = models.CharField(max_length=50, verbose_name='nome')
     daily_cost_additionalitems = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
     stock_additionalitems = models.PositiveSmallIntegerField(default=1, verbose_name='quantidade em estoque')
+    branch_additionalitems = models.ForeignKey('branch.Branch', on_delete=models.DO_NOTHING, verbose_name='filial')
 
     def __str__(self):
         return self.name_additionalitems
@@ -48,18 +45,19 @@ class Rental(models.Model):
         ('D', 'Devolvido'),
     )
 
-    vehicle_rental = models.ForeignKey(Vehicle, on_delete=models.DO_NOTHING, verbose_name='veículo',
+    vehicle_rental = models.ForeignKey('vehicle.Vehicle', on_delete=models.DO_NOTHING, verbose_name='veículo',
                                        limit_choices_to={'available_vehicle': True})
     insurance_rental = models.ForeignKey(Insurance, blank=True, null=True, on_delete=models.DO_NOTHING,
                                          verbose_name='seguro')
-    staff_rental = models.ForeignKey(StaffMember, on_delete=models.DO_NOTHING, verbose_name='funcionário')
-    client_rental = models.ForeignKey(Client, on_delete=models.DO_NOTHING, related_name='client_rental',
+    staff_rental = models.ForeignKey('staff.StaffMember', on_delete=models.DO_NOTHING, verbose_name='funcionário')
+    client_rental = models.ForeignKey('client.Client', on_delete=models.DO_NOTHING, related_name='client_rental',
                                       verbose_name='cliente')
     status_rental = models.CharField(max_length=1, choices=STATUS, verbose_name='status')
-    outlet_branch_rental = models.ForeignKey(Branch, related_name='outlet_branch_rental', on_delete=models.DO_NOTHING,
-                                             verbose_name='filial de saída')
-    arrival_branch_rental = models.ForeignKey(Branch, null=True, blank=True, related_name='arrival_branch_rental',
-                                              on_delete=models.DO_NOTHING, verbose_name='filial de chegada')
+    outlet_branch_rental = models.ForeignKey('branch.Branch', related_name='outlet_branch_rental',
+                                             on_delete=models.DO_NOTHING, verbose_name='filial de saída')
+    arrival_branch_rental = models.ForeignKey('branch.Branch', null=True, blank=True,
+                                              related_name='arrival_branch_rental', on_delete=models.DO_NOTHING,
+                                              verbose_name='filial de chegada')
     distance_branch_rental = models.PositiveIntegerField(null=True, blank=True, verbose_name='distância entre filiais')
     appointment_date_rental = models.DateField(null=True, blank=True, verbose_name='data de agendamento')
     rent_date_rental = models.DateField(null=True, blank=True, verbose_name='data de alocação')
@@ -71,13 +69,11 @@ class Rental(models.Model):
     daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
     additional_daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)],
                                                      verbose_name='custo adicional da diária')
-    additional_items_rental = models.ManyToManyField(AdditionalItems, null=True, blank=True,
-                                                     verbose_name='itens adicionais')
     return_rate_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
                                            verbose_name='taxa de retorno')
     total_cost_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
                                           verbose_name='custo total')
-    driver_rental = models.ManyToManyField(Client, related_name='driver_rental', verbose_name='condutores')
+    driver_rental = models.ManyToManyField('client.Client', related_name='driver_rental', verbose_name='condutores')
 
     def save(self, *args, **kwargs):
         if self.status_rental == 'L' and not self.rent_date_rental:
@@ -107,7 +103,6 @@ class Rental(models.Model):
             total_cost = self.actual_days_rental * daily_cost_total
             self.total_cost_rental = sum([total_cost, self.fines_rental,
                                           self.return_rate_rental, total_cost_of_insurance])
-
         super(Rental, self).save(*args, **kwargs)
 
     def __init__(self, *args, **kwargs):
@@ -144,3 +139,17 @@ class Rental(models.Model):
     class Meta:
         verbose_name = 'aluguel'
         verbose_name_plural = 'alugueis'
+
+
+class RentalAdditionalItem(models.Model):
+    rental_relationship = models.ForeignKey(Rental, on_delete=models.CASCADE, verbose_name='Aluguel',
+                                            related_name='additional_items_rental')
+    additional_item_relationship = models.ForeignKey(AdditionalItems, on_delete=models.CASCADE,
+                                                     verbose_name='Item adicional')
+    number_relationship = models.PositiveSmallIntegerField(default=1, verbose_name='Número de itens')
+
+    class Meta:
+        unique_together = [['rental_relationship', 'additional_item_relationship']]
+
+    def __str__(self):
+        return f'{self.additional_item_relationship}: {self.number_relationship}'

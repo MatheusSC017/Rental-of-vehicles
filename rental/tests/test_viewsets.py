@@ -9,8 +9,8 @@ from client.models import Client
 from staff.models import StaffMember
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
-from ..models import Rental, Insurance, AdditionalItems
-from random import choice, choices, randrange
+from ..models import Rental, Insurance, AdditionalItems, RentalAdditionalItem
+from random import choice, randrange
 from validate_docbr import CPF, CNH, RENAVAM
 from copy import deepcopy
 from unidecode import unidecode
@@ -243,7 +243,7 @@ class RentalViewSetTestCase(APITestCase):
         self.additional_items = [AdditionalItems.objects.create(
             name_additionalitems=' '.join(fake.words(nb=2)),
             daily_cost_additionalitems=randrange(100, 2000) / 100,
-            stock_additionalitems=randrange(1, 5)
+            stock_additionalitems=randrange(5, 10)
         ) for _ in range(3)]
 
         rental = Rental.objects.create(
@@ -261,6 +261,12 @@ class RentalViewSetTestCase(APITestCase):
         )
         rental.driver_rental.set([self.client_user, ])
 
+        self.rental_additional_items = [RentalAdditionalItem.objects.create(
+            rental_relationship=rental,
+            additional_item_relationship=item,
+            number_relationship=randrange(1, 2)
+        ) for item in self.additional_items[:2]]
+
         self.data = {
             'vehicle_rental': vehicle.renavam_vehicle,
             'client_rental': self.client_user.cpf_person,
@@ -268,7 +274,8 @@ class RentalViewSetTestCase(APITestCase):
             'appointment_date_rental': str(timezone.now() + timezone.timedelta(days=1))[:10],
             'requested_days_rental': 3,
             'rent_deposit_rental': 150,
-            'driver_rental': self.client_user.pk,
+            'driver_rental': [self.client_user.pk, ],
+            'additional_items_rental': []
         }
 
         self.list_url = reverse('Rentals-list')
@@ -293,7 +300,7 @@ class RentalViewSetTestCase(APITestCase):
         data['status_rental'] = 'A'
         data['appointment_date_rental'] = str(timezone.now() + timezone.timedelta(days=20))[:10]
         self.client.force_login(self.user_staff)
-        response = self.client.put(self.detail_url, data=data)
+        response = self.client.put(self.detail_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_rental_delete(self) -> None:
@@ -303,17 +310,20 @@ class RentalViewSetTestCase(APITestCase):
 
     def test_function_check_to_calculate_additional_daily_cost(self) -> None:
         data = deepcopy(self.data)
-        data['additional_items_rental'] = list(map(lambda i: i.pk, self.additional_items))
+        additional_items = [(item, randrange(1, 4)) for item in self.additional_items]
+        data['additional_items_rental'] = list(map(lambda i: {"additional_item_relationship": i[0].pk,
+                                                              "number_relationship": i[1]}, additional_items))
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
 
-        add_items = [add_item.get('id') for add_item in Rental.objects.all()[1].additional_items_rental.values()]
+        add_items = [add_item['additional_item_relationship_id'] for add_item
+                     in Rental.objects.all()[1].additional_items_rental.values()]
         self.assertEqual(set(add_items), set([add_item.pk for add_item in self.additional_items]))
 
         add_daily_cost = Rental.objects.all()[1].additional_daily_cost_rental
-        self.assertEqual(add_daily_cost, sum([add_item.daily_cost_additionalitems
-                                              for add_item in self.additional_items]))
+        self.assertEqual(add_daily_cost, sum((add_item[0].daily_cost_additionalitems * add_item[1]
+                                              for add_item in additional_items)))
 
     def test_rental_creation_with_rented_status(self) -> None:
         response = self.create_rent(self.data)
@@ -345,6 +355,50 @@ class RentalViewSetTestCase(APITestCase):
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
+    def test_stock_update_of_additional_items_when_creating_rent(self) -> None:
+        data = deepcopy(self.data)
+        additional_items = [(item, randrange(1, 4)) for item in self.additional_items]
+        data['additional_items_rental'] = list(map(lambda item: {"additional_item_relationship": item[0].pk,
+                                                                 "number_relationship": item[1]}, additional_items))
+
+        current_stock = [item.stock_additionalitems for item in self.additional_items]
+
+        response = self.create_rent(data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
+        self.assertEqual(Rental.objects.count(), 2)
+
+        add_items = [add_item['additional_item_relationship_id'] for add_item
+                     in Rental.objects.all()[1].additional_items_rental.values()]
+        self.assertEqual(set(add_items), set([add_item.pk for add_item in self.additional_items]))
+
+        new_stock = [item.stock_additionalitems for item in AdditionalItems.objects.all()]
+        for i, stock in enumerate(new_stock):
+            self.assertEqual(stock, current_stock[i] - additional_items[i][1])
+
+    def test_stock_update_of_additional_items_when_updating_rent(self) -> None:
+        data = deepcopy(self.data)
+        additional_items = [(item, randrange(1, 4)) for item in self.additional_items[1:]]
+        data['status_rental'] = 'A'
+        data['additional_items_rental'] = list(map(lambda item: {"additional_item_relationship": item[0].pk,
+                                                                 "number_relationship": item[1]}, additional_items))
+
+        current_stock = [item.stock_additionalitems for item in self.additional_items]
+        old_additional_items = [item.number_relationship for item in self.rental_additional_items]
+
+        self.client.force_login(self.user_staff)
+        response = self.client.put(self.detail_url, data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
+        self.assertEqual(Rental.objects.count(), 1)
+
+        add_items = [add_item[0].pk for add_item
+                     in additional_items]
+        self.assertEqual(set(add_items), set(add_items))
+
+        new_stock = [item.stock_additionalitems for item in AdditionalItems.objects.all()]
+        self.assertEqual(new_stock[0], current_stock[0] + old_additional_items[0])
+        self.assertEqual(new_stock[1], current_stock[1] + old_additional_items[1] - additional_items[0][1])
+        self.assertEqual(new_stock[2], current_stock[2] - additional_items[1][1])
+
     def create_rent(self, data) -> Response:
         self.client.force_login(self.user_staff)
-        return self.client.post(self.list_url, data=data)
+        return self.client.post(self.list_url, data=data, format='json')
