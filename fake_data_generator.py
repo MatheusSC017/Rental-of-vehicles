@@ -126,7 +126,7 @@ def vehicle_generator(branches, classifications):
     type_vehicle = choice('MC')
     brand = ' '.join(fake.words(nb=1))
     model = ' '.join(fake.words(nb=2))
-    year_manufacture = randrange(1960, 2020)
+    year_manufacture = randrange(1960, 2017)
     model_year = year_manufacture + randrange(0, 5)
     mileage = float(randrange(0, 2000))
     renavam_vehicle = renavam.generate()
