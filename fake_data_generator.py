@@ -192,7 +192,6 @@ def additional_item_generator(branches):
         daily_cost_additionalitems=daily_cost,
         branch_additionalitems=choice(branches),
         stock_additionalitems=stock
-
     )
 
 

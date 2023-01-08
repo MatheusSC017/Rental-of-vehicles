@@ -113,7 +113,8 @@ class ValidationsTestCase(APITestCase):
         self.additional_items = [AdditionalItems.objects.create(
             name_additionalitems=' '.join(fake.words(nb=2)),
             daily_cost_additionalitems=randrange(50, 500) / 100,
-            stock_additionalitems=randrange(5, 10)
+            stock_additionalitems=randrange(5, 10),
+            branch_additionalitems=self.branches[0]
         ) for _ in range(2)]
 
         self.rental = Rental.objects.create(

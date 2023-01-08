@@ -38,10 +38,29 @@ class InsuranceSerializerTestCase(TestCase):
 
 class AdditionalItemsSerializerTestCase(TestCase):
     def setUp(self) -> None:
+        fake = faker.Faker('pt_BR')
+
+        address = Address.objects.create(
+            cep_address=fake.postcode(),
+            state_address=fake.estado_sigla(),
+            city_address=fake.city(),
+            district_address=fake.bairro(),
+            street_address=fake.street_name(),
+            number_address=fake.building_number()
+        )
+
+        branch = Branch.objects.create(
+            name_branch=fake.street_name(),
+            opening_hours_start_branch=str(randrange(5, 13)) + ':00:00',
+            opening_hours_end_branch=str(randrange(5, 13) + 8) + ':00:00',
+            address_branch=address
+        )
+
         self.additional_item = AdditionalItems.objects.create(
             name_additionalitems='Additional Item Name',
             daily_cost_additionalitems=2.5,
-            stock_additionalitems=3
+            stock_additionalitems=3,
+            branch_additionalitems=branch
         )
 
         self.serializer = AdditionalItemsSerializer(self.additional_item)
@@ -49,7 +68,7 @@ class AdditionalItemsSerializerTestCase(TestCase):
     def test_verify_serializer_fields(self) -> None:
         data = self.serializer.data
         self.assertEqual(set(data.keys()), {'id', 'name_additionalitems', 'daily_cost_additionalitems',
-                                            'stock_additionalitems'})
+                                            'stock_additionalitems', 'branch_additionalitems'})
 
     def test_verify_contents_of_serializer_fields(self) -> None:
         data = self.serializer.data

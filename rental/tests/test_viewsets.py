@@ -101,10 +101,27 @@ class AdditionalItemsViewSetTestCase(APITestCase):
         for permission in permissions:
             self.user.user_permissions.add(permission)
 
+        address = Address.objects.create(
+            cep_address=self.fake.postcode(),
+            state_address=self.fake.estado_sigla(),
+            city_address=self.fake.city(),
+            district_address=self.fake.bairro(),
+            street_address=self.fake.street_name(),
+            number_address=self.fake.building_number()
+        )
+
+        self.branch = Branch.objects.create(
+            name_branch=self.fake.street_name(),
+            opening_hours_start_branch=str(randrange(5, 13)) + ':00:00',
+            opening_hours_end_branch=str(randrange(5, 13) + 8) + ':00:00',
+            address_branch=address
+        )
+
         self.additional_item = AdditionalItems.objects.create(
             name_additionalitems=' '.join(self.fake.words(nb=2)),
             daily_cost_additionalitems=randrange(100, 2000) / 100,
-            stock_additionalitems=randrange(1, 5)
+            stock_additionalitems=randrange(1, 5),
+            branch_additionalitems=self.branch
         )
 
         self.list_url = reverse('AdditionalItems-list')
@@ -118,7 +135,8 @@ class AdditionalItemsViewSetTestCase(APITestCase):
         self.client.force_login(self.user)
         data = {
             'name_additionalitems': ' '.join(self.fake.words(nb=2)),
-            'daily_cost_additionalitems': randrange(100, 2000) / 100
+            'daily_cost_additionalitems': randrange(100, 2000) / 100,
+            'branch_additionalitems': self.branch.pk
         }
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
@@ -131,7 +149,8 @@ class AdditionalItemsViewSetTestCase(APITestCase):
         self.client.force_login(self.user)
         data = {
             'name_additionalitems': ' '.join(self.fake.words(nb=2)),
-            'daily_cost_additionalitems': randrange(100, 2000) / 100
+            'daily_cost_additionalitems': randrange(100, 2000) / 100,
+            'branch_additionalitems': self.branch.pk
         }
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
@@ -243,7 +262,8 @@ class RentalViewSetTestCase(APITestCase):
         self.additional_items = [AdditionalItems.objects.create(
             name_additionalitems=' '.join(fake.words(nb=2)),
             daily_cost_additionalitems=randrange(100, 2000) / 100,
-            stock_additionalitems=randrange(5, 10)
+            stock_additionalitems=randrange(5, 10),
+            branch_additionalitems=branch
         ) for _ in range(3)]
 
         rental = Rental.objects.create(
