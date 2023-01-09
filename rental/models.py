@@ -105,17 +105,6 @@ class Rental(models.Model):
                                           self.return_rate_rental, total_cost_of_insurance])
         super(Rental, self).save(*args, **kwargs)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.status_rental == 'A':
-            self.devolution_date_expected_rental = str(timezone.make_aware(
-                datetime.strptime(str(self.appointment_date_rental), '%Y-%m-%d')
-            ) + timezone.timedelta(days=self.requested_days_rental))[:10]
-
-        if self.status_rental == 'L':
-            self.devolution_date_expected_rental = str(timezone.now() +
-                                                       timezone.timedelta(days=self.requested_days_rental))[:10]
-
     def calculate_fines(self):
         daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
 

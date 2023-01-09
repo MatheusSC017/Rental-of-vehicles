@@ -1,6 +1,9 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
+from rest_framework.response import Response
 from vehicle.models import Vehicle
 from .permissions import OnlyStaffMemberPermission
 from .serializers import InsuranceSerializer, AdditionalItemsSerializer, RentalSerializer
@@ -59,3 +62,10 @@ class RentalViewSet(ModelViewSet):
             return sum(additional_items_list)
         except TypeError:
             return 0.
+
+
+@api_view(['GET', ])
+@permission_classes([OnlyStaffMemberPermission, ])
+def late_appointments(request):
+    queryset = Rental.objects.filter(status_rental='A', appointment_date_rental__lt=str(timezone.now())[:10])
+    return Response(data=RentalSerializer(queryset, many=True).data)
