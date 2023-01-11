@@ -1,6 +1,6 @@
 # API de aluguel de veiculos
 
-Este projeto tem como definição uma API de um sistema de uma locadora de veículos, contando com os seguintes endpoints:
+This project is an API for a car rental system, with the following endpoints:
 
 - /enderecos/
 - /filiais/
@@ -10,26 +10,26 @@ Este projeto tem como definição uma API de um sistema de uma locadora de veíc
 - /alugueis/
 - /alugueis/seguros/
 
-Usuários da API que não estejam logados poderão somente consultar as informações dos veiculos disponibilizados pela locadoras, assim como o nome e o endereço das filiais da mesma.
+API users who are not logged in will only be able to consult the information of the vehicles made available by the rental companies, as well as the name and address of their branches.
 
-## Requisitos
+## Requirements
 * **Python 3.9**
 * **MySQL**
 
-## Instalação
-1. Clone este repositorio em seu dispositivo através do comando
+## Installation
+1. Clone the repository on your device using the command
 > gh repo clone MatheusSC017/Rental-of-vehicles
-2. Crie uma ambiente virtual em seu dispositivo
+2. Create a virtual environment on your device
 > python -m venv venv
-3. Excute o ambiente virtual, caso esteja utilizando o sistema operacional windows utilize o comando a seguir
+3. Run the virtual environment, if you are using the Windows operating system, use the following command
 > venv/Scripts/activate
 
-Porém se você utiliza o SO Linux ou MAC utilize o comando abaixo
+But if you use Linux OS or MAC use the command below
 > source venv/Scripts/activate
-5. Instale as bibliotecas salvas no arquivo requirements.txt, caso esteja utilizando o gerenciador de pacotes PIP você poderá utilizar o comando a seguir
+5. Install the libraries saved in the requirements.txt file, if you are using the PIP package manager you can use the following command
 > pip install -r requirements.txt
-4. Crie o arquivo local_settings.py no diretorio **setup/**, neste arquivo configure o banco de dados e informações da API como SECRET_KEY, DEBUG e ALLOWED_HOSTS
-5. Crie a base de dados de acordo com as configurações estabelecidas no arquivo local_settings (DATABASES.NAME)
-6. Execute o comando a seguir para criar as tabelas da API
+4. Create the local_settings.py file in the **setup/** directory, in this file configure the database and API information such as SECRET_KEY, DEBUG and ALLOWED_HOSTS
+5. Create the database according to the settings established in the local_settings file (DATABASES.NAME)
+6. Run the following command to create the API tables
 > python manage.py migrate
 
