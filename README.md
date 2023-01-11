@@ -1,6 +1,6 @@
-# Rental of vehicles API
+# Car Rental API
 
-This project is an API for a vehicle rental system, with the following endpoints:
+This project is an API for a car rental system, with the following endpoints:
 
 - /enderecos/
 - /filiais/
