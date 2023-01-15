@@ -17,8 +17,7 @@ API users who are not logged in will only be able to consult the information of 
 * **MySQL**
 
 ## Installation
-1. Clone the repository on your device using the command
-> gh repo clone MatheusSC017/Rental-of-vehicles
+1. Clone the repository on your device
 2. Create a virtual environment on your device
 > python -m venv venv
 3. Run the virtual environment, if you are using the Windows operating system, use the following command
