@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models.expressions import RawSQL
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ModelViewSet
@@ -68,4 +69,13 @@ class RentalViewSet(ModelViewSet):
 @permission_classes([OnlyStaffMemberPermission, ])
 def late_appointments(request):
     queryset = Rental.objects.filter(status_rental='A', appointment_date_rental__lt=str(timezone.now())[:10])
+    return Response(data=RentalSerializer(queryset, many=True).data)
+
+
+@api_view(['GET', ])
+@permission_classes([OnlyStaffMemberPermission, ])
+def late_devolutions(request):
+    queryset = Rental.objects.annotate(
+        devolution_date_expected=RawSQL('DATE_ADD(appointment_date_rental, INTERVAL requested_days_rental DAY)', ()),
+    ).filter(status_rental='D', devolution_date_expected__lt=str(timezone.now())[:10])
     return Response(data=RentalSerializer(queryset, many=True).data)

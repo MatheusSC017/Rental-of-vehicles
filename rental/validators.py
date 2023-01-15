@@ -1,5 +1,4 @@
 from typing import Any
-
 from rest_framework.utils import model_meta
 from datetime import datetime, timedelta
 from django.db.models import Q

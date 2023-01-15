@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from rental.views import InsuranceViewSet, AdditionalItemsViewSet, RentalViewSet, late_appointments
+from rental.views import InsuranceViewSet, AdditionalItemsViewSet, RentalViewSet, late_appointments, late_devolutions
 from address.views import AddressViewSet
 from branch.views import BranchViewSet, BranchAddressViewSet, BranchVehicleViewSet
 from client.views import ClientViewSet, UserViewSet
@@ -43,6 +43,7 @@ urlpatterns = [
     path('', include(router_root.urls)),
     path('filiais/<int:pk>/', include(router_branches.urls)),
     path('alugueis/agendamentos_vencidos', late_appointments),
+    path('alugueis/devolucoes_vencidas', late_devolutions),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
