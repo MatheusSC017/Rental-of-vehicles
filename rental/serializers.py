@@ -6,29 +6,18 @@ from . import validators
 
 
 class InsuranceSerializer(ModelSerializer):
-    """
-    This class should serialize data from instances of the Insurance model class
-    """
     class Meta:
         model = Insurance
         fields = '__all__'
 
 
 class AdditionalItemsSerializer(ModelSerializer):
-    """
-    This class should serialize data from instances of the Additional Items model class
-    """
     class Meta:
         model = AdditionalItems
         fields = '__all__'
 
 
 class RentalAdditionalItemSerializer(ModelSerializer):
-    """
-    This class should serialize data from instances of the model class from the table "through" the Rent and Additional
-    Items
-    """
-
     class Meta:
         model = RentalAdditionalItem
         fields = '__all__'
@@ -36,9 +25,6 @@ class RentalAdditionalItemSerializer(ModelSerializer):
 
 
 class RentalSerializer(ModelSerializer):
-    """
-    This class should serialize data from instances of the Rental model class
-    """
     error_messages_rental = {
         'invalid_status_creation': _('For rental registration, choose scheduled or rented only.'),
         'invalid_scheduled_date': _('For vehicle scheduling, a valid scheduling date field is required.'),

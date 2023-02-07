@@ -39,6 +39,7 @@ class RentalViewSet(ModelViewSet):
         serializer.save(**self.fetch_values_to_fill_fields())
 
     def fetch_values_to_fill_fields(self) -> dict:
+        """ fetch the values for fields with autocomplete """
         branch = self.request.user.staffmember.branch_staffmember
         vehicle = get_object_or_404(Vehicle,
                                     renavam_vehicle=self.request.data.get('vehicle_rental'),
@@ -50,6 +51,10 @@ class RentalViewSet(ModelViewSet):
         }
 
     def calculate_additional_daily_cost(self) -> float:
+        """ Calculate de total additional daily cost
+        The total daily additional cost will be calculated based on the additional items received in the request,
+        returning the sum of the subtotals (cost of additional item times quantity) of each additional item
+        """
         try:
             # Get the list of additional items requested
             relationship_additional_items_list = [additional_item for additional_item
