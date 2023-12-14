@@ -25,25 +25,25 @@ from client.views import ClientViewSet, UserViewSet
 from vehicle.views import VehicleViewSet, VehicleClassificationViewSet
 
 router_root = DefaultRouter()
-router_root.register('seguros', InsuranceViewSet, 'Insurances')
-router_root.register('itens_adicionais', AdditionalItemsViewSet, 'AdditionalItems')
-router_root.register('alugueis', RentalViewSet, 'Rentals')
-router_root.register('enderecos', AddressViewSet, 'Addresses')
-router_root.register('filiais', BranchViewSet, 'Branches')
-router_root.register('clientes/usuarios', UserViewSet, 'Users')
-router_root.register('clientes', ClientViewSet, 'Clients')
-router_root.register('veiculos', VehicleViewSet, 'Vehicles')
-router_root.register('classificacoes', VehicleClassificationViewSet, 'Classifications')
+router_root.register('insurances', InsuranceViewSet, 'Insurances')
+router_root.register('additional_items', AdditionalItemsViewSet, 'AdditionalItems')
+router_root.register('rents', RentalViewSet, 'Rentals')
+router_root.register('addresses', AddressViewSet, 'Addresses')
+router_root.register('branches', BranchViewSet, 'Branches')
+router_root.register('customers/users', UserViewSet, 'Users')
+router_root.register('customers', ClientViewSet, 'Clients')
+router_root.register('vehicles', VehicleViewSet, 'Vehicles')
+router_root.register('classifications', VehicleClassificationViewSet, 'Classifications')
 
 router_branches = DefaultRouter()
-router_branches.register('endereco', BranchAddressViewSet, 'BranchAddresses')
-router_branches.register('veiculos', BranchVehicleViewSet, 'BranchVehicles')
+router_branches.register('addresses', BranchAddressViewSet, 'BranchAddresses')
+router_branches.register('vehicles', BranchVehicleViewSet, 'BranchVehicles')
 
 urlpatterns = [
     path('', include(router_root.urls)),
-    path('filiais/<int:pk>/', include(router_branches.urls)),
-    path('alugueis/agendamentos_vencidos', late_appointments),
-    path('alugueis/devolucoes_vencidas', late_devolutions),
+    path('branches/<int:pk>/', include(router_branches.urls)),
+    path('rents/expired_appointments', late_appointments),
+    path('rents/expired_returns', late_devolutions),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
