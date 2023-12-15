@@ -13,27 +13,27 @@ class Person(models.Model):
         ('N', 'Não desejo me identificar'),
     )
 
-    cpf_person = models.CharField(max_length=11, primary_key=True, validators=[CPFValidator()], verbose_name='CPF')
-    rg_person = models.CharField(max_length=20, verbose_name='RG')
-    gender_person = models.CharField(max_length=1, choices=GENDER, verbose_name='sexo')
-    age_person = models.PositiveSmallIntegerField(validators=[MinValueValidator(18)], verbose_name='idade')
-    phone_person = models.CharField(max_length=16, validators=[PhoneValidator()], verbose_name='telefone')
-    address_person = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, verbose_name='endereço')
+    cpf = models.CharField(max_length=11, primary_key=True, validators=[CPFValidator()], verbose_name='CPF')
+    rg = models.CharField(max_length=20, verbose_name='RG')
+    gender = models.CharField(max_length=1, choices=GENDER, verbose_name='sexo')
+    age = models.PositiveSmallIntegerField(validators=[MinValueValidator(18)], verbose_name='idade')
+    phone = models.CharField(max_length=16, validators=[PhoneValidator()], verbose_name='telefone')
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, verbose_name='endereço')
 
     class Meta:
         abstract = True
 
 
 class Client(Person):
-    user_client = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='usuário')
-    cnh_client = models.CharField(max_length=11, unique=True, null=True, validators=[CNHValidator()], verbose_name='CNH')
-    finance_client = models.FloatField(verbose_name='renda')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='usuário')
+    cnh = models.CharField(max_length=11, unique=True, null=True, validators=[CNHValidator()], verbose_name='CNH')
+    finance = models.FloatField(verbose_name='renda')
 
     def __str__(self):
-        return f'{self.user_client.first_name} {self.user_client.last_name}'
+        return f'{self.user.first_name} {self.user.last_name}'
 
     def __repr__(self):
-        return self.cpf_person
+        return self.cpf
 
     class Meta:
         verbose_name = 'cliente'

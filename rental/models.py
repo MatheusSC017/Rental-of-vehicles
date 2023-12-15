@@ -6,12 +6,12 @@ from datetime import datetime, date, timedelta
 
 
 class Insurance(models.Model):
-    title_insurance = models.CharField(max_length=100, verbose_name='titulo')
-    coverage_insurance = models.JSONField(verbose_name='abrangência')
-    price_insurance = models.FloatField(validators=[MinValueValidator(0)], verbose_name='preço')
+    title = models.CharField(max_length=100, verbose_name='titulo')
+    coverage = models.JSONField(verbose_name='abrangência')
+    price = models.FloatField(validators=[MinValueValidator(0)], verbose_name='preço')
 
     def __str__(self):
-        return self.title_insurance
+        return self.title
 
     def __repr__(self):
         return self.pk
@@ -21,10 +21,10 @@ class Insurance(models.Model):
 
 
 class AdditionalItems(models.Model):
-    name_additionalitems = models.CharField(max_length=50, verbose_name='nome')
-    daily_cost_additionalitems = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
-    stock_additionalitems = models.PositiveSmallIntegerField(default=1, verbose_name='quantidade em estoque')
-    branch_additionalitems = models.ForeignKey('branch.Branch', on_delete=models.DO_NOTHING, verbose_name='filial')
+    name = models.CharField(max_length=50, verbose_name='nome')
+    daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
+    stock = models.PositiveSmallIntegerField(default=1, verbose_name='quantidade em estoque')
+    branch = models.ForeignKey('branch.Branch', on_delete=models.DO_NOTHING, verbose_name='filial')
 
     def __str__(self):
         return self.name_additionalitems
@@ -45,85 +45,82 @@ class Rental(models.Model):
         ('D', 'Devolvido'),
     )
 
-    vehicle_rental = models.ForeignKey('vehicle.Vehicle', on_delete=models.DO_NOTHING, verbose_name='veículo',
-                                       limit_choices_to={'available_vehicle': True})
-    insurance_rental = models.ForeignKey(Insurance, blank=True, null=True, on_delete=models.DO_NOTHING,
-                                         verbose_name='seguro')
-    staff_rental = models.ForeignKey('staff.StaffMember', on_delete=models.DO_NOTHING, verbose_name='funcionário')
-    client_rental = models.ForeignKey('client.Client', on_delete=models.DO_NOTHING, related_name='client_rental',
-                                      verbose_name='cliente')
-    status_rental = models.CharField(max_length=1, choices=STATUS, verbose_name='status')
-    outlet_branch_rental = models.ForeignKey('branch.Branch', related_name='outlet_branch_rental',
-                                             on_delete=models.DO_NOTHING, verbose_name='filial de saída')
-    arrival_branch_rental = models.ForeignKey('branch.Branch', null=True, blank=True,
-                                              related_name='arrival_branch_rental', on_delete=models.DO_NOTHING,
-                                              verbose_name='filial de chegada')
-    distance_branch_rental = models.PositiveIntegerField(null=True, blank=True, verbose_name='distância entre filiais')
-    appointment_date_rental = models.DateField(null=True, blank=True, verbose_name='data de agendamento')
-    rent_date_rental = models.DateField(null=True, blank=True, verbose_name='data de alocação')
-    devolution_date_rental = models.DateField(null=True, blank=True, verbose_name='data de devolução')
-    requested_days_rental = models.PositiveSmallIntegerField(verbose_name='prazo requisitado')
-    actual_days_rental = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name='prazo real')
-    fines_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)], verbose_name='multas')
-    rent_deposit_rental = models.FloatField(validators=[MinValueValidator(0)], verbose_name='caução')
-    daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
-    additional_daily_cost_rental = models.FloatField(validators=[MinValueValidator(0)],
-                                                     verbose_name='custo adicional da diária')
-    return_rate_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
-                                           verbose_name='taxa de retorno')
-    total_cost_rental = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
-                                          verbose_name='custo total')
-    driver_rental = models.ManyToManyField('client.Client', related_name='driver_rental', verbose_name='condutores')
+    vehicle = models.ForeignKey('vehicle.Vehicle', on_delete=models.DO_NOTHING, verbose_name='veículo',
+                                limit_choices_to={'available': True})
+    insurance = models.ForeignKey(Insurance, blank=True, null=True, on_delete=models.DO_NOTHING, verbose_name='seguro')
+    staff = models.ForeignKey('staff.StaffMember', on_delete=models.DO_NOTHING, verbose_name='funcionário')
+    client = models.ForeignKey('client.Client', on_delete=models.DO_NOTHING, related_name='client',
+                               verbose_name='cliente')
+    status = models.CharField(max_length=1, choices=STATUS, verbose_name='status')
+    outlet_branch = models.ForeignKey('branch.Branch', related_name='outlet_branch', on_delete=models.DO_NOTHING,
+                                      verbose_name='filial de saída')
+    arrival_branch = models.ForeignKey('branch.Branch', null=True, blank=True, related_name='arrival_branch',
+                                       on_delete=models.DO_NOTHING, verbose_name='filial de chegada')
+    distance_branch = models.PositiveIntegerField(null=True, blank=True, verbose_name='distância entre filiais')
+    appointment_date = models.DateField(null=True, blank=True, verbose_name='data de agendamento')
+    rent_date = models.DateField(null=True, blank=True, verbose_name='data de alocação')
+    devolution_date = models.DateField(null=True, blank=True, verbose_name='data de devolução')
+    requested_days = models.PositiveSmallIntegerField(verbose_name='prazo requisitado')
+    actual_days = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name='prazo real')
+    fines = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)], verbose_name='multas')
+    rent_deposit = models.FloatField(validators=[MinValueValidator(0)], verbose_name='caução')
+    daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
+    additional_daily_cost = models.FloatField(validators=[MinValueValidator(0)],
+                                              verbose_name='custo adicional da diária')
+    return_rate = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
+                                    verbose_name='taxa de retorno')
+    total_cost = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
+                                   verbose_name='custo total')
+    driver = models.ManyToManyField('client.Client', related_name='driver', verbose_name='condutores')
 
     def save(self, *args, **kwargs):
-        if self.status_rental == 'L' and not self.rent_date_rental:
-            self.rent_date_rental = date.today()
+        if self.status == 'L' and not self.rent_date:
+            self.rent_date = date.today()
 
-        if self.status_rental == 'C':
-            self.actual_days_rental = 0
-            if not valid_appointment_update_or_cancellation(self.appointment_date_rental):
-                self.fines_rental = self.calculate_fines()
-            self.total_cost_rental = self.fines_rental
+        if self.status == 'C':
+            self.actual_days = 0
+            if not valid_appointment_update_or_cancellation(self.appointment_date):
+                self.fines = self.calculate_fines()
+            self.total_cost = self.fines
 
-        if self.status_rental == 'D':
+        if self.status == 'D':
             # Set arrival branch if it is None
-            if self.arrival_branch_rental is None:
-                self.arrival_branch_rental = self.outlet_branch_rental
+            if self.arrival_branch is None:
+                self.arrival_branch = self.outlet_branch
             # Rate of return value
-            self.return_rate_rental = self.distance_branch_rental * 1.2 if self.distance_branch_rental else 0.
+            self.return_rate = self.distance_branch * 1.2 if self.distance_branch else 0.
             # Fine amount for breach of agreement
-            self.devolution_date_rental = date.today()
-            self.actual_days_rental = (self.devolution_date_rental - self.rent_date_rental).days + 1
-            self.fines_rental = self.calculate_fines()
+            self.devolution_date = date.today()
+            self.actual_days = (self.devolution_date - self.rent_date).days + 1
+            self.fines = self.calculate_fines()
             # Insurance cost
-            total_cost_of_insurance = self.insurance_rental.price_insurance * self.actual_days_rental \
-                if self.insurance_rental else 0.
+            total_cost_of_insurance = self.insurance.price * self.actual_days \
+                if self.insurance else 0.
             # Total cost of rent
-            daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
-            total_cost = self.actual_days_rental * daily_cost_total
-            self.total_cost_rental = sum([total_cost, self.fines_rental,
-                                          self.return_rate_rental, total_cost_of_insurance])
+            daily_cost_total = self.daily_cost + self.additional_daily_cost
+            total_cost = self.actual_days * daily_cost_total
+            self.total_cost = sum([total_cost, self.fines, self.return_rate, total_cost_of_insurance])
         super(Rental, self).save(*args, **kwargs)
 
     def calculate_fines(self):
-        daily_cost_total = self.daily_cost_rental + self.additional_daily_cost_rental
+        daily_cost_total = self.daily_cost + self.additional_daily_cost
 
-        if self.status_rental == 'C':
-            number_of_days = self.requested_days_rental
+        if self.status == 'C':
+            number_of_days = self.requested_days
         else:
             number_of_days = 0
-            if self.appointment_date_rental:
-                number_of_days += abs((self.appointment_date_rental - self.rent_date_rental).days)
-                initial_date = self.appointment_date_rental
+            if self.appointment_date:
+                number_of_days += abs((self.appointment_date - self.rent_date).days)
+                initial_date = self.appointment_date
             else:
-                initial_date = self.rent_date_rental
-            expected_return_date = initial_date + timedelta(days=self.requested_days_rental - 1)
-            number_of_days += abs((self.devolution_date_rental - expected_return_date).days)
+                initial_date = self.rent_date
+            expected_return_date = initial_date + timedelta(days=self.requested_days - 1)
+            number_of_days += abs((self.devolution_date - expected_return_date).days)
 
         return round(number_of_days * daily_cost_total * 0.2, 2)
 
     def __str__(self):
-        return f'{self.client_rental} - {self.vehicle_rental}'
+        return f'{self.client} - {self.vehicle}'
 
     class Meta:
         verbose_name = 'aluguel'
@@ -131,14 +128,13 @@ class Rental(models.Model):
 
 
 class RentalAdditionalItem(models.Model):
-    rental_relationship = models.ForeignKey(Rental, on_delete=models.CASCADE, verbose_name='Aluguel',
-                                            related_name='additional_items_rental')
-    additional_item_relationship = models.ForeignKey(AdditionalItems, on_delete=models.CASCADE,
-                                                     verbose_name='Item adicional')
-    number_relationship = models.PositiveSmallIntegerField(default=1, verbose_name='Número de itens')
+    rental = models.ForeignKey(Rental, on_delete=models.CASCADE, verbose_name='Aluguel',
+                               related_name='additional_items')
+    additional_item = models.ForeignKey(AdditionalItems, on_delete=models.CASCADE, verbose_name='Item adicional')
+    number = models.PositiveSmallIntegerField(default=1, verbose_name='Número de itens')
 
     class Meta:
-        unique_together = [['rental_relationship', 'additional_item_relationship']]
+        unique_together = [['rental', 'additional_item']]
 
     def __str__(self):
-        return f'{self.additional_item_relationship}: {self.number_relationship}'
+        return f'{self.additional_item}: {self.number}'

@@ -13,7 +13,7 @@ import faker
 class ClientSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
     def setUp(self) -> None:
         fake = faker.Faker('pt_BR')
-        cnh = CNH()
+        cnh_generator = CNH()
 
         username = fake.first_name().replace(' ', '_') + '123456789'
         user = User.objects.create_user(
@@ -23,28 +23,27 @@ class ClientSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
         )
 
         address = Address.objects.create(
-            cep_address=fake.postcode(),
-            state_address=fake.estado_sigla(),
-            city_address=fake.city(),
-            district_address=fake.bairro(),
-            street_address=fake.street_name(),
-            number_address=fake.building_number()
+            cep=fake.postcode(),
+            state=fake.estado_sigla(),
+            city=fake.city(),
+            district=fake.bairro(),
+            street=fake.street_name(),
+            number=fake.building_number()
         )
 
         self.client = Client.objects.create(
-            cpf_person=fake.ssn(),
-            rg_person=fake.rg(),
-            gender_person=choice('MFN'),
-            age_person=randrange(18, 80),
-            phone_person=fake.cellphone_number()[4:],
-            address_person=address,
-            user_client=user,
-            cnh_client=cnh.generate(),
-            finance_client=randrange(1500, 5000)
+            cpf=fake.ssn(),
+            rg=fake.rg(),
+            gender=choice('MFN'),
+            age=randrange(18, 80),
+            phone=fake.cellphone_number()[4:],
+            address=address,
+            user=user,
+            cnh=cnh_generator.generate(),
+            finance=randrange(1500, 5000)
         )
 
-        self.keys = {'cpf_person', 'rg_person', 'gender_person', 'age_person', 'phone_person', 'address_person',
-                     'user_client', 'cnh_client', 'finance_client', }
+        self.keys = {'cpf', 'rg', 'gender', 'age', 'phone', 'address', 'user', 'cnh', 'finance', }
 
         self.serializer = ClientSerializer(self.client)
 

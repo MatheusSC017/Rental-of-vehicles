@@ -24,12 +24,12 @@ class AddressViewSetTestCase(APITestCase):
             self.user.user_permissions.add(permission)
 
         self.address = Address.objects.create(
-            cep_address=self.fake.postcode(),
-            state_address=self.fake.estado_sigla(),
-            city_address=self.fake.city(),
-            district_address=self.fake.bairro(),
-            street_address=self.fake.street_name(),
-            number_address=self.fake.building_number()
+            cep=self.fake.postcode(),
+            state=self.fake.estado_sigla(),
+            city=self.fake.city(),
+            district=self.fake.bairro(),
+            street=self.fake.street_name(),
+            number=self.fake.building_number()
         )
 
         self.list_url = reverse('Addresses-list')
@@ -43,12 +43,12 @@ class AddressViewSetTestCase(APITestCase):
     def test_request_to_address_creation(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'cep_address': self.fake.postcode(),
-            'state_address': self.fake.estado_sigla(),
-            'city_address': self.fake.city(),
-            'district_address': self.fake.bairro(),
-            'street_address': self.fake.street_name(),
-            'number_address': self.fake.building_number()
+            'cep': self.fake.postcode(),
+            'state': self.fake.estado_sigla(),
+            'city': self.fake.city(),
+            'district': self.fake.bairro(),
+            'street': self.fake.street_name(),
+            'number': self.fake.building_number()
         }
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -61,12 +61,12 @@ class AddressViewSetTestCase(APITestCase):
     def test_request_to_address_update(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'cep_address': self.fake.postcode(),
-            'state_address': self.fake.estado_sigla(),
-            'city_address': self.fake.city(),
-            'district_address': self.fake.bairro(),
-            'street_address': self.fake.street_name(),
-            'number_address': self.fake.building_number()
+            'cep': self.fake.postcode(),
+            'state': self.fake.estado_sigla(),
+            'city': self.fake.city(),
+            'district': self.fake.bairro(),
+            'street': self.fake.street_name(),
+            'number': self.fake.building_number()
         }
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

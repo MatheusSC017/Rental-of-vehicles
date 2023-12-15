@@ -32,16 +32,16 @@ class Address(models.Model):
         ('TO', 'Tocantins')
     )
 
-    cep_address = models.CharField(max_length=9, verbose_name='CEP')
-    state_address = models.CharField(max_length=2, choices=STATES, verbose_name='estado')
-    city_address = models.CharField(max_length=100, verbose_name='cidade')
-    district_address = models.CharField(max_length=100, verbose_name='bairro')
-    street_address = models.CharField(max_length=100, verbose_name='rua')
-    number_address = models.CharField(max_length=30, verbose_name='número')
+    cep = models.CharField(max_length=9, verbose_name='CEP')
+    state = models.CharField(max_length=2, choices=STATES, verbose_name='estado')
+    city = models.CharField(max_length=100, verbose_name='cidade')
+    district = models.CharField(max_length=100, verbose_name='bairro')
+    street = models.CharField(max_length=100, verbose_name='rua')
+    number = models.CharField(max_length=30, verbose_name='número')
 
     def __str__(self):
-        return f'{self.street_address} - {self.number_address}, ' \
-               f'{self.district_address}, {self.city_address}/ {self.state_address}'
+        return f'{self.street} - {self.number}, ' \
+               f'{self.district}, {self.city}/ {self.state}'
 
     class Meta:
         verbose_name = 'endereço'

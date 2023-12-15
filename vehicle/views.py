@@ -26,7 +26,7 @@ class VehicleViewSet(ModelViewSet):
     def get_queryset(self):
         if self.request.query_params.get('show_all'):
             return Vehicle.objects.all()
-        return Vehicle.objects.filter(available_vehicle=True)
+        return Vehicle.objects.filter(available=True)
 
     def get_serializer_class(self):
         """ By default the latest version is chosen if no version is specified """

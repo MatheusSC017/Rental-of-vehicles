@@ -9,16 +9,16 @@ class AddressSerializerTestCase(TestCase):
         fake = faker.Faker('pt_BR')
 
         self.address = Address.objects.create(
-            cep_address=fake.postcode(),
-            state_address=fake.estado_sigla(),
-            city_address=fake.city(),
-            district_address=fake.bairro(),
-            street_address=fake.street_name(),
-            number_address=fake.building_number()
+            cep=fake.postcode(),
+            state=fake.estado_sigla(),
+            city=fake.city(),
+            district=fake.bairro(),
+            street=fake.street_name(),
+            number=fake.building_number()
         )
 
-        self.keys = {'id', 'cep_address', 'state_address', 'city_address', 'district_address', 'street_address',
-                     'number_address', }
+        self.keys = {'id', 'cep', 'state', 'city', 'district', 'street',
+                     'number', }
 
         self.serializer = AddressSerializer(self.address)
 

@@ -3,10 +3,10 @@ from .models import Address
 
 
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'cep_address', 'street_address', 'district_address', 'number_address', ]
-    list_display_links = ['pk', 'cep_address', ]
-    list_filter = ['state_address', 'city_address', ]
-    search_fields = ['cep_address', 'street_address', 'district_address', ]
+    list_display = ['pk', 'cep', 'street', 'district', 'number', ]
+    list_display_links = ['pk', 'cep', ]
+    list_filter = ['state', 'city', ]
+    search_fields = ['cep', 'street', 'district', ]
     list_per_page = 200
 
 

@@ -28,8 +28,8 @@ class VehicleClassificationViewSetTestCase(APITestCase):
             self.user.user_permissions.add(permission)
 
         self.vehicle_classification = VehicleClassification.objects.create(
-            title_classification=' '.join(self.fake.words(nb=2)),
-            daily_cost_classification=randrange(5, 50)
+            title=' '.join(self.fake.words(nb=2)),
+            daily_cost=randrange(5, 50)
         )
 
         self.list_url = reverse('Classifications-list')
@@ -42,8 +42,8 @@ class VehicleClassificationViewSetTestCase(APITestCase):
     def test_request_to_classification_creation(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'title_classification': ' '.join(self.fake.words(nb=2)),
-            'daily_cost_classification': randrange(5, 50)
+            'title': ' '.join(self.fake.words(nb=2)),
+            'daily_cost': randrange(5, 50)
         }
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -55,8 +55,8 @@ class VehicleClassificationViewSetTestCase(APITestCase):
     def test_request_to_classification_update(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'title_classification': ' '.join(self.fake.words(nb=2)),
-            'daily_cost_classification': randrange(5, 50)
+            'title': ' '.join(self.fake.words(nb=2)),
+            'daily_cost': randrange(5, 50)
         }
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -85,47 +85,47 @@ class VehicleViewSetTestCase(APITestCase):
             self.user.user_permissions.add(permission)
 
         address = Address.objects.create(
-            cep_address=self.fake.postcode(),
-            state_address=self.fake.estado_sigla(),
-            city_address=self.fake.city(),
-            district_address=self.fake.bairro(),
-            street_address=self.fake.street_name(),
-            number_address=self.fake.building_number()
+            cep=self.fake.postcode(),
+            state=self.fake.estado_sigla(),
+            city=self.fake.city(),
+            district=self.fake.bairro(),
+            street=self.fake.street_name(),
+            number=self.fake.building_number()
         )
 
         self.branch = Branch.objects.create(
-            name_branch=self.fake.street_name(),
-            opening_hours_start_branch=str(randrange(5, 13)) + ':00:00',
-            opening_hours_end_branch=str(randrange(5, 13) + 8) + ':00:00',
-            address_branch=address
+            name=self.fake.street_name(),
+            opening_hours_start=str(randrange(5, 13)) + ':00:00',
+            opening_hours_end=str(randrange(5, 13) + 8) + ':00:00',
+            address=address
         )
 
         self.vehicle_classification = VehicleClassification.objects.create(
-            title_classification='ClassificationTitle',
-            daily_cost_classification=5.
+            title='ClassificationTitle',
+            daily_cost=5.
         )
 
         vehicles = [Vehicle.objects.create(
-            type_vehicle='C',
-            brand_vehicle='FIAT',
-            model_vehicle='UNO',
-            year_manufacture_vehicle='2016',
-            model_year_vehicle='2018',
-            mileage_vehicle=1000,
-            renavam_vehicle=self.renavam.generate(),
-            license_plate_vehicle=self.fake.license_plate().replace('-', ''),
-            chassi_vehicle=randrange(11111111111111111, 99999999999999999),
-            fuel_vehicle='G',
-            fuel_tank_vehicle=40,
-            engine_vehicle='1.3, 59 CV',
-            color_vehicle='Red',
-            branch_vehicle=self.branch,
-            available_vehicle=available,
-            classification_vehicle=self.vehicle_classification
+            type='C',
+            brand='FIAT',
+            model='UNO',
+            year_manufacture='2016',
+            model_year='2018',
+            mileage=1000,
+            renavam=self.renavam.generate(),
+            license_plate=self.fake.license_plate().replace('-', ''),
+            chassi=randrange(11111111111111111, 99999999999999999),
+            fuel='G',
+            fuel_tank=40,
+            engine='1.3, 59 CV',
+            color='Red',
+            branch=self.branch,
+            available=available,
+            classification=self.vehicle_classification
         ) for available in [True, False]]
 
         self.list_url = reverse('Vehicles-list')
-        self.detail_url = reverse('Vehicles-detail', kwargs={'pk': vehicles[0].renavam_vehicle})
+        self.detail_url = reverse('Vehicles-detail', kwargs={'pk': vehicles[0].renavam})
 
     def test_request_to_vehicle_available_list(self) -> None:
         response = self.client.get(self.list_url)
@@ -140,21 +140,21 @@ class VehicleViewSetTestCase(APITestCase):
     def test_request_to_vehicle_creation(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'type_vehicle': 'M',
-            'brand_vehicle': 'Honda',
-            'model_vehicle': 'Tita',
-            'year_manufacture_vehicle': '2015',
-            'model_year_vehicle': '2017',
-            'mileage_vehicle': 2000.0,
-            'renavam_vehicle': self.renavam.generate(),
-            'license_plate_vehicle': self.fake.license_plate().replace('-', ''),
-            'chassi_vehicle': '01234567890123456',
-            'fuel_vehicle': 'E',
-            'fuel_tank_vehicle': 20,
-            'engine_vehicle': '1.0, 32 CV',
-            'color_vehicle': 'Green',
-            'branch_vehicle': self.branch.pk,
-            'classification_vehicle': self.vehicle_classification.pk
+            'type': 'M',
+            'brand': 'Honda',
+            'model': 'Tita',
+            'year_manufacture': '2015',
+            'model_year': '2017',
+            'mileage': 2000.0,
+            'renavam': self.renavam.generate(),
+            'license_plate': self.fake.license_plate().replace('-', ''),
+            'chassi': '01234567890123456',
+            'fuel': 'E',
+            'fuel_tank': 20,
+            'engine': '1.0, 32 CV',
+            'color': 'Green',
+            'branch': self.branch.pk,
+            'classification': self.vehicle_classification.pk
         }
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -166,21 +166,21 @@ class VehicleViewSetTestCase(APITestCase):
     def test_request_to_vehicle_update(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'type_vehicle': 'M',
-            'brand_vehicle': 'Honda',
-            'model_vehicle': 'Tita',
-            'year_manufacture_vehicle': '2015',
-            'model_year_vehicle': '2017',
-            'mileage_vehicle': 2000.0,
-            'renavam_vehicle': self.renavam.generate(),
-            'license_plate_vehicle': self.fake.license_plate().replace('-', ''),
-            'chassi_vehicle': '01234567890123456',
-            'fuel_vehicle': 'E',
-            'fuel_tank_vehicle': 20,
-            'engine_vehicle': '1.0, 32 CV',
-            'color_vehicle': 'Green',
-            'branch_vehicle': self.branch.pk,
-            'classification_vehicle': self.vehicle_classification.pk
+            'type': 'M',
+            'brand': 'Honda',
+            'model': 'Tita',
+            'year_manufacture': '2015',
+            'model_year': '2017',
+            'mileage': 2000.0,
+            'renavam': self.renavam.generate(),
+            'license_plate': self.fake.license_plate().replace('-', ''),
+            'chassi': '01234567890123456',
+            'fuel': 'E',
+            'fuel_tank': 20,
+            'engine': '1.0, 32 CV',
+            'color': 'Green',
+            'branch': self.branch.pk,
+            'classification': self.vehicle_classification.pk
         }
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

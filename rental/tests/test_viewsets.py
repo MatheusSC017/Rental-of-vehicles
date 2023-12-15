@@ -43,9 +43,9 @@ class InsuranceViewSetTestCase(APITestCase):
             self.user.user_permissions.add(permission)
 
         self.insurance = Insurance.objects.create(
-            title_insurance=' '.join(self.fake.words(nb=2)),
-            coverage_insurance=self.json_generator(),
-            price_insurance=randrange(100, 2000) / 100
+            title=' '.join(self.fake.words(nb=2)),
+            coverage=self.json_generator(),
+            price=randrange(100, 2000) / 100
         )
 
         self.list_url = reverse('Insurances-list')
@@ -58,9 +58,9 @@ class InsuranceViewSetTestCase(APITestCase):
     def test_request_to_insurance_creation(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'title_insurance': ' '.join(self.fake.words(nb=2)),
-            'coverage_insurance': self.json_generator(),
-            'price_insurance': randrange(100, 2000) / 100
+            'title': ' '.join(self.fake.words(nb=2)),
+            'coverage': self.json_generator(),
+            'price': randrange(100, 2000) / 100
         }
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
@@ -72,9 +72,9 @@ class InsuranceViewSetTestCase(APITestCase):
     def test_request_to_insurance_update(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'title_insurance': ' '.join(self.fake.words(nb=2)),
-            'coverage_insurance': self.json_generator(),
-            'price_insurance': randrange(100, 2000) / 100
+            'title': ' '.join(self.fake.words(nb=2)),
+            'coverage': self.json_generator(),
+            'price': randrange(100, 2000) / 100
         }
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
@@ -102,26 +102,26 @@ class AdditionalItemsViewSetTestCase(APITestCase):
             self.user.user_permissions.add(permission)
 
         address = Address.objects.create(
-            cep_address=self.fake.postcode(),
-            state_address=self.fake.estado_sigla(),
-            city_address=self.fake.city(),
-            district_address=self.fake.bairro(),
-            street_address=self.fake.street_name(),
-            number_address=self.fake.building_number()
+            cep=self.fake.postcode(),
+            state=self.fake.estado_sigla(),
+            city=self.fake.city(),
+            district=self.fake.bairro(),
+            street=self.fake.street_name(),
+            number=self.fake.building_number()
         )
 
         self.branch = Branch.objects.create(
-            name_branch=self.fake.street_name(),
-            opening_hours_start_branch=str(randrange(5, 13)) + ':00:00',
-            opening_hours_end_branch=str(randrange(5, 13) + 8) + ':00:00',
-            address_branch=address
+            name=self.fake.street_name(),
+            opening_hours_start=str(randrange(5, 13)) + ':00:00',
+            opening_hours_end=str(randrange(5, 13) + 8) + ':00:00',
+            address=address
         )
 
         self.additional_item = AdditionalItems.objects.create(
-            name_additionalitems=' '.join(self.fake.words(nb=2)),
-            daily_cost_additionalitems=randrange(100, 2000) / 100,
-            stock_additionalitems=randrange(1, 5),
-            branch_additionalitems=self.branch
+            name=' '.join(self.fake.words(nb=2)),
+            daily_cost=randrange(100, 2000) / 100,
+            stock=randrange(1, 5),
+            branch=self.branch
         )
 
         self.list_url = reverse('AdditionalItems-list')
@@ -134,9 +134,9 @@ class AdditionalItemsViewSetTestCase(APITestCase):
     def test_request_to_additional_items_creation(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'name_additionalitems': ' '.join(self.fake.words(nb=2)),
-            'daily_cost_additionalitems': randrange(100, 2000) / 100,
-            'branch_additionalitems': self.branch.pk
+            'name': ' '.join(self.fake.words(nb=2)),
+            'daily_cost': randrange(100, 2000) / 100,
+            'branch': self.branch.pk
         }
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
@@ -148,9 +148,9 @@ class AdditionalItemsViewSetTestCase(APITestCase):
     def test_request_to_additional_items_update(self) -> None:
         self.client.force_login(self.user)
         data = {
-            'name_additionalitems': ' '.join(self.fake.words(nb=2)),
-            'daily_cost_additionalitems': randrange(100, 2000) / 100,
-            'branch_additionalitems': self.branch.pk
+            'name': ' '.join(self.fake.words(nb=2)),
+            'daily_cost': randrange(100, 2000) / 100,
+            'branch': self.branch.pk
         }
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
@@ -187,115 +187,115 @@ class RentalViewSetTestCase(APITestCase):
             self.user_staff.user_permissions.add(permission)
 
         addresses = [Address.objects.create(
-            cep_address=fake.postcode(),
-            state_address=fake.estado_sigla(),
-            city_address=fake.city(),
-            district_address=fake.bairro(),
-            street_address=fake.street_name(),
-            number_address=fake.building_number()
+            cep=fake.postcode(),
+            state=fake.estado_sigla(),
+            city=fake.city(),
+            district=fake.bairro(),
+            street=fake.street_name(),
+            number=fake.building_number()
         ) for _ in range(4)]
 
         self.client_user = Client.objects.create(
-            user_client=user_client,
-            cpf_person=cpf.generate(),
-            rg_person=fake.rg(),
-            cnh_client=cnh.generate(),
-            gender_person=choice(('M', 'F', 'N')),
-            age_person=randrange(18, 99),
-            finance_client=randrange(500, 30000),
-            phone_person=fake.cellphone_number()[4:],
-            address_person=addresses[0]
+            user=user_client,
+            cpf=cpf.generate(),
+            rg=fake.rg(),
+            cnh=cnh.generate(),
+            gender=choice(('M', 'F', 'N')),
+            age=randrange(18, 99),
+            finance=randrange(500, 30000),
+            phone=fake.cellphone_number()[4:],
+            address=addresses[0]
         )
 
         branch = Branch.objects.create(
-            name_branch=fake.street_name(),
-            opening_hours_start_branch=str(randrange(5, 13)) + ':00:00',
-            opening_hours_end_branch=str(randrange(5, 13) + 8) + ':00:00',
-            address_branch=addresses[1]
+            name=fake.street_name(),
+            opening_hours_start=str(randrange(5, 13)) + ':00:00',
+            opening_hours_end=str(randrange(5, 13) + 8) + ':00:00',
+            address=addresses[1]
         )
 
         staffmember = StaffMember.objects.create(
-            user_staffmember=self.user_staff,
-            cpf_person=cpf.generate(),
-            rg_person=fake.rg(),
-            gender_person=choice(('M', 'F', 'N')),
-            age_person=randrange(18, 99),
-            salary_staffmember=randrange(500, 30000),
-            phone_person=fake.cellphone_number()[4:],
-            address_person=addresses[2],
-            branch_staffmember=branch
+            user=self.user_staff,
+            cpf=cpf.generate(),
+            rg=fake.rg(),
+            gender=choice(('M', 'F', 'N')),
+            age=randrange(18, 99),
+            salary=randrange(500, 30000),
+            phone=fake.cellphone_number()[4:],
+            address=addresses[2],
+            branch=branch
         )
 
         daily_cost = randrange(500, 5000) / 100
         classification = VehicleClassification.objects.create(
-            title_classification=' '.join(fake.words(nb=3)),
-            daily_cost_classification=daily_cost
+            title=' '.join(fake.words(nb=3)),
+            daily_cost=daily_cost
         )
 
         year_manufacture = randrange(1960, 2020)
         vehicle = Vehicle.objects.create(
-            type_vehicle=choice('MC'),
-            brand_vehicle=' '.join(fake.words(nb=1)),
-            model_vehicle=' '.join(fake.words(nb=2)),
-            year_manufacture_vehicle=year_manufacture,
-            model_year_vehicle=year_manufacture + randrange(0, 5),
-            mileage_vehicle=float(randrange(0, 2000)),
-            renavam_vehicle=renavam.generate(),
-            license_plate_vehicle=fake.license_plate().replace('-', ''),
-            chassi_vehicle=str(randrange(11111111111111111, 99999999999999999)),
-            fuel_vehicle=choice('GEDH'),
-            fuel_tank_vehicle=randrange(15, 50),
-            engine_vehicle=' '.join(fake.words()),
-            color_vehicle=fake.color_name(),
-            other_data_vehicle=json_generator(),
-            available_vehicle=True,
-            branch_vehicle=branch,
-            classification_vehicle=classification
+            type=choice('MC'),
+            brand=' '.join(fake.words(nb=1)),
+            model=' '.join(fake.words(nb=2)),
+            year_manufacture=year_manufacture,
+            model_year=year_manufacture + randrange(0, 5),
+            mileage=float(randrange(0, 2000)),
+            renavam=renavam.generate(),
+            license_plate=fake.license_plate().replace('-', ''),
+            chassi=str(randrange(11111111111111111, 99999999999999999)),
+            fuel=choice('GEDH'),
+            fuel_tank=randrange(15, 50),
+            engine=' '.join(fake.words()),
+            color=fake.color_name(),
+            other_data=json_generator(),
+            available=True,
+            branch=branch,
+            classification=classification
         )
 
         insurance = Insurance.objects.create(
-            title_insurance=' '.join(fake.words(nb=2)),
-            coverage_insurance=json_generator(),
-            price_insurance=randrange(100, 2000) / 100
+            title=' '.join(fake.words(nb=2)),
+            coverage=json_generator(),
+            price=randrange(100, 2000) / 100
         )
 
         self.additional_items = [AdditionalItems.objects.create(
-            name_additionalitems=' '.join(fake.words(nb=2)),
-            daily_cost_additionalitems=randrange(100, 2000) / 100,
-            stock_additionalitems=randrange(5, 10),
-            branch_additionalitems=branch
+            name=' '.join(fake.words(nb=2)),
+            daily_cost=randrange(100, 2000) / 100,
+            stock=randrange(5, 10),
+            branch=branch
         ) for _ in range(3)]
 
         rental = Rental.objects.create(
-            vehicle_rental=vehicle,
-            staff_rental=staffmember,
-            client_rental=self.client_user,
-            status_rental='A',
-            outlet_branch_rental=branch,
-            appointment_date_rental=str(timezone.now() + timezone.timedelta(days=10))[:10],
-            requested_days_rental=3,
-            rent_deposit_rental=150,
-            daily_cost_rental=daily_cost,
-            additional_daily_cost_rental=0.,
-            insurance_rental=insurance
+            vehicle=vehicle,
+            staff=staffmember,
+            client=self.client_user,
+            status='A',
+            outlet_branch=branch,
+            appointment_date=str(timezone.now() + timezone.timedelta(days=10))[:10],
+            requested_days=3,
+            rent_deposit=150,
+            daily_cost=daily_cost,
+            additional_daily_cost=0.,
+            insurance=insurance
         )
-        rental.driver_rental.set([self.client_user, ])
+        rental.driver.set([self.client_user, ])
 
         self.rental_additional_items = [RentalAdditionalItem.objects.create(
-            rental_relationship=rental,
-            additional_item_relationship=item,
-            number_relationship=randrange(1, 2)
+            rental=rental,
+            additional_item=item,
+            number=randrange(1, 2)
         ) for item in self.additional_items[:2]]
 
         self.data = {
-            'vehicle_rental': vehicle.renavam_vehicle,
-            'client_rental': self.client_user.cpf_person,
-            'status_rental': 'L',
-            'appointment_date_rental': str(timezone.now() + timezone.timedelta(days=1))[:10],
-            'requested_days_rental': 3,
-            'rent_deposit_rental': 150,
-            'driver_rental': [self.client_user.pk, ],
-            'additional_items_rental': []
+            'vehicle': vehicle.renavam,
+            'client': self.client_user.cpf,
+            'status': 'L',
+            'appointment_date': str(timezone.now() + timezone.timedelta(days=1))[:10],
+            'requested_days': 3,
+            'rent_deposit': 150,
+            'driver': [self.client_user.pk, ],
+            'additional_items': []
         }
 
         self.list_url = reverse('Rentals-list')
@@ -317,8 +317,8 @@ class RentalViewSetTestCase(APITestCase):
 
     def test_request_to_rental_update(self) -> None:
         data = deepcopy(self.data)
-        data['status_rental'] = 'A'
-        data['appointment_date_rental'] = str(timezone.now() + timezone.timedelta(days=20))[:10]
+        data['status'] = 'A'
+        data['appointment_date'] = str(timezone.now() + timezone.timedelta(days=20))[:10]
         self.client.force_login(self.user_staff)
         response = self.client.put(self.detail_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
@@ -331,79 +331,78 @@ class RentalViewSetTestCase(APITestCase):
     def test_function_check_to_calculate_additional_daily_cost(self) -> None:
         data = deepcopy(self.data)
         additional_items = [(item, randrange(1, 4)) for item in self.additional_items]
-        data['additional_items_rental'] = list(map(lambda i: {"additional_item_relationship": i[0].pk,
-                                                              "number_relationship": i[1]}, additional_items))
+        data['additional_items'] = list(map(lambda i: {"additional_item": i[0].pk, "number": i[1]}, additional_items))
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
 
-        add_items = [add_item['additional_item_relationship_id'] for add_item
-                     in Rental.objects.all()[1].additional_items_rental.values()]
+        add_items = [add_item['additional_item_id'] for add_item
+                     in Rental.objects.all()[1].additional_items.values()]
         self.assertEqual(set(add_items), set([add_item.pk for add_item in self.additional_items]))
 
-        add_daily_cost = Rental.objects.all()[1].additional_daily_cost_rental
-        self.assertEqual(add_daily_cost, sum((add_item[0].daily_cost_additionalitems * add_item[1]
+        add_daily_cost = Rental.objects.all()[1].additional_daily_cost
+        self.assertEqual(add_daily_cost, sum((add_item[0].daily_cost * add_item[1]
                                               for add_item in additional_items)))
 
     def test_rental_creation_with_rented_status(self) -> None:
         response = self.create_rent(self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
-        self.assertEqual(Rental.objects.all()[1].status_rental, 'L')
-        self.assertEqual(Rental.objects.all()[1].appointment_date_rental, None)
+        self.assertEqual(Rental.objects.all()[1].status, 'L')
+        self.assertEqual(Rental.objects.all()[1].appointment_date, None)
 
     def test_rental_creation_with_scheduled_status(self) -> None:
         data = deepcopy(self.data)
-        data['status_rental'] = 'A'
+        data['status'] = 'A'
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
-        self.assertEqual(Rental.objects.all()[1].status_rental, 'A')
-        self.assertNotEqual(Rental.objects.all()[1].appointment_date_rental, None)
+        self.assertEqual(Rental.objects.all()[1].status, 'A')
+        self.assertNotEqual(Rental.objects.all()[1].appointment_date, None)
 
     def test_rental_creation_with_scheduled_status_and_without_appointament_date(self) -> None:
         data = deepcopy(self.data)
-        data['status_rental'] = 'A'
-        data['appointment_date_rental'] = ''
+        data['status'] = 'A'
+        data['appointment_date'] = ''
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
     def test_rental_creation_with_scheduled_status_and_wrong_appointament_date(self) -> None:
         data = deepcopy(self.data)
-        data['status_rental'] = 'A'
-        data['appointment_date_rental'] = str(timezone.now() - timezone.timedelta(days=3))[:10]
+        data['status'] = 'A'
+        data['appointment_date'] = str(timezone.now() - timezone.timedelta(days=3))[:10]
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
     def test_stock_update_of_additional_items_when_creating_rent(self) -> None:
         data = deepcopy(self.data)
         additional_items = [(item, randrange(1, 4)) for item in self.additional_items]
-        data['additional_items_rental'] = list(map(lambda item: {"additional_item_relationship": item[0].pk,
-                                                                 "number_relationship": item[1]}, additional_items))
+        data['additional_items'] = list(map(lambda item: {"additional_item": item[0].pk,
+                                                          "number": item[1]}, additional_items))
 
-        current_stock = [item.stock_additionalitems for item in self.additional_items]
+        current_stock = [item.stock for item in self.additional_items]
 
         response = self.create_rent(data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
 
-        add_items = [add_item['additional_item_relationship_id'] for add_item
-                     in Rental.objects.all()[1].additional_items_rental.values()]
+        add_items = [add_item['additional_item_id'] for add_item
+                     in Rental.objects.all()[1].additional_items.values()]
         self.assertEqual(set(add_items), set([add_item.pk for add_item in self.additional_items]))
 
-        new_stock = [item.stock_additionalitems for item in AdditionalItems.objects.all()]
+        new_stock = [item.stock for item in AdditionalItems.objects.all()]
         for i, stock in enumerate(new_stock):
             self.assertEqual(stock, current_stock[i] - additional_items[i][1])
 
     def test_stock_update_of_additional_items_when_updating_rent(self) -> None:
         data = deepcopy(self.data)
         additional_items = [(item, randrange(1, 4)) for item in self.additional_items[1:]]
-        data['status_rental'] = 'A'
-        data['additional_items_rental'] = list(map(lambda item: {"additional_item_relationship": item[0].pk,
-                                                                 "number_relationship": item[1]}, additional_items))
+        data['status'] = 'A'
+        data['additional_items'] = list(map(lambda item: {"additional_item": item[0].pk,
+                                                          "number": item[1]}, additional_items))
 
-        current_stock = [item.stock_additionalitems for item in self.additional_items]
-        old_additional_items = [item.number_relationship for item in self.rental_additional_items]
+        current_stock = [item.stock for item in self.additional_items]
+        old_additional_items = [item.number for item in self.rental_additional_items]
 
         self.client.force_login(self.user_staff)
         response = self.client.put(self.detail_url, data=data, format='json')
@@ -414,7 +413,7 @@ class RentalViewSetTestCase(APITestCase):
                      in additional_items]
         self.assertEqual(set(add_items), set(add_items))
 
-        new_stock = [item.stock_additionalitems for item in AdditionalItems.objects.all()]
+        new_stock = [item.stock for item in AdditionalItems.objects.all()]
         self.assertEqual(new_stock[0], current_stock[0] + old_additional_items[0])
         self.assertEqual(new_stock[1], current_stock[1] + old_additional_items[1] - additional_items[0][1])
         self.assertEqual(new_stock[2], current_stock[2] - additional_items[1][1])

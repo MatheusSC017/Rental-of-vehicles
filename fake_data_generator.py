@@ -17,9 +17,9 @@ from django.contrib.auth.models import User
 from unidecode import unidecode
 
 fake = faker.Faker('pt_BR')
-cpf = CPF()
-cnh = CNH()
-renavam = RENAVAM()
+cpf_generator = CPF()
+cnh_generator = CNH()
+renavam_generator = RENAVAM()
 
 
 def address_generator():
@@ -31,12 +31,12 @@ def address_generator():
     number = fake.building_number()
 
     address = Address.objects.create(
-        cep_address=cep,
-        state_address=state,
-        city_address=city,
-        district_address=district,
-        street_address=street,
-        number_address=number
+        cep=cep,
+        state=state,
+        city=city,
+        district=district,
+        street=street,
+        number=number
     )
 
     return address
@@ -63,9 +63,9 @@ def client_generator():
     gender_options = ('M', 'F', 'N')
 
     user = user_generator()
-    cpf_client = cpf.generate()
+    cpf = cpf_generator.generate()
     rg = fake.rg()
-    cnh_client = cnh.generate()
+    cnh = cnh_generator.generate()
     gender = choice(gender_options)
     age = randrange(18, 99)
     finance = randrange(500, 30000)
@@ -73,32 +73,32 @@ def client_generator():
     address = address_generator()
 
     client = Client.objects.create(
-        user_client=user,
-        cpf_person=cpf_client,
-        rg_person=rg,
-        cnh_client=cnh_client,
-        gender_person=gender,
-        age_person=age,
-        finance_client=finance,
-        phone_person=phone,
-        address_person=address
+        user=user,
+        cpf=cpf,
+        rg=rg,
+        cnh=cnh,
+        gender=gender,
+        age=age,
+        finance=finance,
+        phone=phone,
+        address=address
     )
 
     return client
 
 
 def branch_generator():
-    name_branch = fake.street_name()
+    name = fake.street_name()
     start = randrange(5, 13)
     opening_hours_start = str(start) + ':00:00'
     opening_hours_end = str(start + 8) + ':00:00'
     address = address_generator()
 
     branch = Branch.objects.create(
-        name_branch=name_branch,
-        opening_hours_start_branch=opening_hours_start,
-        opening_hours_end_branch=opening_hours_end,
-        address_branch=address
+        name=name,
+        opening_hours_start=opening_hours_start,
+        opening_hours_end=opening_hours_end,
+        address=address
     )
 
     return branch
@@ -109,8 +109,8 @@ def classification_generator():
     daily_cost = randrange(500, 5000) / 100
 
     classification = VehicleClassification.objects.create(
-        title_classification=title,
-        daily_cost_classification=daily_cost
+        title=title,
+        daily_cost=daily_cost
     )
 
     return classification
@@ -123,13 +123,13 @@ def vehicle_generator(branches, classifications):
             data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
         return json.dumps(data)
 
-    type_vehicle = choice('MC')
+    type = choice('MC')
     brand = ' '.join(fake.words(nb=1))
     model = ' '.join(fake.words(nb=2))
     year_manufacture = randrange(1960, 2017)
     model_year = year_manufacture + randrange(0, 5)
     mileage = float(randrange(0, 2000))
-    renavam_vehicle = renavam.generate()
+    renavam = renavam_generator.generate()
     license_plate = fake.license_plate().replace('-', '')
     chassi = str(randrange(11111111111111111, 99999999999999999))
     fuel = choice('GEDH')
@@ -142,23 +142,23 @@ def vehicle_generator(branches, classifications):
     classification = choice(classifications)
 
     vehicle = Vehicle.objects.create(
-        type_vehicle=type_vehicle,
-        brand_vehicle=brand,
-        model_vehicle=model,
-        year_manufacture_vehicle=year_manufacture,
-        model_year_vehicle=model_year,
-        mileage_vehicle=mileage,
-        renavam_vehicle=renavam_vehicle,
-        license_plate_vehicle=license_plate,
-        chassi_vehicle=chassi,
-        fuel_vehicle=fuel,
-        fuel_tank_vehicle=fuel_tank,
-        engine_vehicle=engine,
-        color_vehicle=color,
-        other_data_vehicle=other_data,
-        available_vehicle=available,
-        branch_vehicle=branch,
-        classification_vehicle=classification
+        type=type,
+        brand=brand,
+        model=model,
+        year_manufacture=year_manufacture,
+        model_year=model_year,
+        mileage=mileage,
+        renavam=renavam,
+        license_plate=license_plate,
+        chassi=chassi,
+        fuel=fuel,
+        fuel_tank=fuel_tank,
+        engine=engine,
+        color=color,
+        other_data=other_data,
+        available=available,
+        branch=branch,
+        classification=classification
     )
 
     return vehicle
@@ -176,9 +176,9 @@ def insurance_generator():
     price = randrange(100, 2000) / 100
 
     Insurance.objects.create(
-        title_insurance=title,
-        coverage_insurance=coverage,
-        price_insurance=price
+        title=title,
+        coverage=coverage,
+        price=price
     )
 
 
@@ -188,10 +188,10 @@ def additional_item_generator(branches):
     stock = randrange(1, 15)
 
     AdditionalItems.objects.create(
-        name_additionalitems=name,
-        daily_cost_additionalitems=daily_cost,
-        branch_additionalitems=choice(branches),
-        stock_additionalitems=stock
+        name=name,
+        daily_cost=daily_cost,
+        branch=choice(branches),
+        stock=stock
     )
 
 

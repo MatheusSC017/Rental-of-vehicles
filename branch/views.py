@@ -33,7 +33,7 @@ class BranchAddressViewSet(mixins.ListModelMixin, GenericViewSet):
     def get_queryset(self):
         pk = self.kwargs.get('pk')
         branch = Branch.objects.filter(pk=pk)[0]
-        qs = Address.objects.filter(pk=branch.address_branch.pk)
+        qs = Address.objects.filter(pk=branch.address.pk)
         return qs
 
 
@@ -49,5 +49,5 @@ class BranchVehicleViewSet(mixins.ListModelMixin, GenericViewSet):
     def get_queryset(self):
         pk = self.kwargs.get('pk')
         if self.request.query_params.get('show_all'):
-            return Vehicle.objects.filter(branch_vehicle=pk)
-        return Vehicle.objects.filter(branch_vehicle=pk, available_vehicle=True)
+            return Vehicle.objects.filter(branch=pk)
+        return Vehicle.objects.filter(branch=pk, available=True)

@@ -3,9 +3,9 @@ from .models import Branch
 
 
 class BranchAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name_branch', 'opening_hours_start_branch', 'opening_hours_end_branch', 'address_branch', ]
-    list_display_links = ['pk', 'name_branch', ]
-    search_fields = ['name_branch', ]
+    list_display = ['pk', 'name', 'opening_hours_start', 'opening_hours_end', 'address', ]
+    list_display_links = ['pk', 'name', ]
+    search_fields = ['name', ]
     list_per_page = 50
 
 

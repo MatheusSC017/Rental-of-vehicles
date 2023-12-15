@@ -31,7 +31,7 @@ class RentalViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(
-            staff_rental=self.request.user.staffmember,
+            staff=self.request.user.staffmember,
             **self.fetch_values_to_fill_fields()
         )
 
@@ -40,14 +40,12 @@ class RentalViewSet(ModelViewSet):
 
     def fetch_values_to_fill_fields(self) -> dict:
         """ fetch the values for fields with autocomplete """
-        branch = self.request.user.staffmember.branch_staffmember
-        vehicle = get_object_or_404(Vehicle,
-                                    renavam_vehicle=self.request.data.get('vehicle_rental'),
-                                    branch_vehicle=branch)
+        branch = self.request.user.staffmember.branch
+        vehicle = get_object_or_404(Vehicle, renavam=self.request.data.get('vehicle'), branch=branch)
         return {
-            'daily_cost_rental': vehicle.classification_vehicle.daily_cost_classification,
-            'outlet_branch_rental': vehicle.branch_vehicle,
-            'additional_daily_cost_rental': self.calculate_additional_daily_cost()
+            'daily_cost': vehicle.classification.daily_cost,
+            'outlet_branch': vehicle.branch,
+            'additional_daily_cost': self.calculate_additional_daily_cost()
         }
 
     def calculate_additional_daily_cost(self) -> float:
@@ -58,11 +56,10 @@ class RentalViewSet(ModelViewSet):
         try:
             # Get the list of additional items requested
             relationship_additional_items_list = [additional_item for additional_item
-                                                  in dict(self.request.data).get('additional_items_rental')]
+                                                  in dict(self.request.data).get('additional_items')]
             # The next step will be to create a list with the subtotal for each additional item
             additional_items_list = (
-                AdditionalItems.objects.filter(pk=item['additional_item_relationship'])[0].daily_cost_additionalitems *
-                item['number_relationship']
+                AdditionalItems.objects.filter(pk=item['additional_item'])[0].daily_cost * item['number']
                 for item in relationship_additional_items_list
             )
             return sum(additional_items_list)
@@ -73,7 +70,7 @@ class RentalViewSet(ModelViewSet):
 @api_view(['GET', ])
 @permission_classes([OnlyStaffMemberPermission, ])
 def late_appointments(request):
-    queryset = Rental.objects.filter(status_rental='A', appointment_date_rental__lt=str(timezone.now())[:10])
+    queryset = Rental.objects.filter(status='A', appointment_date__lt=str(timezone.now())[:10])
     return Response(data=RentalSerializer(queryset, many=True).data)
 
 
@@ -81,6 +78,6 @@ def late_appointments(request):
 @permission_classes([OnlyStaffMemberPermission, ])
 def late_devolutions(request):
     queryset = Rental.objects.annotate(
-        devolution_date_expected=RawSQL('DATE_ADD(appointment_date_rental, INTERVAL requested_days_rental DAY)', ()),
-    ).filter(status_rental='D', devolution_date_expected__lt=str(timezone.now())[:10])
+        devolution_date_expected=RawSQL('DATE_ADD(appointment_date, INTERVAL requested_days DAY)', ()),
+    ).filter(status='D', devolution_date_expected__lt=str(timezone.now())[:10])
     return Response(data=RentalSerializer(queryset, many=True).data)

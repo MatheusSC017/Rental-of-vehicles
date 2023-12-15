@@ -21,11 +21,11 @@ class RentalAdditionalItemSerializer(ModelSerializer):
     class Meta:
         model = RentalAdditionalItem
         fields = '__all__'
-        read_only_fields = ['rental_relationship', ]
+        read_only_fields = ['rental', ]
 
 
 class RentalSerializer(ModelSerializer):
-    error_messages_rental = {
+    error_messages = {
         'invalid_status_creation': _('For rental registration, choose scheduled or rented only.'),
         'invalid_scheduled_date': _('For vehicle scheduling, a valid scheduling date field is required.'),
         'vehicle_already_scheduled': _('The chosen vehicle is already rented or there is '
@@ -37,14 +37,14 @@ class RentalSerializer(ModelSerializer):
         'invalid_branch': _('The additional item must belong to the same branch where the vehicle was picked up.'),
     }
 
-    additional_items_rental = RentalAdditionalItemSerializer(many=True)
+    additional_items = RentalAdditionalItemSerializer(many=True)
 
     class Meta:
         model = Rental
         fields = '__all__'
-        read_only_fields = ['staff_rental', 'rent_date_rental', 'devolution_date_rental', 'actual_days_rental',
-                            'fines_rental', 'daily_cost_rental', 'return_rate_rental', 'total_cost_rental',
-                            'outlet_branch_rental', 'additional_daily_cost_rental']
+        read_only_fields = ['staff', 'rent_date', 'devolution_date', 'actual_days',
+                            'fines', 'daily_cost', 'return_rate', 'total_cost',
+                            'outlet_branch', 'additional_daily_cost']
 
     def validate(self, attrs):
         """ Validate the attributes
@@ -52,9 +52,9 @@ class RentalSerializer(ModelSerializer):
         :param attrs: get an instance of collections.OrderedDict with the attributes
         :return: return an instance of collections.OrderedDict with the attributes
         """
-        for item in attrs['additional_items_rental']:
-            if item['additional_item_relationship'].branch_additionalitems != attrs['vehicle_rental'].branch_vehicle:
-                raise ValidationError(self.error_messages_rental.get('invalid_branch'))
+        for item in attrs['additional_items']:
+            if item['additional_item'].branch != attrs['vehicle'].branch:
+                raise ValidationError(self.error_messages.get('invalid_branch'))
         return attrs
 
     @transaction.atomic
@@ -64,28 +64,28 @@ class RentalSerializer(ModelSerializer):
         :param validated_data: The data for create an instance of the Rental model class
         :return: An instance of the Rental model class
         """
-        if not validators.valid_rental_states_on_create(validated_data.get('status_rental')):
-            raise ValidationError(self.error_messages_rental.get('invalid_status_creation'))
+        if not validators.valid_rental_states_on_create(validated_data.get('status')):
+            raise ValidationError(self.error_messages.get('invalid_status_creation'))
 
-        if validated_data.get('status_rental') == 'L':
-            validated_data['appointment_date_rental'] = None
+        if validated_data.get('status') == 'L':
+            validated_data['appointment_date'] = None
 
-            if not validators.valid_rented_vehicle(validated_data.get('vehicle_rental'),
-                                                   validated_data.get('requested_days_rental')):
-                raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
+            if not validators.valid_rented_vehicle(validated_data.get('vehicle'),
+                                                   validated_data.get('requested_days')):
+                raise ValidationError(self.error_messages.get('vehicle_already_scheduled'))
         else:
-            if not validators.valid_appointment_creation(validated_data.get('appointment_date_rental')):
-                raise ValidationError(self.error_messages_rental.get('invalid_scheduled_date'))
+            if not validators.valid_appointment_creation(validated_data.get('appointment_date')):
+                raise ValidationError(self.error_messages.get('invalid_scheduled_date'))
 
-            if not validators.valid_scheduled_vehicle(validated_data.get('vehicle_rental'),
-                                                      validated_data.get('appointment_date_rental'),
-                                                      validated_data.get('requested_days_rental')):
-                raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
+            if not validators.valid_scheduled_vehicle(validated_data.get('vehicle'),
+                                                      validated_data.get('appointment_date'),
+                                                      validated_data.get('requested_days')):
+                raise ValidationError(self.error_messages.get('vehicle_already_scheduled'))
 
-        validated_data['arrival_branch_rental'] = None
-        validated_data['distance_branch_rental'] = None
+        validated_data['arrival_branch'] = None
+        validated_data['distance_branch'] = None
 
-        additional_items_data = validated_data.pop('additional_items_rental')
+        additional_items_data = validated_data.pop('additional_items')
         rental = super().create(validated_data)
         self._create_additional_items_relationship(rental, additional_items_data)
         return rental
@@ -98,31 +98,31 @@ class RentalSerializer(ModelSerializer):
         :param validated_data: The new data for the instance of the Rental model class
         :return: An instance of the Rental model class with the new data
         """
-        additional_items_data = validated_data.pop('additional_items_rental')
+        additional_items_data = validated_data.pop('additional_items')
 
-        if not validators.valid_rental_states_on_update(instance.status_rental, validated_data.get('status_rental')):
-            raise ValidationError(self.error_messages_rental.get('invalid_status_transition'))
+        if not validators.valid_rental_states_on_update(instance.status, validated_data.get('status')):
+            raise ValidationError(self.error_messages.get('invalid_status_transition'))
 
         valid_update, allowed_field = validators.valid_rental_data_update(instance, validated_data)
         if not valid_update:
-            raise ValidationError(self.error_messages_rental.get('invalid_field_update') + ", ".join(allowed_field))
+            raise ValidationError(self.error_messages.get('invalid_field_update') + ", ".join(allowed_field))
 
-        if validated_data.get('status_rental') in ('A', 'L',):
-            if validated_data.get('status_rental') == 'A':
-                if not validators.valid_scheduled_vehicle(validated_data.get('vehicle_rental'),
-                                                          validated_data.get('appointment_date_rental'),
-                                                          validated_data.get('requested_days_rental'),
+        if validated_data.get('status') in ('A', 'L',):
+            if validated_data.get('status') == 'A':
+                if not validators.valid_scheduled_vehicle(validated_data.get('vehicle'),
+                                                          validated_data.get('appointment_date'),
+                                                          validated_data.get('requested_days'),
                                                           instance.pk):
-                    raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
+                    raise ValidationError(self.error_messages.get('vehicle_already_scheduled'))
 
-            if validated_data.get('status_rental') == 'L':
-                if not validators.valid_rented_vehicle(validated_data.get('vehicle_rental'),
-                                                       validated_data.get('requested_days_rental'),
+            if validated_data.get('status') == 'L':
+                if not validators.valid_rented_vehicle(validated_data.get('vehicle'),
+                                                       validated_data.get('requested_days'),
                                                        instance.pk):
-                    raise ValidationError(self.error_messages_rental.get('vehicle_already_scheduled'))
+                    raise ValidationError(self.error_messages.get('vehicle_already_scheduled'))
 
-            if instance.status_rental != 'A' and validators.additional_items_updated(instance.pk, validated_data):
-                raise ValidationError(self.error_messages_rental.get('invalid_additional_items_updated'))
+            if instance.status != 'A' and validators.additional_items_updated(instance.pk, validated_data):
+                raise ValidationError(self.error_messages.get('invalid_additional_items_updated'))
 
             self._update_additional_items_relationship(instance, additional_items_data)
         else:
@@ -137,27 +137,27 @@ class RentalSerializer(ModelSerializer):
         :param additional_items_data: Get data for new rental additional items
         :return: None
         """
-        new_additional_items_data = [item['additional_item_relationship'] for item in additional_items_data]
+        new_additional_items_data = [item['additional_item'] for item in additional_items_data]
 
-        for current_item in rental.additional_items_rental.all():
+        for current_item in rental.additional_items.all():
             # If the current additional item is not present in the list of new additional items, it must be deleted
-            if current_item.additional_item_relationship not in new_additional_items_data:
-                self._update_stock_additional_items(additional_item=current_item.additional_item_relationship,
-                                                    old_items_number=current_item.number_relationship)
+            if current_item.additional_item not in new_additional_items_data:
+                self._update_stock_additional_items(additional_item=current_item.additional_item,
+                                                    old_items_number=current_item.number)
                 current_item.delete()
             # if it is present in the list of additional new items, the quantity value must be updated
             else:
-                new_data = [item for item in additional_items_data if item['additional_item_relationship'] ==
-                            current_item.additional_item_relationship][0]
+                new_data = [item for item in additional_items_data if item['additional_item'] ==
+                            current_item.additional_item][0]
                 # The code in the line below deletes the updated record from the list of additional new items
-                additional_items_data = [item for item in additional_items_data if item['additional_item_relationship']
-                                         != current_item.additional_item_relationship]
+                additional_items_data = [item for item in additional_items_data if item['additional_item']
+                                         != current_item.additional_item]
 
-                self._update_stock_additional_items(additional_item=current_item.additional_item_relationship,
-                                                    items_number=new_data['number_relationship'],
-                                                    old_items_number=current_item.number_relationship)
+                self._update_stock_additional_items(additional_item=current_item.additional_item,
+                                                    items_number=new_data['number'],
+                                                    old_items_number=current_item.number)
 
-                current_item.number_relationship = new_data['number_relationship']
+                current_item.number = new_data['number']
                 current_item.save()
 
         # The last step will be to create new relationships for rent and additional items
@@ -171,9 +171,9 @@ class RentalSerializer(ModelSerializer):
         :return: None
         """
         for additional_item in additional_items_data:
-            self._update_stock_additional_items(additional_item=additional_item['additional_item_relationship'],
-                                                items_number=additional_item['number_relationship'])
-            RentalAdditionalItem.objects.create(rental_relationship=rental, **additional_item)
+            self._update_stock_additional_items(additional_item=additional_item['additional_item'],
+                                                items_number=additional_item['number'])
+            RentalAdditionalItem.objects.create(rental=rental, **additional_item)
 
     def _inventory_update_for_rental_devolution_or_cancellation(self, rental) -> None:
         """
@@ -181,9 +181,9 @@ class RentalSerializer(ModelSerializer):
         :param rental: Get an instance of the Rental model class
         :return: None
         """
-        for item in rental.additional_items_rental.all():
-            self._update_stock_additional_items(additional_item=item.additional_item_relationship,
-                                                old_items_number=item.number_relationship)
+        for item in rental.additional_items.all():
+            self._update_stock_additional_items(additional_item=item.additional_item,
+                                                old_items_number=item.number)
 
     def _update_stock_additional_items(self, additional_item, items_number=0, old_items_number=0):
         """
@@ -193,7 +193,7 @@ class RentalSerializer(ModelSerializer):
         :param old_items_number: Gets the old amount of items that was being rented
         :return: None
         """
-        additional_item.stock_additionalitems = additional_item.stock_additionalitems - items_number + old_items_number
-        if additional_item.stock_additionalitems < 0:
-            raise ValidationError(self.error_messages_rental.get('invalid_additional_item_order'))
+        additional_item.stock = additional_item.stock - items_number + old_items_number
+        if additional_item.stock < 0:
+            raise ValidationError(self.error_messages.get('invalid_additional_item_order'))
         additional_item.save()

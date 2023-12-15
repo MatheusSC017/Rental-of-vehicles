@@ -10,9 +10,9 @@ import rental
 
 
 class StaffMember(Person):
-    user_staffmember = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='usuário')
-    salary_staffmember = models.FloatField(validators=[MinValueValidator(0)], verbose_name='salário')
-    branch_staffmember = models.ForeignKey(Branch, null=True, on_delete=models.SET_NULL, verbose_name='filial')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='usuário')
+    salary = models.FloatField(validators=[MinValueValidator(0)], verbose_name='salário')
+    branch = models.ForeignKey(Branch, null=True, on_delete=models.SET_NULL, verbose_name='filial')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -23,13 +23,13 @@ class StaffMember(Person):
             content_type = ContentType.objects.get_for_model(model_class)
             permissions = Permission.objects.filter(content_type=content_type)
             for perm in permissions:
-                self.user_staffmember.user_permissions.add(perm)
+                self.user.user_permissions.add(perm)
 
     def __str__(self):
-        return f'{self.user_staffmember.first_name} {self.user_staffmember.last_name}'
+        return f'{self.user.first_name} {self.user.last_name}'
 
     def __repr__(self):
-        return self.cpf_person
+        return self.cpf
 
     class Meta:
         verbose_name = 'membro da equipe'

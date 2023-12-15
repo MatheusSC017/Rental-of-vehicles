@@ -12,19 +12,19 @@ import faker
 class VehicleClassificationSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.classification = VehicleClassification.objects.create(
-            title_classification='Vehicle Classification',
-            daily_cost_classification=7.5
+            title='Vehicle Classification',
+            daily_cost=7.5
         )
         self.serializer = VehicleClassificationSerializer(self.classification)
 
     def test_verify_serializer_fields(self) -> None:
         data = self.serializer.data
-        self.assertEqual(set(data.keys()), {'id', 'title_classification', 'daily_cost_classification', })
+        self.assertEqual(set(data.keys()), {'id', 'title', 'daily_cost', })
 
     def test_verify_contents_of_serializer_fields(self) -> None:
         data = self.serializer.data
-        self.assertEqual(data['title_classification'], self.classification.title_classification)
-        self.assertEqual(data['daily_cost_classification'], self.classification.daily_cost_classification)
+        self.assertEqual(data['title'], self.classification.title)
+        self.assertEqual(data['daily_cost'], self.classification.daily_cost)
 
 
 class VehicleSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
@@ -33,49 +33,49 @@ class VehicleSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
         fake = faker.Faker('pt_BR')
 
         address = Address.objects.create(
-            cep_address=fake.postcode(),
-            state_address=fake.estado_sigla(),
-            city_address=fake.city(),
-            district_address=fake.bairro(),
-            street_address=fake.street_name(),
-            number_address=fake.building_number()
+            cep=fake.postcode(),
+            state=fake.estado_sigla(),
+            city=fake.city(),
+            district=fake.bairro(),
+            street=fake.street_name(),
+            number=fake.building_number()
         )
 
         start = randrange(5, 13)
         branch = Branch.objects.create(
-            name_branch=fake.street_name(),
-            opening_hours_start_branch=str(start) + ':00:00',
-            opening_hours_end_branch=str(start + 8) + ':00:00',
-            address_branch=address
+            name=fake.street_name(),
+            opening_hours_start=str(start) + ':00:00',
+            opening_hours_end=str(start + 8) + ':00:00',
+            address=address
         )
 
         classification = VehicleClassification.objects.create(
-            title_classification='Vehicle Classification',
-            daily_cost_classification=7.5
+            title='Vehicle Classification',
+            daily_cost=7.5
         )
 
         self.vehicle = Vehicle.objects.create(
-            type_vehicle='C',
-            brand_vehicle='FIAT',
-            model_vehicle='UNO',
-            year_manufacture_vehicle=2012,
-            model_year_vehicle=2014,
-            mileage_vehicle=10000,
-            renavam_vehicle=renavam.generate(),
-            license_plate_vehicle=fake.license_plate().replace('-', ''),
-            chassi_vehicle=str(randrange(11111111111111111, 99999999999999999)),
-            fuel_vehicle='E',
-            fuel_tank_vehicle=40,
-            engine_vehicle='40 CV',
-            color_vehicle='Vermelho',
-            branch_vehicle=branch,
-            classification_vehicle=classification
+            type='C',
+            brand='FIAT',
+            model='UNO',
+            year_manufacture=2012,
+            model_year=2014,
+            mileage=10000,
+            renavam=renavam.generate(),
+            license_plate=fake.license_plate().replace('-', ''),
+            chassi=str(randrange(11111111111111111, 99999999999999999)),
+            fuel='E',
+            fuel_tank=40,
+            engine='40 CV',
+            color='Vermelho',
+            branch=branch,
+            classification=classification
         )
 
-        self.keys = {'type_vehicle', 'brand_vehicle', 'model_vehicle', 'year_manufacture_vehicle', 'model_year_vehicle',
-                     'mileage_vehicle', 'renavam_vehicle', 'license_plate_vehicle', 'chassi_vehicle', 'fuel_vehicle',
-                     'fuel_tank_vehicle', 'engine_vehicle', 'color_vehicle', 'other_data_vehicle', 'available_vehicle',
-                     'branch_vehicle', 'classification_vehicle', }
+        self.keys = {'type', 'brand', 'model', 'year_manufacture', 'model_year',
+                     'mileage', 'renavam', 'license_plate', 'chassi', 'fuel',
+                     'fuel_tank', 'engine', 'color', 'other_data', 'available',
+                     'branch', 'classification', }
 
         self.serializer = VehicleSerializer(self.vehicle)
 
