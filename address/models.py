@@ -40,8 +40,7 @@ class Address(models.Model):
     number = models.CharField(max_length=30, verbose_name='número')
 
     def __str__(self):
-        return f'{self.street} - {self.number}, ' \
-               f'{self.district}, {self.city}/ {self.state}'
+        return f'{self.street} - {self.number}, {self.district}, {self.city}/ {self.state}'
 
     class Meta:
         verbose_name = 'endereço'

@@ -32,5 +32,4 @@ class VehicleViewSet(ModelViewSet):
         """ By default the latest version is chosen if no version is specified """
         if self.request.version == 'v1':
             return VehicleSerializer
-        else:
-            return VehicleSerializerV2
+        return VehicleSerializerV2

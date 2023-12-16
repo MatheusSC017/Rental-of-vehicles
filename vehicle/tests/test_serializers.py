@@ -1,12 +1,12 @@
+from random import randrange
+import faker
 from django.test import TestCase
 from utils.mixins.serializers import GetRelationOfTheFieldMixin
 from address.models import Address
 from branch.models import Branch
+from validate_docbr import RENAVAM
 from ..models import VehicleClassification, Vehicle
 from ..serializers import VehicleClassificationSerializer, VehicleSerializer
-from validate_docbr import RENAVAM
-from random import randrange
-import faker
 
 
 class VehicleClassificationSerializerTestCase(TestCase):
@@ -72,10 +72,9 @@ class VehicleSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
             classification=classification
         )
 
-        self.keys = {'type', 'brand', 'model', 'year_manufacture', 'model_year',
-                     'mileage', 'renavam', 'license_plate', 'chassi', 'fuel',
-                     'fuel_tank', 'engine', 'color', 'other_data', 'available',
-                     'branch', 'classification', }
+        self.keys = {'type', 'brand', 'model', 'year_manufacture', 'model_year', 'mileage', 'renavam', 'license_plate',
+                     'chassi', 'fuel', 'fuel_tank', 'engine', 'color', 'other_data', 'available', 'branch',
+                     'classification', }
 
         self.serializer = VehicleSerializer(self.vehicle)
 
@@ -90,6 +89,6 @@ class VehicleSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
 
         for key in self.keys:
             if key in objects:
-                self.assertEqual(data[key], getattr(self.vehicle, key).__repr__())
+                self.assertEqual(str(data[key]), repr(getattr(self.vehicle, key)))
             else:
                 self.assertEqual(data[key], getattr(self.vehicle, key))

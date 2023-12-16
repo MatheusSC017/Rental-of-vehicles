@@ -1,19 +1,24 @@
+import json
+from random import choice, choices, randrange
+import faker
 from django.test import TestCase
 from django.utils import timezone
-from utils.mixins.serializers import GetRelationOfTheFieldMixin
-from ..serializers import InsuranceSerializer, AdditionalItemsSerializer, RentalSerializer
-from ..models import Insurance, AdditionalItems, Rental
 from django.contrib.auth.models import User, Permission, ContentType
 from address.models import Address
 from client.models import Client
 from staff.models import StaffMember
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
-from random import choice, choices, randrange
 from validate_docbr import CPF, CNH, RENAVAM
 from unidecode import unidecode
-import faker
-import json
+from utils.mixins.serializers import GetRelationOfTheFieldMixin
+from ..serializers import InsuranceSerializer, AdditionalItemsSerializer, RentalSerializer
+from ..models import Insurance, AdditionalItems, Rental
+
+fake = faker.Faker('pt_BR')
+cpf_generator = CPF()
+cnh_generator = CNH()
+renavam_generator = RENAVAM()
 
 
 class InsuranceSerializerTestCase(TestCase):
@@ -38,8 +43,6 @@ class InsuranceSerializerTestCase(TestCase):
 
 class AdditionalItemsSerializerTestCase(TestCase):
     def setUp(self) -> None:
-        fake = faker.Faker('pt_BR')
-
         address = Address.objects.create(
             cep=fake.postcode(),
             state=fake.estado_sigla(),
@@ -78,13 +81,8 @@ class AdditionalItemsSerializerTestCase(TestCase):
 
 class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
     def setUp(self) -> None:
-        fake = faker.Faker('pt_BR')
-        cpf = CPF()
-        cnh = CNH()
-        renavam = RENAVAM()
-
         def json_generator():
-            data = dict()
+            data = {}
             for _ in range(randrange(3, 8)):
                 data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
             return json.dumps(data)
@@ -112,9 +110,9 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
 
         self.clients = [Client.objects.create(
             user=user_client,
-            cpf=cpf.generate(),
+            cpf=cpf_generator.generate(),
             rg=fake.rg(),
-            cnh=cnh.generate(),
+            cnh=cnh_generator.generate(),
             gender=choice(('M', 'F', 'N')),
             age=randrange(18, 99),
             finance=randrange(500, 30000),
@@ -131,7 +129,7 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
 
         staffmember = StaffMember.objects.create(
             user=self.user_staff,
-            cpf=cpf.generate(),
+            cpf=cpf_generator.generate(),
             rg=fake.rg(),
             gender=choice(('M', 'F', 'N')),
             age=randrange(18, 99),
@@ -155,7 +153,7 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
             year_manufacture=year_manufacture,
             model_year=year_manufacture + randrange(0, 5),
             mileage=float(randrange(0, 2000)),
-            renavam=renavam.generate(),
+            renavam=renavam_generator.generate(),
             license_plate=fake.license_plate().replace('-', ''),
             chassi=str(randrange(11111111111111111, 99999999999999999)),
             fuel=choice('GEDH'),
@@ -189,11 +187,10 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
         )
         self.rental.driver.set(self.clients)
 
-        self.keys = {'id', 'vehicle', 'insurance', 'staff', 'client', 'status',
-                     'outlet_branch', 'arrival_branch', 'distance_branch', 'driver',
-                     'appointment_date', 'rent_date', 'devolution_date', 'requested_days',
-                     'actual_days', 'rent_deposit', 'daily_cost', 'total_cost',
-                     'additional_daily_cost', 'additional_items', 'return_rate', 'fines', }
+        self.keys = {'id', 'vehicle', 'insurance', 'staff', 'client', 'status', 'outlet_branch', 'arrival_branch',
+                     'distance_branch', 'driver', 'appointment_date', 'rent_date', 'devolution_date', 'requested_days',
+                     'actual_days', 'rent_deposit', 'daily_cost', 'total_cost', 'additional_daily_cost',
+                     'additional_items', 'return_rate', 'fines', }
         self.serializer = RentalSerializer(self.rental)
 
     def test_verify_serializer_fields(self) -> None:
@@ -206,10 +203,10 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
         for key in self.keys:
             if key in many_to_many:
                 self.assertEqual(set(data.get(key)),
-                                 set([field.__repr__() for field in getattr(self.rental, key).all()]),
+                                 {repr(field) for field in getattr(self.rental, key).all()},
                                  msg=f"The content of {key} is wrong")
             elif key in objects:
-                self.assertEqual(str(data.get(key)), str(getattr(self.rental, key).__repr__()),
+                self.assertEqual(str(data.get(key)), repr(getattr(self.rental, key)),
                                  msg=f"The content of {key} is wrong")
             else:
                 self.assertEqual(data.get(key), getattr(self.rental, key),

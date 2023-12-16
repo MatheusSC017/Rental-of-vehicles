@@ -1,3 +1,7 @@
+from random import choice, randrange
+from copy import deepcopy
+import json
+import faker
 from rest_framework.test import APITestCase
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,20 +13,20 @@ from client.models import Client
 from staff.models import StaffMember
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
-from ..models import Rental, Insurance, AdditionalItems, RentalAdditionalItem
-from random import choice, randrange
 from validate_docbr import CPF, CNH, RENAVAM
-from copy import deepcopy
 from unidecode import unidecode
-import faker
-import json
+from ..models import Rental, Insurance, AdditionalItems, RentalAdditionalItem
+
+fake = faker.Faker('pt_BR')
+cpf_generator = CPF()
+cnh_generator = CNH()
+renavam_generator = RENAVAM()
 
 
 class InsuranceViewSetTestCase(APITestCase):
     @staticmethod
     def json_generator():
-        fake = faker.Faker('pt_BR')
-        data = dict()
+        data = {}
         for _ in range(randrange(3, 8)):
             data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
         return json.dumps(data)
@@ -163,13 +167,8 @@ class AdditionalItemsViewSetTestCase(APITestCase):
 
 class RentalViewSetTestCase(APITestCase):
     def setUp(self) -> None:
-        fake = faker.Faker('pt_BR')
-        cpf = CPF()
-        cnh = CNH()
-        renavam = RENAVAM()
-
         def json_generator():
-            data = dict()
+            data = {}
             for _ in range(randrange(3, 8)):
                 data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
             return json.dumps(data)
@@ -197,9 +196,9 @@ class RentalViewSetTestCase(APITestCase):
 
         self.client_user = Client.objects.create(
             user=user_client,
-            cpf=cpf.generate(),
+            cpf=cpf_generator.generate(),
             rg=fake.rg(),
-            cnh=cnh.generate(),
+            cnh=cnh_generator.generate(),
             gender=choice(('M', 'F', 'N')),
             age=randrange(18, 99),
             finance=randrange(500, 30000),
@@ -216,7 +215,7 @@ class RentalViewSetTestCase(APITestCase):
 
         staffmember = StaffMember.objects.create(
             user=self.user_staff,
-            cpf=cpf.generate(),
+            cpf=cpf_generator.generate(),
             rg=fake.rg(),
             gender=choice(('M', 'F', 'N')),
             age=randrange(18, 99),
@@ -226,10 +225,9 @@ class RentalViewSetTestCase(APITestCase):
             branch=branch
         )
 
-        daily_cost = randrange(500, 5000) / 100
         classification = VehicleClassification.objects.create(
             title=' '.join(fake.words(nb=3)),
-            daily_cost=daily_cost
+            daily_cost=randrange(500, 5000) / 100
         )
 
         year_manufacture = randrange(1960, 2020)
@@ -240,7 +238,7 @@ class RentalViewSetTestCase(APITestCase):
             year_manufacture=year_manufacture,
             model_year=year_manufacture + randrange(0, 5),
             mileage=float(randrange(0, 2000)),
-            renavam=renavam.generate(),
+            renavam=renavam_generator.generate(),
             license_plate=fake.license_plate().replace('-', ''),
             chassi=str(randrange(11111111111111111, 99999999999999999)),
             fuel=choice('GEDH'),
@@ -275,7 +273,7 @@ class RentalViewSetTestCase(APITestCase):
             appointment_date=str(timezone.now() + timezone.timedelta(days=10))[:10],
             requested_days=3,
             rent_deposit=150,
-            daily_cost=daily_cost,
+            daily_cost=classification.daily_cost,
             additional_daily_cost=0.,
             insurance=insurance
         )
@@ -338,7 +336,7 @@ class RentalViewSetTestCase(APITestCase):
 
         add_items = [add_item['additional_item_id'] for add_item
                      in Rental.objects.all()[1].additional_items.values()]
-        self.assertEqual(set(add_items), set([add_item.pk for add_item in self.additional_items]))
+        self.assertEqual(set(add_items), {add_item.pk for add_item in self.additional_items})
 
         add_daily_cost = Rental.objects.all()[1].additional_daily_cost
         self.assertEqual(add_daily_cost, sum((add_item[0].daily_cost * add_item[1]
@@ -388,7 +386,7 @@ class RentalViewSetTestCase(APITestCase):
 
         add_items = [add_item['additional_item_id'] for add_item
                      in Rental.objects.all()[1].additional_items.values()]
-        self.assertEqual(set(add_items), set([add_item.pk for add_item in self.additional_items]))
+        self.assertEqual(set(add_items), {add_item.pk for add_item in self.additional_items})
 
         new_stock = [item.stock for item in AdditionalItems.objects.all()]
         for i, stock in enumerate(new_stock):

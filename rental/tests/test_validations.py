@@ -1,5 +1,8 @@
+from random import choice, choices, randrange
+from datetime import timedelta
+import json
+import faker
 from rest_framework.test import APITestCase
-from datetime import date, timedelta
 from django.utils import timezone
 from django.contrib.auth.models import User
 from address.models import Address
@@ -7,26 +10,23 @@ from client.models import Client
 from staff.models import StaffMember
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
-from ..models import Rental, Insurance, AdditionalItems, RentalAdditionalItem
-from .. import validators
-from random import choice, choices, randrange
 from validate_docbr import CPF, CNH, RENAVAM
 from unidecode import unidecode
-import faker
-import json
+from ..models import Rental, Insurance, AdditionalItems, RentalAdditionalItem
+from .. import validators
+
+fake = faker.Faker('pt_BR')
+cpf_generator = CPF()
+cnh_generator = CNH()
+renavam_generator = RENAVAM()
 
 
 class ValidationsTestCase(APITestCase):
     def setUp(self) -> None:
         self.allow_field_update = validators.ALLOW_FIELD_UPDATE
 
-        fake = faker.Faker('pt_BR')
-        cpf = CPF()
-        cnh = CNH()
-        renavam = RENAVAM()
-
         def json_generator():
-            data = dict()
+            data = {}
             for _ in range(randrange(3, 8)):
                 data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
             return json.dumps(data)
@@ -49,9 +49,9 @@ class ValidationsTestCase(APITestCase):
 
         self.clients = [Client.objects.create(
             user=users[i],
-            cpf=cpf.generate(),
+            cpf=cpf_generator.generate(),
             rg=fake.rg(),
-            cnh=cnh.generate(),
+            cnh=cnh_generator.generate(),
             gender=choice(('M', 'F', 'N')),
             age=randrange(18, 99),
             finance=randrange(500, 30000),
@@ -68,7 +68,7 @@ class ValidationsTestCase(APITestCase):
 
         self.staffmembers = [StaffMember.objects.create(
             user=users[i + 2],
-            cpf=cpf.generate(),
+            cpf=cpf_generator.generate(),
             rg=fake.rg(),
             gender=choice(('M', 'F', 'N')),
             age=randrange(18, 99),
@@ -91,7 +91,7 @@ class ValidationsTestCase(APITestCase):
             year_manufacture=year_manufacture,
             model_year=year_manufacture + randrange(0, 5),
             mileage=float(randrange(0, 2000)),
-            renavam=renavam.generate(),
+            renavam=renavam_generator.generate(),
             license_plate=fake.license_plate().replace('-', ''),
             chassi=str(randrange(11111111111111111, 99999999999999999)),
             fuel=choice('GEDH'),
@@ -133,7 +133,7 @@ class ValidationsTestCase(APITestCase):
 
     def test_initial_state_value_of(self) -> None:
         initial_values = ['A', 'L', 'C', 'D']
-        output_values = list()
+        output_values = []
         for inital_value in initial_values:
             output_values.append(validators.valid_rental_states_on_create(inital_value))
         self.assertEqual(output_values, [True, True, False, False])
@@ -149,21 +149,6 @@ class ValidationsTestCase(APITestCase):
         for i, old_value in enumerate(old_values):
             output_values = [validators.valid_rental_states_on_update(old_value, new_value) for new_value in new_values]
             self.assertEqual(output_values, expected_output_values[i])
-
-    def test_appointament_update_or_cancelation(self) -> None:
-        today = date.today()
-        entry_dates = [
-            today + timedelta(days=5),
-            today + timedelta(days=3),
-            today,
-            today - timedelta(days=3),
-            today - timedelta(days=5),
-        ]
-
-        expected_response = [True, False, False, False, False]
-
-        for entry, response in zip(entry_dates, expected_response):
-            self.assertEqual(validators.valid_appointment_update_or_cancellation(entry), response)
 
     def test_rental_data_update_validation(self) -> None:
         new_values = {
@@ -185,11 +170,9 @@ class ValidationsTestCase(APITestCase):
             'additional_daily_cost': randrange(600, 1000) / 100,
             'driver': self.clients
         }
-        keys = ['vehicle', 'insurance', 'staff', 'client', 'status',
-                'outlet_branch', 'arrival_branch', 'distance_branch', 'appointment_date',
-                'rent_date', 'devolution_date', 'requested_days', 'actual_days',
-                'rent_deposit', 'daily_cost', 'additional_daily_cost', 'additional_items',
-                'driver', ]
+        keys = ['vehicle', 'insurance', 'staff', 'client', 'status', 'outlet_branch', 'arrival_branch',
+                'distance_branch', 'appointment_date', 'rent_date', 'devolution_date', 'requested_days', 'actual_days',
+                'rent_deposit', 'daily_cost', 'additional_daily_cost', 'additional_items', 'driver', ]
 
         for current_status, new_status in zip(('A', 'L', 'C', 'D'), ('L', 'C', 'D', 'A')):
             new_values['status'] = new_status

@@ -9,10 +9,10 @@ class VehicleClassification(models.Model):
     daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     def __repr__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = 'classificação'
@@ -58,7 +58,7 @@ class Vehicle(models.Model):
         return f'{self.brand} / {self.model} - {self.model_year}'
 
     def __repr__(self):
-        return self.renavam
+        return str(self.renavam)
 
     class Meta:
         verbose_name = 'veículo'

@@ -1,6 +1,6 @@
+from datetime import datetime, timedelta
 from typing import Any
 from rest_framework.utils import model_meta
-from datetime import datetime, timedelta
 from django.db.models import Q
 from django.db.models.expressions import RawSQL
 from django.utils import timezone
@@ -43,15 +43,6 @@ def valid_rental_states_on_update(old_status_rental, new_status_rental) -> bool:
     return new_status_rental in STATUS_UPDATE[old_status_rental]
 
 
-def valid_appointment_update_or_cancellation(appointment_date) -> bool:
-    """
-    Verifies that the 3-day deadline for the schedule for updates and cancellations has been respected
-    :param appointment_date: A string indicating the appointment date
-    :return: A boolean indicating whether the appointment date minus 3 days is greater than today
-    """
-    return datetime.strptime(str(appointment_date), '%Y-%m-%d') - timedelta(days=3) > datetime.today()
-
-
 def valid_rental_data_update(instance, validated_data) -> tuple[bool, Any]:
     """
     This validation verifies that only the allowed fields are updated, to ensure that the rest of the fields
@@ -65,7 +56,7 @@ def valid_rental_data_update(instance, validated_data) -> tuple[bool, Any]:
 
     # Select the many-to-many fields
     info = model_meta.get_field_info(rental_models.Rental)
-    many_to_many = list()
+    many_to_many = []
     for field_name, relation_info in info.relations.items():
         if relation_info.to_many and field_name not in ALLOW_FIELD_UPDATE[status_rental]:
             many_to_many.append(field_name)
@@ -76,18 +67,12 @@ def valid_rental_data_update(instance, validated_data) -> tuple[bool, Any]:
 
     for field in disallow_field_update:
         if field in many_to_many:
-            equal_values = [client for client in instance.driver.all()] == validated_data.get('driver')
+            equal_values = list(instance.driver.all()) == validated_data.get('driver')
             if not equal_values:
                 response = False
         else:
             if getattr(instance, field) != validated_data.get(field):
                 response = False
-
-    # TODO: Refactor code snippet as some fields allowed to change may be null
-    # Checks if the fields have been filled
-    # for field in ALLOW_FIELD_UPDATE[status_rental]:
-    #     if not validated_data.get(field):
-    #         response = False
 
     return response, ALLOW_FIELD_UPDATE[status_rental]
 
@@ -159,13 +144,13 @@ def valid_scheduled_vehicle(renavam, appointment_date, requested_days, id_rental
     )
     # Check if there are any rentals with the devolution date within the new rental schedule plus X days
     end_date = Q(
-        Q(devolution_date_expected__gte=(appointment_date - timezone.timedelta(days=TOLERANCE_DAYS))),
-        Q(devolution_date_expected__lte=(appointment_date + timezone.timedelta(days=requested_days + TOLERANCE_DAYS)))
+        Q(devolution_date_expected__gte=appointment_date - timezone.timedelta(days=TOLERANCE_DAYS)),
+        Q(devolution_date_expected__lte=appointment_date + timezone.timedelta(days=requested_days + TOLERANCE_DAYS))
     )
     # Check if there are any rentals with a schedule tha overlaps with the new schedule
     other_date = Q(
         Q(appointment_date__lte=appointment_date - timezone.timedelta(days=TOLERANCE_DAYS)),
-        Q(devolution_date_expected__gte=(appointment_date + timezone.timedelta(days=requested_days + TOLERANCE_DAYS)))
+        Q(devolution_date_expected__gte=appointment_date + timezone.timedelta(days=requested_days + TOLERANCE_DAYS))
     )
 
     rentals = rental_models.Rental.objects.annotate(

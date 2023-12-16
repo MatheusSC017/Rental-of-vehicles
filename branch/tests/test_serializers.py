@@ -1,9 +1,9 @@
+import faker
 from django.test import TestCase
 from django.db.models import Count
+from address.models import Address
 from ..serializers import BranchSerializer
 from ..models import Branch
-from address.models import Address
-import faker
 
 
 class BranchSerializerTestCase(TestCase):

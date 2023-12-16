@@ -1,14 +1,14 @@
+from random import choice, randrange
+import copy
+import faker
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission, ContentType
-from ..models import Client
 from address.models import Address
-from random import choice, randrange
 from validate_docbr import CPF, CNH
 from unidecode import unidecode
-import faker
-import copy
+from ..models import Client
 
 
 class ClientViewSetTestCase(APITestCase):

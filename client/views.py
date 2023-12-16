@@ -12,5 +12,3 @@ class ClientViewSet(ModelViewSet):
 class UserViewSet(ModelViewSet):
     queryset = User.objects.filter(is_staff=False)
     serializer_class = UserSerializer
-
-

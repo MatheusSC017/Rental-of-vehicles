@@ -1,7 +1,7 @@
+import faker
 from django.test import TestCase
 from ..serializers import AddressSerializer
 from ..models import Address
-import faker
 
 
 class AddressSerializerTestCase(TestCase):

@@ -1,12 +1,11 @@
+import rental
 from django.db import models
 from django.contrib.auth.models import User, ContentType, Permission
 from django.core.validators import MinValueValidator
-from client.models import Person
+from client.models import Person, Client
 from address.models import Address
 from branch.models import Branch
-from client.models import Client
 from vehicle.models import Vehicle, VehicleClassification
-import rental
 
 
 class StaffMember(Person):
@@ -29,7 +28,7 @@ class StaffMember(Person):
         return f'{self.user.first_name} {self.user.last_name}'
 
     def __repr__(self):
-        return self.cpf
+        return str(self.cpf)
 
     class Meta:
         verbose_name = 'membro da equipe'

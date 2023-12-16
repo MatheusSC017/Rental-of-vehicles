@@ -1,10 +1,10 @@
+import faker
+from unidecode import unidecode
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission, ContentType
 from ..models import Address
-from unidecode import unidecode
-import faker
 
 
 class AddressViewSetTestCase(APITestCase):

@@ -1,8 +1,6 @@
+from datetime import datetime, date, timedelta
 from django.db import models
 from django.core.validators import MinValueValidator
-from django.utils import timezone
-from .validators import valid_appointment_update_or_cancellation
-from datetime import datetime, date, timedelta
 
 
 class Insurance(models.Model):
@@ -11,10 +9,10 @@ class Insurance(models.Model):
     price = models.FloatField(validators=[MinValueValidator(0)], verbose_name='preço')
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     def __repr__(self):
-        return self.pk
+        return str(self.pk)
 
     class Meta:
         verbose_name = 'seguro'
@@ -30,7 +28,7 @@ class AdditionalItems(models.Model):
         return self.name_additionalitems
 
     def __repr__(self):
-        return self.pk
+        return str(self.pk)
 
     class Meta:
         verbose_name = 'item adicional'
@@ -79,7 +77,7 @@ class Rental(models.Model):
 
         if self.status == 'C':
             self.actual_days = 0
-            if not valid_appointment_update_or_cancellation(self.appointment_date):
+            if not datetime.strptime(str(self.appointment_date), '%Y-%m-%d') - timedelta(days=3) > datetime.today():
                 self.fines = self.calculate_fines()
             self.total_cost = self.fines
 
@@ -100,7 +98,7 @@ class Rental(models.Model):
             daily_cost_total = self.daily_cost + self.additional_daily_cost
             total_cost = self.actual_days * daily_cost_total
             self.total_cost = sum([total_cost, self.fines, self.return_rate, total_cost_of_insurance])
-        super(Rental, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def calculate_fines(self):
         daily_cost_total = self.daily_cost + self.additional_daily_cost

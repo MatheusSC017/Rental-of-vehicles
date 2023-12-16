@@ -1,14 +1,14 @@
+from random import randrange
+import faker
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission, ContentType
-from ..models import Vehicle, VehicleClassification
 from branch.models import Branch
 from address.models import Address
-from random import randrange
 from validate_docbr import RENAVAM
 from unidecode import unidecode
-import faker
+from ..models import Vehicle, VehicleClassification
 
 
 class VehicleClassificationViewSetTestCase(APITestCase):

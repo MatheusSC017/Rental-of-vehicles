@@ -33,7 +33,7 @@ class Client(Person):
         return f'{self.user.first_name} {self.user.last_name}'
 
     def __repr__(self):
-        return self.cpf
+        return str(self.cpf)
 
     class Meta:
         verbose_name = 'cliente'

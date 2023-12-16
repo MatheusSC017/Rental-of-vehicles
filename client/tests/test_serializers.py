@@ -1,13 +1,13 @@
+from random import choice, randrange
+import faker
 from django.test import TestCase
-from ..serializers import ClientSerializer, UserSerializer
 from django.contrib.auth.models import User
-from ..models import Client
 from address.models import Address
 from utils.mixins.serializers import GetRelationOfTheFieldMixin
-from random import choice, randrange
 from validate_docbr import CNH
 from unidecode import unidecode
-import faker
+from ..serializers import ClientSerializer, UserSerializer
+from ..models import Client
 
 
 class ClientSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):

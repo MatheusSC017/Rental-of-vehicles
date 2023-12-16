@@ -55,8 +55,7 @@ class RentalViewSet(ModelViewSet):
         """
         try:
             # Get the list of additional items requested
-            relationship_additional_items_list = [additional_item for additional_item
-                                                  in dict(self.request.data).get('additional_items')]
+            relationship_additional_items_list = list(dict(self.request.data).get('additional_items'))
             # The next step will be to create a list with the subtotal for each additional item
             additional_items_list = (
                 AdditionalItems.objects.filter(pk=item['additional_item'])[0].daily_cost * item['number']

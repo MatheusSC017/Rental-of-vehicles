@@ -1,12 +1,12 @@
+import faker
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission, ContentType
-from ..models import Branch
 from address.models import Address
 from vehicle.models import Vehicle
 from unidecode import unidecode
-import faker
+from ..models import Branch
 
 
 class BranchViewSetTestCase(APITestCase):

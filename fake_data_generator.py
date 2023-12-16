@@ -1,20 +1,20 @@
 import os
+import json
+from random import randrange, choice, choices
 import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'setup.settings')
 django.setup()
 
 import faker
-import json
+from unidecode import unidecode
 from validate_docbr import CPF, CNH, RENAVAM
-from random import randrange, choice, choices
+from django.contrib.auth.models import User
 from address.models import Address
 from client.models import Client
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
 from rental.models import Insurance, AdditionalItems
-from django.contrib.auth.models import User
-from unidecode import unidecode
 
 fake = faker.Faker('pt_BR')
 cpf_generator = CPF()
@@ -118,47 +118,31 @@ def classification_generator():
 
 def vehicle_generator(branches, classifications):
     def json_generator():
-        data = dict()
+        data = {}
         for _ in range(randrange(0, 5)):
             data[fake.words(nb=1)[0]] = ' '.join(fake.words(nb=2))
         return json.dumps(data)
 
-    type = choice('MC')
-    brand = ' '.join(fake.words(nb=1))
-    model = ' '.join(fake.words(nb=2))
     year_manufacture = randrange(1960, 2017)
-    model_year = year_manufacture + randrange(0, 5)
-    mileage = float(randrange(0, 2000))
-    renavam = renavam_generator.generate()
-    license_plate = fake.license_plate().replace('-', '')
-    chassi = str(randrange(11111111111111111, 99999999999999999))
-    fuel = choice('GEDH')
-    fuel_tank = randrange(15, 50)
-    engine = ' '.join(fake.words())
-    color = fake.color_name()
-    other_data = json_generator()
-    available = choices([True, False], weights=(90, 10))[0]
-    branch = choice(branches)
-    classification = choice(classifications)
 
     vehicle = Vehicle.objects.create(
-        type=type,
-        brand=brand,
-        model=model,
+        type=choice('MC'),
+        brand=' '.join(fake.words(nb=1)),
+        model=' '.join(fake.words(nb=2)),
         year_manufacture=year_manufacture,
-        model_year=model_year,
-        mileage=mileage,
-        renavam=renavam,
-        license_plate=license_plate,
-        chassi=chassi,
-        fuel=fuel,
-        fuel_tank=fuel_tank,
-        engine=engine,
-        color=color,
-        other_data=other_data,
-        available=available,
-        branch=branch,
-        classification=classification
+        model_year=year_manufacture + randrange(0, 5),
+        mileage=float(randrange(0, 2000)),
+        renavam=renavam_generator.generate(),
+        license_plate=fake.license_plate().replace('-', ''),
+        chassi=str(randrange(11111111111111111, 99999999999999999)),
+        fuel=choice('GEDH'),
+        fuel_tank=randrange(15, 50),
+        engine=' '.join(fake.words()),
+        color=fake.color_name(),
+        other_data=json_generator(),
+        available=choices([True, False], weights=(90, 10))[0],
+        branch=choice(branches),
+        classification=choice(classifications)
     )
 
     return vehicle
@@ -166,7 +150,7 @@ def vehicle_generator(branches, classifications):
 
 def insurance_generator():
     def json_generator():
-        data = dict()
+        data = {}
         for _ in range(randrange(3, 7)):
             data[fake.words(nb=1)[0]] = f'R$ {randrange(1000, 1000000):.2f}'
         return json.dumps(data)
@@ -199,11 +183,11 @@ if __name__ == '__main__':
     for _ in range(500):
         client_generator()
 
-    branches_list = list()
+    branches_list = []
     for _ in range(30):
         branches_list.append(branch_generator())
 
-    classifications_list = list()
+    classifications_list = []
     for _ in range(5):
         classifications_list.append(classification_generator())
 
