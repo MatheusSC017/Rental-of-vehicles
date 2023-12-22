@@ -21,7 +21,7 @@ class Insurance(models.Model):
 class AdditionalItems(models.Model):
     name = models.CharField(max_length=50, verbose_name='nome')
     daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
-    stock = models.PositiveSmallIntegerField(default=1, verbose_name='quantidade em estoque')
+    stock = models.PositiveSmallIntegerField(default=0, verbose_name='quantidade em estoque')
     branch = models.ForeignKey('branch.Branch', on_delete=models.DO_NOTHING, verbose_name='filial')
 
     def __str__(self):

@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./RentalAPI
+    depends_on:
+      - db
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+  db:
+    image: mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_USER: rental_database_user
+      MYSQL_PASSWORD: rental_database_password
+      MYSQL_ROOT_PASSWORD: rental_root_database_password
+      MYSQL_DATABASE: rental_database
+      MYSQL_DATABASE_HOST: db
+      MYSQL_DATABASE_PORT: 3306
+
+volumes:
+  mysql_data:
