@@ -8,5 +8,5 @@ class BranchSerializer(ModelSerializer):
 
     class Meta:
         model = Branch
-        fields = ['pk', 'name', 'opening_hours_start', 'opening_hours_end',
-                  'address_info', 'number_vehicles', ]
+        fields = ['pk', 'name', 'opening_hours_start', 'opening_hours_end', 'address', 'address_info',
+                  'number_vehicles', ]

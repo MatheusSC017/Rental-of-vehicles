@@ -41,10 +41,14 @@ class RentalSerializer(ModelSerializer):
 
     class Meta:
         model = Rental
-        fields = '__all__'
-        read_only_fields = ['staff', 'rent_date', 'devolution_date', 'actual_days',
-                            'fines', 'daily_cost', 'return_rate', 'total_cost',
-                            'outlet_branch', 'additional_daily_cost']
+        fields = [
+            'id', 'vehicle', 'insurance', 'staff', 'client', 'status', 'outlet_branch', 'arrival_branch',
+            'distance_branch', 'appointment_date', 'rent_date', 'devolution_date', 'requested_days', 'actual_days',
+            'fines', 'rent_deposit', 'daily_cost', 'additional_daily_cost', 'return_rate', 'total_cost', 'driver',
+            'additional_items'
+        ]
+        read_only_fields = ['staff', 'rent_date', 'devolution_date', 'actual_days', 'fines', 'daily_cost',
+                            'return_rate', 'total_cost', 'outlet_branch', 'additional_daily_cost']
 
     def validate(self, attrs):
         """ Validate the attributes

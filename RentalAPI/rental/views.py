@@ -9,6 +9,7 @@ from vehicle.models import Vehicle
 from .permissions import OnlyStaffMemberPermission
 from .serializers import InsuranceSerializer, AdditionalItemsSerializer, RentalSerializer
 from .models import Insurance, AdditionalItems, Rental
+from rest_framework import status
 
 
 class InsuranceViewSet(ModelViewSet):

@@ -36,7 +36,7 @@ router_root.register('vehicles', VehicleViewSet, 'Vehicles')
 router_root.register('classifications', VehicleClassificationViewSet, 'Classifications')
 
 router_branches = DefaultRouter()
-router_branches.register('addresses', BranchAddressViewSet, 'BranchAddresses')
+router_branches.register('address', BranchAddressViewSet, 'BranchAddresses')
 router_branches.register('vehicles', BranchVehicleViewSet, 'BranchVehicles')
 
 urlpatterns = [

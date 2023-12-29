@@ -39,8 +39,7 @@ class Vehicle(models.Model):
                                                            verbose_name='ano de fabricação')
     model_year = models.PositiveIntegerField(validators=[MinValueValidator(1890)], verbose_name='ano do modelo')
     mileage = models.FloatField(default=0, verbose_name='quilometragem')
-    renavam = models.CharField(max_length=11, primary_key=True,
-                                       validators=[RENAVAMValidator()], verbose_name='renavam')
+    renavam = models.CharField(max_length=11, primary_key=True, validators=[RENAVAMValidator()], verbose_name='renavam')
     license_plate = models.CharField(max_length=7, unique=True, verbose_name='placa')
     chassi = models.CharField(max_length=17, unique=True, verbose_name='chassi')
     fuel = models.CharField(max_length=1, default='G', choices=FUEL, verbose_name='combustível')
@@ -50,8 +49,7 @@ class Vehicle(models.Model):
     other_data = models.JSONField(blank=True, null=True, verbose_name='mais informações')
     available = models.BooleanField(default=True, verbose_name='disponível')
     branch = models.ForeignKey(Branch, on_delete=models.DO_NOTHING, verbose_name='filial')
-    classification = models.ForeignKey(VehicleClassification, on_delete=models.DO_NOTHING,
-                                               verbose_name='classificação')
+    classification = models.ForeignKey(VehicleClassification, on_delete=models.DO_NOTHING, verbose_name='classificação')
     image = models.ImageField(null=True, blank=True, verbose_name='imagem')
 
     def __str__(self):

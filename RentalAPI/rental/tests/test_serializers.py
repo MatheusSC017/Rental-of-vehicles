@@ -139,10 +139,9 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
             branch=branch
         )
 
-        daily_cost = randrange(500, 5000) / 100
         classification = VehicleClassification.objects.create(
             title=' '.join(fake.words(nb=3)),
-            daily_cost=daily_cost
+            daily_cost=randrange(500, 5000) / 100
         )
 
         year_manufacture = randrange(1960, 2020)
@@ -181,7 +180,7 @@ class RentalSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
             appointment_date=str(timezone.now())[:10],
             requested_days=3,
             rent_deposit=150,
-            daily_cost=daily_cost,
+            daily_cost=classification.daily_cost,
             additional_daily_cost=0.,
             insurance=insurance
         )

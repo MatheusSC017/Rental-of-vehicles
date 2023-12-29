@@ -292,8 +292,8 @@ class RentalViewSetTestCase(APITestCase):
             'appointment_date': str(timezone.now() + timezone.timedelta(days=1))[:10],
             'requested_days': 3,
             'rent_deposit': 150,
-            'driver': [self.client_user.pk, ],
-            'additional_items': []
+            'driver': [self.client_user.cpf, ],
+            'additional_items': [{"additional_item": self.additional_items[0].pk, "number": 1}]
         }
 
         self.list_url = reverse('Rentals-list')

@@ -128,12 +128,12 @@ class VehicleViewSetTestCase(APITestCase):
         self.detail_url = reverse('Vehicles-detail', kwargs={'pk': vehicles[0].renavam})
 
     def test_request_to_vehicle_available_list(self) -> None:
-        response = self.client.get(self.list_url)
+        response = self.client.get(self.list_url, {'show_available': 1})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 1)
 
     def test_request_to_vehicle_all_list(self) -> None:
-        response = self.client.get(self.list_url, {'show_all': 1})
+        response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 2)
 

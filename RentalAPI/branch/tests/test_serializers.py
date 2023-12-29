@@ -30,8 +30,8 @@ class BranchSerializerTestCase(TestCase):
 
     def test_verify_serializer_fields(self) -> None:
         data = self.serializer.data
-        self.assertEqual(set(data.keys()), {'pk', 'name', 'opening_hours_start',
-                                            'opening_hours_end', 'address_info', 'number_vehicles'})
+        self.assertEqual(set(data.keys()), {'pk', 'name', 'opening_hours_start', 'opening_hours_end', 'address',
+                                            'address_info', 'number_vehicles'})
 
     def test_verify_contents_of_serializer_fields(self) -> None:
         data = self.serializer.data

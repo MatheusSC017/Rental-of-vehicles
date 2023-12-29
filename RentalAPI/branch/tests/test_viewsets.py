@@ -54,7 +54,7 @@ class BranchViewSetTestCase(APITestCase):
             'name': 'Branch name',
             'opening_hours_start': '07:00:00',
             'opening_hours_end': '17:00:00',
-            'address': self.address,
+            'address': self.address.pk,
         }
         response = self.client.post(self.list_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -69,7 +69,7 @@ class BranchViewSetTestCase(APITestCase):
             'name': 'Branch name',
             'opening_hours_start': '08:00:00',
             'opening_hours_end': '18:00:00',
-            'address': self.address,
+            'address': self.address.pk,
         }
         response = self.client.put(self.detail_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
