@@ -18,9 +18,21 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from rental.views import InsuranceViewSet, AdditionalItemsViewSet, RentalViewSet, late_appointments, late_devolutions
+from rental.views import (
+    InsuranceViewSet,
+    AdditionalItemsViewSet,
+    RentalViewSet,
+    late_appointments,
+    late_devolutions,
+)
 from address.views import AddressViewSet
-from branch.views import BranchViewSet, BranchAddressViewSet, BranchVehicleViewSet
+from branch.views import (
+    BranchViewSet,
+    BranchAddressViewSet,
+    BranchVehicleViewSet,
+    BranchAdditionalItemsViewSet,
+    BranchStaffViewSet,
+)
 from client.views import ClientViewSet, UserViewSet
 from vehicle.views import VehicleViewSet, VehicleClassificationViewSet
 
@@ -38,6 +50,8 @@ router_root.register('classifications', VehicleClassificationViewSet, 'Classific
 router_branches = DefaultRouter()
 router_branches.register('address', BranchAddressViewSet, 'BranchAddresses')
 router_branches.register('vehicles', BranchVehicleViewSet, 'BranchVehicles')
+router_branches.register('additional_items', BranchAdditionalItemsViewSet, 'BranchAdditionalItems')
+router_branches.register('staff', BranchStaffViewSet, 'BranchStaff')
 
 urlpatterns = [
     path('', include(router_root.urls)),
