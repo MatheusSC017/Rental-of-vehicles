@@ -160,6 +160,8 @@ LOCALE_PATHS = (
     BASE_DIR / 'locale',
 )
 
+CACHE_PAGE_DURATION = 2 * 60 * 60
+
 COORDINATES_API_KEY = os.environ.get('COORDINATES_API_KEY')
 COORDINATES_URL = os.environ.get('COORDINATES_URL')
 

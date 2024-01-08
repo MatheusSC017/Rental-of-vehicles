@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, mixins
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, DjangoModelPermissions
+from django.conf import settings
 from django.db.models import Count
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -20,7 +21,7 @@ class BranchViewSet(ModelViewSet):
     serializer_class = BranchSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
-    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(cache_page(settings.CACHE_PAGE_DURATION))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -30,7 +31,7 @@ class BranchAddressViewSet(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     http_method_names = ['get', ]
 
-    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(cache_page(settings.CACHE_PAGE_DURATION))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -46,7 +47,7 @@ class BranchVehicleViewSet(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     http_method_names = ['get', ]
 
-    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(cache_page(settings.CACHE_PAGE_DURATION))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -62,7 +63,7 @@ class BranchAdditionalItemsViewSet(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     http_method_names = ['get', ]
 
-    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(cache_page(settings.CACHE_PAGE_DURATION))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -76,7 +77,7 @@ class BranchStaffViewSet(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [DjangoModelPermissions]
     http_method_names = ['get', ]
 
-    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(cache_page(settings.CACHE_PAGE_DURATION))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
