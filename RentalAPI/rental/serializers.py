@@ -43,6 +43,7 @@ class RentalSerializer(ModelSerializer):
         'invalid_additional_items_updated': _('For the current rental status, additional items cannot be changed'),
         'invalid_additional_item_order': _('Order number for additional item is greater than stock'),
         'invalid_branch': _('The additional item must belong to the same branch where the vehicle was picked up.'),
+        'invalid_staff': _('The employee is not assigned to the branch where the vehicle is located'),
     }
 
     additional_items = RentalAdditionalItemSerializer(many=True)
@@ -79,6 +80,9 @@ class RentalSerializer(ModelSerializer):
         if not validators.valid_rental_states_on_create(validated_data.get('status')):
             raise ValidationError(self.rental_error_messages.get('invalid_status_creation'))
 
+        if validated_data['vehicle'].branch.pk != validated_data['staff'].branch.pk:
+            raise ValidationError(self.rental_error_messages.get('invalid_staff'))
+
         if validated_data.get('status') == 'L':
             validated_data['appointment_date'] = None
 
@@ -112,6 +116,9 @@ class RentalSerializer(ModelSerializer):
         """
 
         additional_items_data = validated_data.pop('additional_items')
+
+        if validated_data['vehicle'].branch.pk != validated_data['staff'].branch.pk:
+            raise ValidationError(self.rental_error_messages.get('invalid_staff'))
 
         if not validators.valid_rental_states_on_update(instance.status, validated_data.get('status')):
             raise ValidationError(self.rental_error_messages.get('invalid_status_transition'))

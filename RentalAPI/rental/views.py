@@ -41,8 +41,7 @@ class RentalViewSet(ModelViewSet):
 
     def fetch_values_to_fill_fields(self) -> dict:
         """ fetch the values for fields with autocomplete """
-        branch = self.request.user.staffmember.branch
-        vehicle = get_object_or_404(Vehicle, renavam=self.request.data.get('vehicle'), branch=branch)
+        vehicle = get_object_or_404(Vehicle, renavam=self.request.data.get('vehicle'))
         return {
             'daily_cost': vehicle.classification.daily_cost,
             'outlet_branch': vehicle.branch,
