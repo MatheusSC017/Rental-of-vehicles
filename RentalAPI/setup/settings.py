@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY_RENTAL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DEBUG'))
@@ -159,6 +159,9 @@ REST_FRAMEWORK = {
 LOCALE_PATHS = (
     BASE_DIR / 'locale',
 )
+
+COORDINATES_API_KEY = os.environ.get('COORDINATES_API_KEY')
+COORDINATES_URL = os.environ.get('COORDINATES_URL')
 
 try:
     from .local_settings import *

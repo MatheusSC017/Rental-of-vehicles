@@ -27,7 +27,7 @@ But if you use Linux OS or MAC use the command below
 > source venv/Scripts/activate
 5. Install the libraries saved in the requirements.txt file, if you are using the PIP package manager you can use the following command
 > pip install -r requirements.txt
-4. Create the local_settings.py file in the **setup/** directory, in this file configure the database and API information such as SECRET_KEY, DEBUG and ALLOWED_HOSTS
+4. Create the local_settings.py file in the **setup/** directory, in this file configure the database and API information such as SECRET_KEY_RENTAL, DEBUG, ALLOWED_HOSTS, SQL_ENGINE, SQL_DATABASE, SQL_USER, SQL_PASSWORD, SQL_HOST and SQL_PORT 
 5. Create the database according to the settings established in the local_settings file (DATABASES.NAME)
 6. Run the following command to create the API tables
 > python manage.py migrate

@@ -18,7 +18,7 @@ ALLOW_FIELD_UPDATE = {
           'rent_deposit', 'driver', 'additional_items', 'additional_daily_cost', ),
     'L': ('status', 'driver', ),
     'C': ('status',),
-    'D': ('status', 'arrival_branch', 'distance_branch',),
+    'D': ('status', 'arrival_branch',),
 }
 
 TOLERANCE_DAYS = 3
@@ -175,8 +175,8 @@ def additional_items_updated(rental_pk, additional_items_data) -> bool:
     :return: Returns True if additional items have been updated, False otherwise
     """
     current_additional_items_data = rental_models.RentalAdditionalItem.objects.filter(rental=rental_pk)
-    new_additional_items_data = {item['additional_item']: item['number']
-                                 for item in additional_items_data}
+
+    new_additional_items_data = {item['additional_item']: item['number'] for item in additional_items_data}
     # Check that the current number of items equal of the new number of items
     number_of_items = current_additional_items_data.count() == len(new_additional_items_data)
     # Check that both lists are the same

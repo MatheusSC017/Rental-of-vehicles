@@ -1,8 +1,16 @@
+import requests
+from json import loads
+from requests import RequestException
+from dotenv import load_dotenv
 from rest_framework.serializers import ModelSerializer, ValidationError
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from .models import Insurance, AdditionalItems, Rental, RentalAdditionalItem
 from . import validators
+
+
+load_dotenv()
 
 
 class InsuranceSerializer(ModelSerializer):
@@ -25,7 +33,7 @@ class RentalAdditionalItemSerializer(ModelSerializer):
 
 
 class RentalSerializer(ModelSerializer):
-    error_messages = {
+    rental_error_messages = {
         'invalid_status_creation': _('For rental registration, choose scheduled or rented only.'),
         'invalid_scheduled_date': _('For vehicle scheduling, a valid scheduling date field is required.'),
         'vehicle_already_scheduled': _('The chosen vehicle is already rented or there is '
@@ -58,7 +66,7 @@ class RentalSerializer(ModelSerializer):
         """
         for item in attrs['additional_items']:
             if item['additional_item'].branch != attrs['vehicle'].branch:
-                raise ValidationError(self.error_messages.get('invalid_branch'))
+                raise ValidationError(self.rental_error_messages.get('invalid_branch'))
         return attrs
 
     @transaction.atomic
@@ -69,22 +77,22 @@ class RentalSerializer(ModelSerializer):
         :return: An instance of the Rental model class
         """
         if not validators.valid_rental_states_on_create(validated_data.get('status')):
-            raise ValidationError(self.error_messages.get('invalid_status_creation'))
+            raise ValidationError(self.rental_error_messages.get('invalid_status_creation'))
 
         if validated_data.get('status') == 'L':
             validated_data['appointment_date'] = None
 
             if not validators.valid_rented_vehicle(validated_data.get('vehicle'),
                                                    validated_data.get('requested_days')):
-                raise ValidationError(self.error_messages.get('vehicle_already_scheduled'))
+                raise ValidationError(self.rental_error_messages.get('vehicle_already_scheduled'))
         else:
             if not validators.valid_appointment_creation(validated_data.get('appointment_date')):
-                raise ValidationError(self.error_messages.get('invalid_scheduled_date'))
+                raise ValidationError(self.rental_error_messages.get('invalid_scheduled_date'))
 
             if not validators.valid_scheduled_vehicle(validated_data.get('vehicle'),
                                                       validated_data.get('appointment_date'),
                                                       validated_data.get('requested_days')):
-                raise ValidationError(self.error_messages.get('vehicle_already_scheduled'))
+                raise ValidationError(self.rental_error_messages.get('vehicle_already_scheduled'))
 
         validated_data['arrival_branch'] = None
         validated_data['distance_branch'] = None
@@ -102,14 +110,15 @@ class RentalSerializer(ModelSerializer):
         :param validated_data: The new data for the instance of the Rental model class
         :return: An instance of the Rental model class with the new data
         """
+
         additional_items_data = validated_data.pop('additional_items')
 
         if not validators.valid_rental_states_on_update(instance.status, validated_data.get('status')):
-            raise ValidationError(self.error_messages.get('invalid_status_transition'))
+            raise ValidationError(self.rental_error_messages.get('invalid_status_transition'))
 
         valid_update, allowed_field = validators.valid_rental_data_update(instance, validated_data)
         if not valid_update:
-            raise ValidationError(self.error_messages.get('invalid_field_update') + ", ".join(allowed_field))
+            raise ValidationError(self.rental_error_messages.get('invalid_field_update') + ", ".join(allowed_field))
 
         if validated_data.get('status') in ('A', 'L',):
             if validated_data.get('status') == 'A':
@@ -117,19 +126,47 @@ class RentalSerializer(ModelSerializer):
                                                           validated_data.get('appointment_date'),
                                                           validated_data.get('requested_days'),
                                                           instance.pk):
-                    raise ValidationError(self.error_messages.get('vehicle_already_scheduled'))
+                    raise ValidationError(self.rental_error_messages.get('vehicle_already_scheduled'))
 
             if validated_data.get('status') == 'L':
                 if not validators.valid_rented_vehicle(validated_data.get('vehicle'),
                                                        validated_data.get('requested_days'),
                                                        instance.pk):
-                    raise ValidationError(self.error_messages.get('vehicle_already_scheduled'))
+                    raise ValidationError(self.rental_error_messages.get('vehicle_already_scheduled'))
 
-            if instance.status != 'A' and validators.additional_items_updated(instance.pk, validated_data):
-                raise ValidationError(self.error_messages.get('invalid_additional_items_updated'))
+                if validators.additional_items_updated(instance.pk, additional_items_data):
+                    raise ValidationError(self.rental_error_messages.get('invalid_additional_items_updated'))
 
             self._update_additional_items_relationship(instance, additional_items_data)
         else:
+            # Coordinate API to calculate the distance
+            if validated_data.get('arrival_branch'):
+                try:
+                    start_address = validated_data['outlet_branch'].address
+                    end_address = validated_data['arrival_branch'].address
+                    data = {
+                        "start_address": {
+                            "street": start_address.street,
+                            "number": start_address.number,
+                            "district": start_address.district,
+                            "city": start_address.city,
+                            "state": start_address.state,
+                            "country": "Brasil"
+                        },
+                        "end_address": {
+                            "street": end_address.street,
+                            "number": end_address.number,
+                            "district": end_address.district,
+                            "city": end_address.city,
+                            "state": end_address.state,
+                            "country": "Brasil"
+                        }
+                    }
+                    headers = {"token": settings.COORDINATES_API_KEY}
+                    response = requests.get(settings.COORDINATES_URL, json=data, headers=headers)
+                    validated_data['distance_branch'] = loads(response.content)['distance'] / 1000
+                except (RequestException, ConnectionError):
+                    validated_data['distance_branch'] = 0
             self._inventory_update_for_rental_devolution_or_cancellation(instance)
 
         return super().update(instance, validated_data)
@@ -199,5 +236,5 @@ class RentalSerializer(ModelSerializer):
         """
         additional_item.stock = additional_item.stock - items_number + old_items_number
         if additional_item.stock < 0:
-            raise ValidationError(self.error_messages.get('invalid_additional_item_order'))
+            raise ValidationError(self.rental_error_messages.get('invalid_additional_item_order'))
         additional_item.save()
