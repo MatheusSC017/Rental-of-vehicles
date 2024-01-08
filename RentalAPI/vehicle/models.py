@@ -48,8 +48,8 @@ class Vehicle(models.Model):
     color = models.CharField(max_length=25, verbose_name='cor')
     other_data = models.JSONField(blank=True, null=True, verbose_name='mais informações')
     available = models.BooleanField(default=True, verbose_name='disponível')
-    branch = models.ForeignKey(Branch, on_delete=models.DO_NOTHING, verbose_name='filial')
-    classification = models.ForeignKey(VehicleClassification, on_delete=models.DO_NOTHING, verbose_name='classificação')
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, verbose_name='filial')
+    classification = models.ForeignKey(VehicleClassification, on_delete=models.CASCADE, verbose_name='classificação')
     image = models.ImageField(null=True, blank=True, verbose_name='imagem')
 
     def __str__(self):

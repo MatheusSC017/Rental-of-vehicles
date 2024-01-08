@@ -22,7 +22,7 @@ class AdditionalItems(models.Model):
     name = models.CharField(max_length=50, verbose_name='nome')
     daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
     stock = models.PositiveSmallIntegerField(default=0, verbose_name='quantidade em estoque')
-    branch = models.ForeignKey('branch.Branch', on_delete=models.DO_NOTHING, verbose_name='filial')
+    branch = models.ForeignKey('branch.Branch', on_delete=models.CASCADE, verbose_name='filial')
 
     def __str__(self):
         return self.name_additionalitems
@@ -43,17 +43,17 @@ class Rental(models.Model):
         ('D', 'Devolvido'),
     )
 
-    vehicle = models.ForeignKey('vehicle.Vehicle', on_delete=models.DO_NOTHING, verbose_name='veículo',
+    vehicle = models.ForeignKey('vehicle.Vehicle', on_delete=models.CASCADE, verbose_name='veículo',
                                 limit_choices_to={'available': True})
-    insurance = models.ForeignKey(Insurance, blank=True, null=True, on_delete=models.DO_NOTHING, verbose_name='seguro')
-    staff = models.ForeignKey('staff.StaffMember', on_delete=models.DO_NOTHING, verbose_name='funcionário')
-    client = models.ForeignKey('client.Client', on_delete=models.DO_NOTHING, related_name='client',
+    insurance = models.ForeignKey(Insurance, blank=True, null=True, on_delete=models.CASCADE, verbose_name='seguro')
+    staff = models.ForeignKey('staff.StaffMember', on_delete=models.CASCADE, verbose_name='funcionário')
+    client = models.ForeignKey('client.Client', on_delete=models.CASCADE, related_name='client',
                                verbose_name='cliente')
     status = models.CharField(max_length=1, choices=STATUS, verbose_name='status')
-    outlet_branch = models.ForeignKey('branch.Branch', related_name='outlet_branch', on_delete=models.DO_NOTHING,
+    outlet_branch = models.ForeignKey('branch.Branch', related_name='outlet_branch', on_delete=models.CASCADE,
                                       verbose_name='filial de saída')
     arrival_branch = models.ForeignKey('branch.Branch', null=True, blank=True, related_name='arrival_branch',
-                                       on_delete=models.DO_NOTHING, verbose_name='filial de chegada')
+                                       on_delete=models.CASCADE, verbose_name='filial de chegada')
     distance_branch = models.PositiveIntegerField(null=True, blank=True, verbose_name='distância entre filiais')
     appointment_date = models.DateField(null=True, blank=True, verbose_name='data de agendamento')
     rent_date = models.DateField(null=True, blank=True, verbose_name='data de alocação')
