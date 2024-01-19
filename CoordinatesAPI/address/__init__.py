@@ -19,12 +19,14 @@ def create_app(test_config=None):
 
 def configure_app(app, test_config):
     secret_key = os.getenv('SECRET_KEY_COORDINATES')
+    database_uri = os.getenv('COORDINATES_DATABASE_URI')
 
     if not secret_key:
         raise ValueError("Missing required configuration values")
 
     app.config.from_mapping(
-        SECRET_KEY=secret_key
+        SECRET_KEY=secret_key,
+        DATABASE_URI=database_uri
     )
 
     if test_config is None:

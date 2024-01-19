@@ -12,6 +12,7 @@ from validate_docbr import CPF, CNH, RENAVAM
 from django.contrib.auth.models import User
 from address.models import Address
 from client.models import Client
+from staff.models import StaffMember
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
 from rental.models import Insurance, AdditionalItems
@@ -85,6 +86,20 @@ def client_generator():
     )
 
     return client
+
+
+def staff_member_generator(branch):
+    StaffMember.objects.create(
+        user=user_generator(),
+        salary=randrange(500, 30000),
+        branch=branch,
+        cpf=cpf_generator.generate(),
+        rg=fake.rg(),
+        gender=choice(('M', 'F', 'N')),
+        age=randrange(18, 99),
+        phone=fake.cellphone_number()[4:],
+        address=address_generator()
+    )
 
 
 def branch_generator():
@@ -199,3 +214,11 @@ if __name__ == '__main__':
 
     for _ in range(100):
         additional_item_generator(branches_list)
+
+    staff_member_generator(choice(branches_list))
+
+    user = User(username='admin')
+    user.set_password('admin')
+    user.is_superuser = True
+    user.is_staff = True
+    user.save()

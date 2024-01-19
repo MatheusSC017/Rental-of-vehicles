@@ -7,7 +7,7 @@ import jwt
 load_dotenv()
 pathlib.Path().resolve()
 
-connection = sqlite3.connect('database.db')
+connection = sqlite3.connect(os.getenv('COORDINATES_DATABASE_URI'))
 
 with open('users.sql') as f:
     connection.executescript(f.read())
@@ -30,4 +30,6 @@ def get_jwt_token(user_id, username):
                       algorithm="HS256")
 
 
-print(get_jwt_token(user[0], user[2]))
+token = get_jwt_token(user[0], user[2])
+os.environ["COORDINATES_API_KEY"] = str(token)
+print(token)
