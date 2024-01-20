@@ -392,9 +392,70 @@ class AppointmentSerializer(GenericRentalCreateSerializer):
         :return: An instance of the Rental model class with the new data
         """
         additional_items_data = validated_data.pop('additional_items')
-
         self.validate_appointment(validated_data, rental_id=instance.pk)
 
         self._update_additional_items_relationship(instance, additional_items_data)
 
         return super().update(instance, validated_data)
+
+
+class RentCreateSerializer(GenericRentalCreateSerializer):
+    class Meta:
+        model = Rental
+        fields = [
+            'vehicle', 'insurance', 'client', 'status', 'requested_days', 'rent_deposit', 'driver', 'additional_items'
+        ]
+        read_only_fields = [
+            'status'
+        ]
+
+    @transaction.atomic
+    def create(self, validated_data) -> Rental:
+        """
+        This function will be applying the necessary validations to verify if the create request is valid
+        :param validated_data: The data for create an instance of the Rental model class
+        :return: An instance of the Rental model class
+        """
+
+        validated_data['status'] = 'L'
+
+        if not validators.valid_rented_vehicle(validated_data.get('vehicle'), validated_data.get('requested_days')):
+            raise ValidationError(self.rental_error_messages.get('vehicle_already_scheduled'))
+
+        additional_items_data = validated_data.pop('additional_items')
+        rental = super().create(validated_data)
+        self._create_additional_items_relationship(rental, additional_items_data)
+        return rental
+
+
+class RentUpdateSerializer(GenericRentalCreateSerializer):
+    class Meta:
+        model = Rental
+        fields = [
+            'vehicle', 'insurance', 'client', 'status', 'requested_days', 'rent_deposit', 'driver', 'additional_items'
+        ]
+        read_only_fields = [
+            'vehicle', 'insurance', 'client', 'status', 'requested_days', 'rent_deposit', 'additional_items'
+        ]
+
+    def validate(self, attrs):
+        return attrs
+
+    @transaction.atomic
+    def update(self, instance, validated_data) -> Rental:
+        """
+        This function will be applying the necessary validations to verify if the update request is valid
+        :param instance: An instance of the Rental model class
+        :param validated_data: The new data for the instance of the Rental model class
+        :return: An instance of the Rental model class with the new data
+        """
+
+        additional_items_data = validated_data.pop('additional_items')
+
+        if validators.additional_items_updated(instance.pk, additional_items_data):
+            raise ValidationError(self.rental_error_messages.get('invalid_additional_items_updated'))
+
+        self._update_additional_items_relationship(instance, additional_items_data)
+
+        return super().update(instance, validated_data)
+

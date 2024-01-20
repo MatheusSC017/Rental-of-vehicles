@@ -12,6 +12,8 @@ from .serializers import (
     AdditionalItemsSerializer,
     RentalSerializer,
     AppointmentSerializer,
+    RentCreateSerializer,
+    RentUpdateSerializer
 )
 from .models import Insurance, AdditionalItems, Rental
 
@@ -116,6 +118,17 @@ class GenericRentalCreateViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixi
 
 class AppointmentCreateUpdateViewSet(GenericRentalCreateViewSet):
     serializer_class = AppointmentSerializer
+
+
+class RentalCreateUpdateViewSet(GenericRentalCreateViewSet):
+    http_method_names = ['post', 'put', ]
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return RentCreateSerializer
+        elif self.action == 'update':
+            return RentUpdateSerializer
+        return RentCreateSerializer
 
 
 @api_view(['GET', ])

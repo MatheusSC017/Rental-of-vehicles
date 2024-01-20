@@ -23,6 +23,7 @@ from rental.views import (
     AdditionalItemsViewSet,
     RentalViewSet,
     AppointmentCreateUpdateViewSet,
+    RentalCreateUpdateViewSet,
     late_appointments,
     late_devolutions,
 )
@@ -42,6 +43,7 @@ router_root.register('insurances', InsuranceViewSet, 'Insurances')
 router_root.register('additional_items', AdditionalItemsViewSet, 'AdditionalItems')
 router_root.register('rents', RentalViewSet, 'Rentals')
 router_root.register('appointment', AppointmentCreateUpdateViewSet, 'RentalAppointment')
+router_root.register('rent', RentalCreateUpdateViewSet, 'RentalAppointment')
 router_root.register('addresses', AddressViewSet, 'Addresses')
 router_root.register('branches', BranchViewSet, 'Branches')
 router_root.register('customers/users', UserViewSet, 'Users')
