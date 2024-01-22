@@ -18,8 +18,9 @@ from .serializers import (
     RentCreateSerializer,
     RentUpdateSerializer
 )
+from branch.models import Branch
 from .models import Insurance, AdditionalItems, Rental
-from .utils import inventory_update_for_rental_devolution_or_cancellation
+from .utils import inventory_update_for_rental_devolution_or_cancellation, get_distance_of_return
 
 
 class InsuranceViewSet(ModelViewSet):
@@ -154,6 +155,28 @@ def cancel_appointment(request, pk):
     if rent.status != 'A':
         return Response(data=json.dumps("You can only can cancel a register with appointment state"))
     rent.status = 'C'
+    rent.save()
+    inventory_update_for_rental_devolution_or_cancellation(rent)
+    return Response(data=RentalSerializer(rent).data)
+
+
+@api_view(['PUT', ])
+@permission_classes([OnlyStaffMemberPermission, ])
+@transaction.atomic
+def vehicle_devolution(request, pk):
+    rent = get_object_or_404(Rental, id=pk)
+
+    if rent.status != 'L':
+        return Response(data=json.dumps("You can only return a vehicle for rental registration in allocation states"))
+
+    arrival_branch = request.data.get('arrival_branch')
+    if arrival_branch:
+        arrival_branch = Branch.objects.get(id=arrival_branch)
+        distance_branch = get_distance_of_return(rent.outlet_branch.address, arrival_branch.address)
+        rent.arrival_branch = arrival_branch
+        rent.distance_branch = distance_branch
+
+    rent.status = 'D'
     rent.save()
     inventory_update_for_rental_devolution_or_cancellation(rent)
     return Response(data=RentalSerializer(rent).data)

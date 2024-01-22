@@ -1,6 +1,39 @@
+import requests
+from json import loads
+from requests import RequestException
 from rest_framework.serializers import ValidationError
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from .models import RentalAdditionalItem
+
+
+def get_distance_of_return(outlet_branch, arrival_branch):
+    try:
+        start_address = outlet_branch
+        end_address = arrival_branch
+        data = {
+            "start_address": {
+                "street": start_address.street,
+                "number": start_address.number,
+                "district": start_address.district,
+                "city": start_address.city,
+                "state": start_address.state,
+                "country": "Brasil"
+            },
+            "end_address": {
+                "street": end_address.street,
+                "number": end_address.number,
+                "district": end_address.district,
+                "city": end_address.city,
+                "state": end_address.state,
+                "country": "Brasil"
+            }
+        }
+        headers = {"token": settings.COORDINATES_API_KEY}
+        response = requests.get(settings.COORDINATES_URL, json=data, headers=headers)
+        return loads(response.content)['distance'] / 1000
+    except (RequestException, ConnectionError):
+        return 0
 
 
 def update_additional_items_relationship(rental, additional_items_data) -> None:
