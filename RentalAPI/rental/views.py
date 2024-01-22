@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import get_object_or_404
 from django.db.models.expressions import RawSQL
 from django.utils import timezone
@@ -129,6 +131,17 @@ class RentalCreateUpdateViewSet(GenericRentalCreateViewSet):
         elif self.action == 'update':
             return RentUpdateSerializer
         return RentCreateSerializer
+
+
+@api_view(['PUT', ])
+@permission_classes([OnlyStaffMemberPermission, ])
+def appointment_to_rent_update(request, pk):
+    rent = get_object_or_404(Rental, id=pk)
+    if rent.status != 'A':
+        return Response(data=json.dumps("You can only move an appointment to the rental state"))
+    rent.status = 'L'
+    rent.save()
+    return Response(data=RentalSerializer(rent).data)
 
 
 @api_view(['GET', ])

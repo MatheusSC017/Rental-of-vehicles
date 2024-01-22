@@ -24,6 +24,7 @@ from rental.views import (
     RentalViewSet,
     AppointmentCreateUpdateViewSet,
     RentalCreateUpdateViewSet,
+    appointment_to_rent_update,
     late_appointments,
     late_devolutions,
 )
@@ -51,6 +52,7 @@ router_root.register('customers', ClientViewSet, 'Clients')
 router_root.register('vehicles', VehicleViewSet, 'Vehicles')
 router_root.register('classifications', VehicleClassificationViewSet, 'Classifications')
 
+
 router_branches = DefaultRouter()
 router_branches.register('address', BranchAddressViewSet, 'BranchAddresses')
 router_branches.register('vehicles', BranchVehicleViewSet, 'BranchVehicles')
@@ -60,6 +62,7 @@ router_branches.register('staff', BranchStaffViewSet, 'BranchStaff')
 urlpatterns = [
     path('', include(router_root.urls)),
     path('branches/<int:pk>/', include(router_branches.urls)),
+    path('rents/<int:pk>/appointment_to_rent', appointment_to_rent_update),
     path('rents/expired_appointments', late_appointments),
     path('rents/expired_returns', late_devolutions),
     path('admin/', admin.site.urls),

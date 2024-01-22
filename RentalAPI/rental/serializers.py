@@ -458,4 +458,3 @@ class RentUpdateSerializer(GenericRentalCreateSerializer):
         self._update_additional_items_relationship(instance, additional_items_data)
 
         return super().update(instance, validated_data)
-
