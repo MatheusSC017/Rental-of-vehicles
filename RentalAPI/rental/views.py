@@ -1,8 +1,9 @@
 import json
-
 from django.shortcuts import get_object_or_404
 from django.db.models.expressions import RawSQL
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.db import transaction
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, mixins
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
@@ -18,6 +19,7 @@ from .serializers import (
     RentUpdateSerializer
 )
 from .models import Insurance, AdditionalItems, Rental
+from .utils import inventory_update_for_rental_devolution_or_cancellation
 
 
 class InsuranceViewSet(ModelViewSet):
@@ -77,7 +79,7 @@ class RentalViewSet(ModelViewSet):
 class GenericRentalCreateViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
     queryset = Rental.objects.all()
     permission_classes = [OnlyStaffMemberPermission, ]
-    http_method_names = ['post', 'put' ]
+    http_method_names = ['post', 'put']
 
     def perform_create(self, serializer):
         serializer.save(
@@ -138,9 +140,22 @@ class RentalCreateUpdateViewSet(GenericRentalCreateViewSet):
 def appointment_to_rent_update(request, pk):
     rent = get_object_or_404(Rental, id=pk)
     if rent.status != 'A':
-        return Response(data=json.dumps("You can only move an appointment to the rental state"))
+        return Response(data=json.dumps(_('You can only move an appointment to the rental state')))
     rent.status = 'L'
     rent.save()
+    return Response(data=RentalSerializer(rent).data)
+
+
+@api_view(['PUT', ])
+@permission_classes([OnlyStaffMemberPermission, ])
+@transaction.atomic
+def cancel_appointment(request, pk):
+    rent = get_object_or_404(Rental, id=pk)
+    if rent.status != 'A':
+        return Response(data=json.dumps("You can only can cancel a register with appointment state"))
+    rent.status = 'C'
+    rent.save()
+    inventory_update_for_rental_devolution_or_cancellation(rent)
     return Response(data=RentalSerializer(rent).data)
 
 

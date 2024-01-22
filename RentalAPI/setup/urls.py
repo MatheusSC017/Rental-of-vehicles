@@ -25,6 +25,7 @@ from rental.views import (
     AppointmentCreateUpdateViewSet,
     RentalCreateUpdateViewSet,
     appointment_to_rent_update,
+    cancel_appointment,
     late_appointments,
     late_devolutions,
 )
@@ -63,6 +64,7 @@ urlpatterns = [
     path('', include(router_root.urls)),
     path('branches/<int:pk>/', include(router_branches.urls)),
     path('rents/<int:pk>/appointment_to_rent', appointment_to_rent_update),
+    path('rents/<int:pk>/cancel_appointment', cancel_appointment),
     path('rents/expired_appointments', late_appointments),
     path('rents/expired_returns', late_devolutions),
     path('admin/', admin.site.urls),
