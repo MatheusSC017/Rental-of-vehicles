@@ -1,7 +1,6 @@
 import requests
 from json import loads
 from requests import RequestException
-from dotenv import load_dotenv
 from rest_framework.serializers import ModelSerializer
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -9,9 +8,6 @@ from django.db import transaction
 from .models import Insurance, AdditionalItems, Rental
 from .utils import *
 from . import validators
-
-
-load_dotenv()
 
 
 class InsuranceSerializer(ModelSerializer):

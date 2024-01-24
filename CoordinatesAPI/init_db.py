@@ -4,12 +4,15 @@ import pathlib
 import os
 import jwt
 
-load_dotenv()
-pathlib.Path().resolve()
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
+try:
+    load_dotenv(BASE_DIR / ".env.coordinates")
+except:
+    load_dotenv(BASE_DIR / "../.env")
 
 connection = sqlite3.connect(os.getenv('COORDINATES_DATABASE_URI'))
 
-with open('users.sql') as f:
+with open(BASE_DIR / 'CoordinatesAPI/users.sql') as f:
     connection.executescript(f.read())
 
 cursor = connection.cursor()
