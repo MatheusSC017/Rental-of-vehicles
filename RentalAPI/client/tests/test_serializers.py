@@ -43,7 +43,7 @@ class ClientSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
             finance=randrange(1500, 5000)
         )
 
-        self.keys = {'cpf', 'rg', 'gender', 'age', 'phone', 'address', 'user', 'cnh', 'finance', }
+        self.keys = {'cpf', 'rg', 'gender', 'age', 'phone', 'address', 'user', 'cnh', 'finance'}
 
         self.serializer = ClientSerializer(self.client)
 

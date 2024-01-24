@@ -11,7 +11,13 @@ class UserSerializer(ModelSerializer):
 
 
 class ClientSerializer(ModelSerializer):
-    user = UserSerializer()
+    class Meta:
+        model = Client
+        fields = '__all__'
+
+
+class ClientReadOnlySerializer(ModelSerializer):
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Client

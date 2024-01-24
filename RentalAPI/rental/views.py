@@ -48,7 +48,10 @@ class RentalViewSet(ModelViewSet):
         )
 
     def perform_update(self, serializer):
-        serializer.save(**self.fetch_values_to_fill_fields())
+        serializer.save(
+            staff=self.request.user.staffmember,
+            **self.fetch_values_to_fill_fields()
+        )
 
     def fetch_values_to_fill_fields(self) -> dict:
         """ fetch the values for fields with autocomplete """
@@ -129,9 +132,7 @@ class RentalCreateUpdateViewSet(GenericRentalCreateViewSet):
     http_method_names = ['post', 'put', ]
 
     def get_serializer_class(self):
-        if self.action == 'create':
-            return RentCreateSerializer
-        elif self.action == 'update':
+        if self.action == 'update':
             return RentUpdateSerializer
         return RentCreateSerializer
 
