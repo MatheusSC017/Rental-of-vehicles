@@ -220,7 +220,7 @@ class ValidationsTestCase(APITestCase):
 
     def test_the_validation_of_renting_a_vehicle_with_a_vehicle_already_scheduled(self) -> None:
         self.assertTrue(validators.valid_rented_vehicle(self.vehicles[0].renavam, 5))
-        self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam, 7))
+        self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam, 8))
         self.assertFalse(validators.valid_rented_vehicle(self.vehicles[0].renavam, 10))
 
     def test_the_validation_of_scheduling_a_vehicle(self) -> None:

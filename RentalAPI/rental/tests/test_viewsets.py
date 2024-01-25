@@ -298,6 +298,10 @@ class RentalViewSetTestCase(APITestCase):
 
         self.list_url = reverse('Rentals-list')
         self.detail_url = reverse('Rentals-detail', kwargs={'pk': rental.pk})
+        self.rental_create_url = reverse('Rent-list')
+        self.rental_update_url = reverse('Rent-detail', kwargs={'pk': rental.pk})
+        self.appointment_create_url = reverse('Appointment-list')
+        self.appointment_update_url = reverse('Appointment-detail', kwargs={'pk': rental.pk})
 
     def test_request_to_rental_list(self) -> None:
         self.client.force_login(self.user_staff)
@@ -318,12 +322,12 @@ class RentalViewSetTestCase(APITestCase):
         data['status'] = 'A'
         data['appointment_date'] = str(timezone.now() + timezone.timedelta(days=20))[:10]
         self.client.force_login(self.user_staff)
-        response = self.client.put(self.detail_url, data=data, format='json')
+        response = self.client.put(self.rental_update_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
 
     def test_request_to_rental_delete(self) -> None:
         self.client.force_login(self.user_staff)
-        response = self.client.delete(self.detail_url)
+        response = self.client.delete(self.rental_update_url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED, msg=response.data)
 
     def test_function_check_to_calculate_additional_daily_cost(self) -> None:
@@ -352,7 +356,7 @@ class RentalViewSetTestCase(APITestCase):
     def test_rental_creation_with_scheduled_status(self) -> None:
         data = deepcopy(self.data)
         data['status'] = 'A'
-        response = self.create_rent(data)
+        response = self.create_appointment(data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
         self.assertEqual(Rental.objects.count(), 2)
         self.assertEqual(Rental.objects.all()[1].status, 'A')
@@ -362,14 +366,14 @@ class RentalViewSetTestCase(APITestCase):
         data = deepcopy(self.data)
         data['status'] = 'A'
         data['appointment_date'] = ''
-        response = self.create_rent(data)
+        response = self.create_appointment(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
     def test_rental_creation_with_scheduled_status_and_wrong_appointament_date(self) -> None:
         data = deepcopy(self.data)
         data['status'] = 'A'
         data['appointment_date'] = str(timezone.now() - timezone.timedelta(days=3))[:10]
-        response = self.create_rent(data)
+        response = self.create_appointment(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, msg=response.data)
 
     def test_stock_update_of_additional_items_when_creating_rent(self) -> None:
@@ -403,7 +407,7 @@ class RentalViewSetTestCase(APITestCase):
         old_additional_items = [item.number for item in self.rental_additional_items]
 
         self.client.force_login(self.user_staff)
-        response = self.client.put(self.detail_url, data=data, format='json')
+        response = self.client.put(self.appointment_update_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, msg=response.data)
         self.assertEqual(Rental.objects.count(), 1)
 
@@ -418,4 +422,8 @@ class RentalViewSetTestCase(APITestCase):
 
     def create_rent(self, data) -> Response:
         self.client.force_login(self.user_staff)
-        return self.client.post(self.list_url, data=data, format='json')
+        return self.client.post(self.rental_create_url, data=data, format='json')
+
+    def create_appointment(self, data) -> Response:
+        self.client.force_login(self.user_staff)
+        return self.client.post(self.appointment_create_url, data=data, format='json')

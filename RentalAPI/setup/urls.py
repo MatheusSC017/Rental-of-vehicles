@@ -45,8 +45,8 @@ router_root = DefaultRouter()
 router_root.register('insurances', InsuranceViewSet, 'Insurances')
 router_root.register('additional_items', AdditionalItemsViewSet, 'AdditionalItems')
 router_root.register('rents', RentalViewSet, 'Rentals')
-router_root.register('appointment', AppointmentCreateUpdateViewSet, 'RentalAppointment')
-router_root.register('rent', RentalCreateUpdateViewSet, 'RentalAppointment')
+router_root.register('appointment', AppointmentCreateUpdateViewSet, 'Appointment')
+router_root.register('rent', RentalCreateUpdateViewSet, 'Rent')
 router_root.register('addresses', AddressViewSet, 'Addresses')
 router_root.register('branches', BranchViewSet, 'Branches')
 router_root.register('customers/users', UserViewSet, 'Users')
@@ -64,11 +64,11 @@ router_branches.register('staff', BranchStaffViewSet, 'BranchStaff')
 urlpatterns = [
     path('', include(router_root.urls)),
     path('branches/<int:pk>/', include(router_branches.urls)),
-    path('rents/<int:pk>/appointment_to_rent', appointment_to_rent_update),
-    path('rents/<int:pk>/cancel_appointment', cancel_appointment),
-    path('rents/<int:pk>/vehicle_devolution', vehicle_devolution),
-    path('rents/expired_appointments', late_appointments),
-    path('rents/expired_returns', late_devolutions),
+    path('rents/<int:pk>/appointment_to_rent', appointment_to_rent_update, name='AppointmentToRent'),
+    path('rents/<int:pk>/cancel_appointment', cancel_appointment, name='CancelAppointment'),
+    path('rents/<int:pk>/vehicle_devolution', vehicle_devolution, name='VehicleDevolution'),
+    path('rents/expired_appointments', late_appointments, name='LateAppointments'),
+    path('rents/expired_returns', late_devolutions, name='LateDevolutions'),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

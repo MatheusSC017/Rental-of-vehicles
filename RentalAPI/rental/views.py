@@ -35,11 +35,11 @@ class AdditionalItemsViewSet(ModelViewSet):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
-class RentalViewSet(ModelViewSet):
+class RentalViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = Rental.objects.all()
     serializer_class = RentalSerializer
     permission_classes = [OnlyStaffMemberPermission, ]
-    http_method_names = ['get', 'post', 'put', 'path', ]
+    http_method_names = ['get', ]
 
     def perform_create(self, serializer):
         serializer.save(

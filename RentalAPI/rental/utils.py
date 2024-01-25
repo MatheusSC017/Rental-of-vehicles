@@ -49,7 +49,7 @@ def update_additional_items_relationship(rental, additional_items_data) -> None:
         # If the current additional item is not present in the list of new additional items, it must be deleted
         if current_item.additional_item not in new_additional_items_data:
             update_stock_additional_items(additional_item=current_item.additional_item,
-                                          ld_items_number=current_item.number)
+                                          old_items_number=current_item.number)
             current_item.delete()
         # if it is present in the list of additional new items, the quantity value must be updated
         else:
