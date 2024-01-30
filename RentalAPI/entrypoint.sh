@@ -11,6 +11,9 @@ then
     echo "MySQL started"
 fi
 
+access_token=$(python create_access_token.py)
+export COORDINATES_API_KEY=$access_token
+
 python manage.py flush --no-input
 python manage.py migrate
 if [ "$INITIAL_DATA" = "True" ]

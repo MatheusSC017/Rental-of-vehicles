@@ -1,8 +1,4 @@
-import requests
-from json import loads
-from requests import RequestException
 from rest_framework.serializers import ModelSerializer
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from .models import Insurance, AdditionalItems, Rental

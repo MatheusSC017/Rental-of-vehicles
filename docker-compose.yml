@@ -11,9 +11,11 @@ services:
     expose:
       - 5000
     env_file:
-      - ./.env
+      - ./.env.coordinates
   main-api:
-    build: ./RentalAPI
+    build:
+      context: .
+      dockerfile: RentalAPI/Dockerfile
     depends_on:
       - db
       - distance-microservice
@@ -27,7 +29,8 @@ services:
     expose:
       - 8000
     env_file:
-      - ./.env
+      - ./.env.rental
+      - ./.env.coordinates
   db:
     image: mysql
     networks:

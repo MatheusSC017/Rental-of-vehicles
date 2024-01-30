@@ -7,10 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from .models import RentalAdditionalItem
 
 
-def get_distance_of_return(outlet_branch, arrival_branch):
+def get_distance_of_return(start_address, end_address):
     try:
-        start_address = outlet_branch
-        end_address = arrival_branch
         data = {
             "start_address": {
                 "street": start_address.street,
@@ -32,7 +30,7 @@ def get_distance_of_return(outlet_branch, arrival_branch):
         headers = {"token": settings.COORDINATES_API_KEY}
         response = requests.get(settings.COORDINATES_URL, json=data, headers=headers)
         return loads(response.content)['distance'] / 1000
-    except (RequestException, ConnectionError):
+    except Exception as e:
         return 0
 
 

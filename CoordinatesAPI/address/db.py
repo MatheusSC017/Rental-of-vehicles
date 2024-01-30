@@ -1,9 +1,6 @@
 import sqlite3
-import pathlib
 from flask import current_app
 from functools import wraps
-
-pathlib.Path().resolve()
 
 
 def sqlite_connection(f):
@@ -22,6 +19,6 @@ def sqlite_connection(f):
 
 
 @sqlite_connection
-def get_user(cursor, user_id, username):
-    cursor.execute("SELECT * FROM users WHERE id = (?) AND username = (?)", (user_id, username))
+def get_user(cursor, username):
+    cursor.execute("SELECT * FROM users WHERE username = (?)", (username, ))
     return cursor.fetchone()

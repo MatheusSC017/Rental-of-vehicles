@@ -15,7 +15,7 @@ def token_required(f):
                             status=401)
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
-            user = get_user(data['user_id'], data['username'])
+            user = get_user(data['username'])
 
             if user is None:
                 return Response(dumps({"error": "Invalid payload entered or user does not exist"}),

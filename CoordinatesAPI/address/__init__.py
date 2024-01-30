@@ -5,13 +5,13 @@ from flask import Flask
 from flask_restful import Api
 from . import routers
 
-path = pathlib.Path(__file__).resolve().parent
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 # Load variables from the .env file into the environment
 try:
-    load_dotenv(path.parent.parent / ".env.coordinates")
+    load_dotenv(BASE_DIR.parent / ".env.coordinates")
 except:
-    load_dotenv(path.parent.parent / ".env")
-print(os.getenv('COORDINATES_DATABASE_URI'))
+    load_dotenv(BASE_DIR.parent / ".env")
+
 
 def create_app(test_config=None):
     # Create and configure the app
