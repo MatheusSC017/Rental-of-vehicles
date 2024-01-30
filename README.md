@@ -48,18 +48,21 @@ But if you use Linux OS or MAC use the command below
 
 6. Create the .env.coordinates file, in this file configure the database and API information to the microservice (Guide yourself through the [environment variables](https://github.com/MatheusSC017/Rental-of-vehicles#enviroment-files-parameters) section)
 
-7. Run the file to start the database/ create an access key to be used in the main API, copy the token printed in the terminal
+7. Run the file to start the database 
 > python CoordinatesAPI/init_db.py 
 
-8. Run the microservice application
+8. Run the file to create an access key to be used in the main API, copy the token printed in the terminal
+> python CoordinatesAPI/create_access_token.py 
+
+9. Run the microservice application
 > flask --app CoordinatesAPI/address run
 
-8. Create the .env.rental file, in this file configure the database and API information to the main API (Guide yourself through the [environment variables](https://github.com/MatheusSC017/Rental-of-vehicles#enviroment-files-parameters) section)
+10. Create the .env.rental file, in this file configure the database and API information to the main API (Guide yourself through the [environment variables](https://github.com/MatheusSC017/Rental-of-vehicles#enviroment-files-parameters) section)
 
-7. Create the database according to the settings established in the local_settings file (DATABASES.NAME)
-8. Run the following command to create the API tables
+11. Create the database according to the settings established in the .env.rental file
+12. Run the following command to create the API tables
 > python RentalAPI/manage.py migrate
-9. Start the API through this command
+13. Start the API through this command
 > python RentalAPI/manage.py runserver
 
 ### Enviroment files parameters
@@ -73,17 +76,17 @@ GOOGLE_MAPS_SECRET_KEY | Google secret key to access the [geocoding service](htt
 
 #### .env.rental
 
-Parameters | Characteristics                | Example
---- |--------------------------------| ---
-SECRET_KEY_RENTAL |                                | 
-COORDINATES_API_KEY | Microservice access key, paste the access key created in step 7      |
-COORDINATES_URL | URL to access the microservice | If you are running locally on port 5000, the value will be: http://127.0.0.1:5000/v1/distance/addresses or if you are running using docker set it to http://distance-microservice:5000/v1/distance/addresses
-DEBUG | Boolean value                  | 0
-DJANGO_ALLOWED_HOSTS |                                | Local installation: localhost 127.0.0.1 [::1]
-SQL_ENGINE | Database used                  | Mysql config: django.db.backends.mysql
-SQL_DATABASE | Name of the database           | rental-of-vehicles
-SQL_USER | Name of the database user      |
-SQL_PASSWORD | Password of the user           |
-SQL_HOST |                                | Local installation: 127.0.0.1
-SQL_PORT | Port used                      | Commonly used port for mysql: 3306
+Parameters | Characteristics                                                                                                                         | Example
+--- |-----------------------------------------------------------------------------------------------------------------------------------------| ---
+SECRET_KEY_RENTAL |                                                                                                                                         | 
+COORDINATES_API_KEY | Microservice access key, paste the access key created in step 8 if you are running on-premises or just ignore if you are using docker-compose | 
+COORDINATES_URL | URL to access the microservice                                                                                                          | If you are running locally on port 5000, the value will be: http://127.0.0.1:5000/v1/distance/addresses or if you are running using docker set it to http://distance-microservice:5000/v1/distance/addresses
+DEBUG | Boolean value                                                                                                                           | 0
+DJANGO_ALLOWED_HOSTS |                                                                                                                                         | Local installation: localhost 127.0.0.1 [::1]
+SQL_ENGINE | Database used                                                                                                                           | Mysql config (Local installation/ Docker-default): django.db.backends.mysql
+SQL_DATABASE | Name of the database                                                                                                                    | Docker-default: rental-of-vehicles
+SQL_USER | Name of the database user                                                                                                               | Docker-default: rental_database_user
+SQL_PASSWORD | Password of the user                                                                                                                    | Docker-default: rental_database_password
+SQL_HOST |                                                                                                                                         | Local installation/ Docker-default: 127.0.0.1
+SQL_PORT | Port used                                                                                                                               | Commonly used port for mysql (Docker-default): 3306
 
