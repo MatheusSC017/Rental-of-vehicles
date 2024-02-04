@@ -13,7 +13,7 @@ class UserSerializer(ModelSerializer):
 class ClientSerializer(ModelSerializer):
     class Meta:
         model = Client
-        fields = '__all__'
+        fields = ['cpf', 'rg', 'gender', 'age', 'phone', 'address', 'user', 'cnh', 'finance', ]
 
 
 class ClientReadOnlySerializer(ModelSerializer):
@@ -21,4 +21,4 @@ class ClientReadOnlySerializer(ModelSerializer):
 
     class Meta:
         model = Client
-        fields = '__all__'
+        fields = ['cpf', 'rg', 'gender', 'age', 'phone', 'address', 'user', 'cnh', 'finance', ]

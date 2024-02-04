@@ -6,12 +6,20 @@ from client.models import Person, Client
 from address.models import Address
 from branch.models import Branch
 from vehicle.models import Vehicle, VehicleClassification
+from utils.models.managers import ActiveObjectsManager
 
 
 class StaffMember(Person):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='usuário')
     salary = models.FloatField(validators=[MinValueValidator(0)], verbose_name='salário')
     branch = models.ForeignKey(Branch, null=True, on_delete=models.SET_NULL, verbose_name='filial')
+    is_active = models.BooleanField(default=True)
+
+    objects = ActiveObjectsManager()
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

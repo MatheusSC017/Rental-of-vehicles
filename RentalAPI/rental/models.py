@@ -1,12 +1,20 @@
 from datetime import datetime, date, timedelta
 from django.db import models
 from django.core.validators import MinValueValidator
+from utils.models.managers import ActiveObjectsManager
 
 
 class Insurance(models.Model):
     title = models.CharField(max_length=100, verbose_name='titulo')
     coverage = models.JSONField(verbose_name='abrangência')
     price = models.FloatField(validators=[MinValueValidator(0)], verbose_name='preço')
+    is_active = models.BooleanField(default=True)
+
+    objects = ActiveObjectsManager()
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
 
     def __str__(self):
         return str(self.title)
@@ -23,6 +31,13 @@ class AdditionalItems(models.Model):
     daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo diário')
     stock = models.PositiveSmallIntegerField(default=0, verbose_name='quantidade em estoque')
     branch = models.ForeignKey('branch.Branch', on_delete=models.CASCADE, verbose_name='filial')
+    is_active = models.BooleanField(default=True)
+
+    objects = ActiveObjectsManager()
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
 
     def __str__(self):
         return self.name_additionalitems
@@ -70,6 +85,9 @@ class Rental(models.Model):
     total_cost = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0)],
                                    verbose_name='custo total')
     driver = models.ManyToManyField('client.Client', related_name='driver', verbose_name='condutores')
+
+    def delete(self, *args, **kwargs):
+        pass
 
     def save(self, *args, **kwargs):
         if self.status == 'L' and not self.rent_date:

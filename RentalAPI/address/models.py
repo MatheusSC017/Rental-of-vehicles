@@ -1,4 +1,5 @@
 from django.db import models
+from utils.models.managers import ActiveObjectsManager
 
 
 class Address(models.Model):
@@ -38,6 +39,13 @@ class Address(models.Model):
     district = models.CharField(max_length=100, verbose_name='bairro')
     street = models.CharField(max_length=100, verbose_name='rua')
     number = models.CharField(max_length=30, verbose_name='número')
+    is_active = models.BooleanField(default=True)
+
+    objects = ActiveObjectsManager()
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
 
     def __str__(self):
         return f'{self.street} - {self.number}, {self.district}, {self.city}/ {self.state}'

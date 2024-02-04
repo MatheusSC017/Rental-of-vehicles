@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator
 from address.models import Address
 from utils.validators.docbr import CPFValidator, CNHValidator
 from utils.validators.basic_user import PhoneValidator
+from utils.models.managers import ActiveObjectsManager
 
 
 class Person(models.Model):
@@ -28,6 +29,13 @@ class Client(Person):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='usuário')
     cnh = models.CharField(max_length=11, unique=True, null=True, validators=[CNHValidator()], verbose_name='CNH')
     finance = models.FloatField(verbose_name='renda')
+    is_active = models.BooleanField(default=True)
+
+    objects = ActiveObjectsManager()
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'

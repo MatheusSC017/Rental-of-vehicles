@@ -2,11 +2,19 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from branch.models import Branch
 from utils.validators.docbr import RENAVAMValidator
+from utils.models.managers import ActiveObjectsManager
 
 
 class VehicleClassification(models.Model):
     title = models.CharField(max_length=50, verbose_name='classificação')
     daily_cost = models.FloatField(validators=[MinValueValidator(0)], verbose_name='custo da diária')
+    is_active = models.BooleanField(default=True)
+
+    objects = ActiveObjectsManager()
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
 
     def __str__(self):
         return str(self.title)
@@ -51,6 +59,13 @@ class Vehicle(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, verbose_name='filial')
     classification = models.ForeignKey(VehicleClassification, on_delete=models.CASCADE, verbose_name='classificação')
     image = models.ImageField(null=True, blank=True, verbose_name='imagem')
+    is_active = models.BooleanField(default=True)
+
+    objects = ActiveObjectsManager()
+
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.save()
 
     def __str__(self):
         return f'{self.brand} / {self.model} - {self.model_year}'
