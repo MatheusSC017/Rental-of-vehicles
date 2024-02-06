@@ -1,0 +1,2147 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Rental of Vehicles",
+    "description": "This API was created with the aim of managing a dealership's rental registration, storing data and relationships, such as vehicles and their branches and users and their rentals.",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/",
+      "description": "Sandbox server (uses test data)"
+    }
+  ],
+  "paths": {
+    "/additional_items": {
+      "get": {
+        "summary": "Return a list of all additional items for vehicles.",
+        "tags": [
+          "Additional Items"
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing a JSON array of additional item information for vehicles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "count": 2,
+                    "next": null,
+                    "previous": null,
+                    "results": [
+                      {
+                        "id": 1,
+                        "name": "child seat",
+                        "daily_cost": 3.5,
+                        "stock": 2,
+                        "branch": 1
+                      },
+                      {
+                        "id": 2,
+                        "name": "seat cover",
+                        "daily_cost": 0.5,
+                        "stock": 12,
+                        "branch": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new additional item for vehicles",
+        "tags": [
+          "Additional Items"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdditionalItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An object that represents an additional item for vehicles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Children's chair",
+                    "daily_cost": 3.7,
+                    "stock": 8,
+                    "branch": 2
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/additional_items/{id}": {
+      "get": {
+        "summary": "Return an object containing additional item information",
+        "tags": [
+          "Additional Items"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object that represents an additional item for vehicles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Children's chair",
+                    "daily_cost": 3.7,
+                    "stock": 8,
+                    "branch": 2
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an additional item and return an object with the new values",
+        "tags": [
+          "Additional Items"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdditionalItem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object informing the new additional item information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Children's chair",
+                    "daily_cost": 3.7,
+                    "stock": 8,
+                    "branch": 2
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an additional item",
+        "tags": [
+          "Additional Items"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns nothing if successful"
+          }
+        }
+      }
+    },
+    "/addresses": {
+      "get": {
+        "summary": "Return a list of all addresses.",
+        "tags": [
+          "Addresses"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing a JSON array of addresses information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "count": 2,
+                    "next": null,
+                    "previous": null,
+                    "results": [
+                      {
+                        "id": 1,
+                        "cep": 20531590,
+                        "state": "RJ",
+                        "city": "Rio de Janeiro",
+                        "district": "Alto da Boa Vista",
+                        "street": "Parque Nacional da Tijuca",
+                        "number": "S/N"
+                      },
+                      {
+                        "id": 2,
+                        "cep": 22290255,
+                        "state": "RJ",
+                        "city": "Rio de Janeiro",
+                        "district": "Urca",
+                        "street": "AV. Pasteur",
+                        "number": 520
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new address",
+        "tags": [
+          "Addresses"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Address"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An object that represents an Address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "cep": 20531590,
+                    "state": "RJ",
+                    "city": "Rio de Janeiro",
+                    "district": "Alto da Boa Vista",
+                    "street": "Parque Nacional da Tijuca",
+                    "number": "S/N"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addresses/{id}": {
+      "get": {
+        "summary": "Return an object containing address information",
+        "tags": [
+          "Addresses"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object that represents an address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "cep": 20531590,
+                    "state": "RJ",
+                    "city": "Rio de Janeiro",
+                    "district": "Alto da Boa Vista",
+                    "street": "Parque Nacional da Tijuca",
+                    "number": "S/N"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an address and return an object with the new values",
+        "tags": [
+          "Addresses"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Address"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object informing the new address information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "cep": 20531590,
+                    "state": "RJ",
+                    "city": "Rio de Janeiro",
+                    "district": "Alto da Boa Vista",
+                    "street": "Parque Nacional da Tijuca",
+                    "number": "S/N"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an address",
+        "tags": [
+          "Addresses"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns nothing if successful"
+          }
+        }
+      }
+    },
+    "/branches": {
+      "get": {
+        "summary": "Return a list of all branches",
+        "tags": [
+          "Branches"
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing a JSON array of branches information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "count": 2,
+                    "next": null,
+                    "previous": null,
+                    "results": [
+                      {
+                        "id": 1,
+                        "name": "Vehicle Rental",
+                        "opening_hours_start": "12:00:00",
+                        "opening_hours_end": "20:00:00",
+                        "address": 1,
+                        "address_info": "Parque Nacional da Tijuca - S/N, Alto da Boa Vista, Rio de Janeiro/ RJ",
+                        "number_vehicles": 0
+                      },
+                      {
+                        "id": 2,
+                        "name": "Vehicle Rental",
+                        "opening_hours_start": "11:00:00",
+                        "opening_hours_end": "21:00:00",
+                        "address": 2,
+                        "address_info": "AV. Pasteur - 520, Urca, Rio de Janeiro/ RJ",
+                        "number_vehicles": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new Branch",
+        "tags": [
+          "Branches"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Branch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An object that represents a branch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Vehicle Rental",
+                    "opening_hours_start": "12:00:00",
+                    "opening_hours_end": "20:00:00",
+                    "address": 1,
+                    "address_info": "Parque Nacional da Tijuca - S/N, Alto da Boa Vista, Rio de Janeiro/ RJ",
+                    "number_vehicles": 0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/branches/{id}": {
+      "get": {
+        "summary": "Return an object containing branch information",
+        "tags": [
+          "Branches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object that represents a branch",
+            "content": {
+              "appliction/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Vehicle Rental",
+                    "opening_hours_start": "12:00:00",
+                    "opening_hours_end": "20:00:00",
+                    "address": 1,
+                    "address_info": "Parque Nacional da Tijuca - S/N, Alto da Boa Vista, Rio de Janeiro/ RJ",
+                    "number_vehicles": 0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a branch and return an object with the new values",
+        "tags": [
+          "Branches"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Branch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object informing the new branch information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Vehicle Rental",
+                    "opening_hours_start": "12:00:00",
+                    "opening_hours_end": "20:00:00",
+                    "address": 1,
+                    "address_info": "Parque Nacional da Tijuca - S/N, Alto da Boa Vista, Rio de Janeiro/ RJ",
+                    "number_vehicles": 0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a branch",
+        "tags": [
+          "Branches"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns nothing if successful"
+          }
+        }
+      }
+    },
+    "/classifications": {
+      "get": {
+        "summary": "Return a list of all vehicle classifications",
+        "tags": [
+          "Classifications"
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing a JSON array of vehicle classification information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "count": 3,
+                    "next": null,
+                    "previous": null,
+                    "results": [
+                      {
+                        "id": 1,
+                        "title": "Luxury vehicle",
+                        "daily_cost": 520
+                      },
+                      {
+                        "id": 2,
+                        "title": "Basic vehicle",
+                        "daily_cost": 100
+                      },
+                      {
+                        "id": 3,
+                        "title": "Sport vehicle",
+                        "daily_cost": 650
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new vehicle classification",
+        "tags": [
+          "Classifications"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Classification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An object that represents a vehicle classification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 3,
+                    "title": "Sport vehicle",
+                    "daily_cost": 650
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classifications/{id}": {
+      "get": {
+        "summary": "Return an object containing vehicle classification information",
+        "tags": [
+          "Classifications"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object that represents a vehicle classification",
+            "content": {
+              "appliction/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "title": "Luxury vehicle",
+                    "daily_cost": 520
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a vehicle classification and return an object with the new values",
+        "tags": [
+          "Classifications"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Classification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object informing the new vehicle classification information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "title": "Sport vehicle",
+                    "daily_cost": 650
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a vehicle classification",
+        "tags": [
+          "Classifications"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns nothing if successful"
+          }
+        }
+      }
+    },
+    "/insurances": {
+      "get": {
+        "summary": "Return a list of all vehicle insurances",
+        "tags": [
+          "Insurances"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing a JSON array of vehicle insurances information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "count": 2,
+                    "next": null,
+                    "previous": null,
+                    "results": [
+                      {
+                        "id": 1,
+                        "title": "basic insurance",
+                        "coverage": {
+                          "personal itens": 5000,
+                          "moral damages": 15000
+                        },
+                        "price": 20
+                      },
+                      {
+                        "id": 2,
+                        "title": "complete insurance",
+                        "coverage": {
+                          "personal itens": 50000,
+                          "moral damages": 150000,
+                          "moral damages to third parties": 25000
+                        },
+                        "price": 50
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new vehicle insurance",
+        "tags": [
+          "Insurances"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Insurance"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An object that represents a vehicle insurance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "title": "basic insurance",
+                    "coverage": {
+                      "personal itens": 5000,
+                      "moral damages": 15000
+                    },
+                    "price": 20
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/insurances/{id}": {
+      "get": {
+        "summary": "Return an object containing vehicle insurance information",
+        "tags": [
+          "Insurances"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object that represents a vehicle insurance information",
+            "content": {
+              "appliction/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "title": "basic insurance",
+                    "coverage": {
+                      "personal itens": 5000,
+                      "moral damages": 15000
+                    },
+                    "price": 20
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a vehicle insurance and return an object with the new values",
+        "tags": [
+          "Insurances"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Insurance"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object informing the new vehicle insurance information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "title": "basic insurance",
+                    "coverage": {
+                      "personal itens": 5000,
+                      "moral damages": 15000
+                    },
+                    "price": 20
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a vehicle insurance",
+        "tags": [
+          "Insurances"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns nothing if successful"
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "summary": "Return a list of all customers",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing a JSON array of customers information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "count": 2,
+                    "next": null,
+                    "previous": null,
+                    "results": [
+                      {
+                        "cpf": 928095371,
+                        "user": {
+                          "pk": 1,
+                          "username": "Enzo65283",
+                          "first_name": "Enzo",
+                          "last_name": "Cardoso",
+                          "email": "enzo65283@email.com.br"
+                        },
+                        "rg": 687512049,
+                        "gender": "M",
+                        "age": 58,
+                        "phone": "22 97038-2000",
+                        "cnh": 68993497985,
+                        "finance": 3842,
+                        "address": 1
+                      },
+                      {
+                        "cpf": 1060233061,
+                        "user": {
+                          "pk": 2,
+                          "username": "Ana_Vitoria41120",
+                          "first_name": "Ana Vitória",
+                          "last_name": "Oliveira",
+                          "email": "ana_Vitoria41120@email.com.br"
+                        },
+                        "rg": 635408272,
+                        "gender": "F",
+                        "age": 42,
+                        "phone": "23 91201-8659",
+                        "cnh": 35471298835,
+                        "finance": 10134,
+                        "address": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new customer",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An object that represents a customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "cpf": 928095371,
+                    "rg": 687512049,
+                    "gender": "M",
+                    "age": 58,
+                    "phone": "22 97038-2000",
+                    "cnh": 68993497985,
+                    "finance": 3842,
+                    "address": 1,
+                    "user": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{cpf}": {
+      "get": {
+        "summary": "Return an object containing customer information",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cpf",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 928095371
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object that represents a customer",
+            "content": {
+              "appliction/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "cpf": 928095371,
+                    "user": {
+                      "pk": 1,
+                      "username": "Enzo65283",
+                      "first_name": "Enzo",
+                      "last_name": "Cardoso",
+                      "email": "enzo65283@email.com.br"
+                    },
+                    "rg": 687512049,
+                    "gender": "M",
+                    "age": 58,
+                    "phone": "22 97038-2000",
+                    "cnh": 68993497985,
+                    "finance": 3842,
+                    "address": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a customer and return an object with the new values",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cpf",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 928095371
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object informing the new customer information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "cpf": 928095371,
+                    "rg": 687512049,
+                    "gender": "M",
+                    "age": 58,
+                    "phone": "22 97038-2000",
+                    "cnh": 68993497985,
+                    "finance": 3842,
+                    "address": 1,
+                    "user": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a customer",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cpf",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 928095371
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns nothing if successful"
+          }
+        }
+      }
+    },
+    "/customers/users": {
+      "get": {
+        "summary": "Return a list of all users",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing a JSON array of users information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "count": 2,
+                    "next": null,
+                    "previous": null,
+                    "results": [
+                      {
+                        "id": 1,
+                        "username": "Enzo65283",
+                        "first_name": "Enzo",
+                        "last_name": "Cardoso",
+                        "email": "enzo65283@email.com.br"
+                      },
+                      {
+                        "id": 2,
+                        "username": "Ana_Vitoria41120",
+                        "first_name": "Ana Vitória",
+                        "last_name": "Oliveira",
+                        "email": "ana_Vitoria41120@email.com.br"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An object that represents an user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "username": "Enzo65283",
+                    "first_name": "Enzo",
+                    "last_name": "Cardoso",
+                    "email": "enzo65283@email.com.br"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/users/{id}": {
+      "get": {
+        "summary": "Return an object containing user information",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object that represents an user information",
+            "content": {
+              "appliction/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "username": "Enzo65283",
+                    "first_name": "Enzo",
+                    "last_name": "Cardoso",
+                    "email": "enzo65283@email.com.br"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an user and return an object with the new values",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object informing the new user information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "username": "Enzo65283",
+                    "first_name": "Enzo",
+                    "last_name": "Cardoso",
+                    "email": "enzo65283@email.com.br"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "style": "simple",
+            "explode": false,
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns nothing if successful"
+          }
+        }
+      }
+    },
+    "/vehicles": {
+      "get": {
+        "summary": "Return a list of all vehicles",
+        "tags": [
+          "Vehicles"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing a JSON array of vehicle information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "count": 1,
+                    "next": null,
+                    "previous": null,
+                    "results": [
+                      {
+                        "renavam": 314270183,
+                        "type": "C",
+                        "brand": "HONDA",
+                        "model": "CIVIC",
+                        "year_manufacture": 2018,
+                        "model_year": 2019,
+                        "mileage": 1120.02,
+                        "license_plate": "QKP2U95",
+                        "chassi": 62270492873160180,
+                        "fuel": "H",
+                        "fuel_tank": 40,
+                        "engine": 2,
+                        "color": "Cinza",
+                        "other_data": {
+                          "portas": "4P",
+                          "carroceria": "Sedã"
+                        },
+                        "available": true,
+                        "branch": 1,
+                        "classification": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new vehicle",
+        "tags": [
+          "Vehicles"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Vehicle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An object that represents a vehicle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "renavam": 314270183,
+                    "type": "C",
+                    "brand": "HONDA",
+                    "model": "CIVIC",
+                    "year_manufacture": 2018,
+                    "model_year": 2019,
+                    "mileage": 1120.02,
+                    "license_plate": "QKP2U95",
+                    "chassi": 62270492873160180,
+                    "fuel": "H",
+                    "fuel_tank": 40,
+                    "engine": 2,
+                    "color": "Cinza",
+                    "other_data": {
+                      "portas": "4P",
+                      "carroceria": "Sedã"
+                    },
+                    "available": true,
+                    "branch": 1,
+                    "classification": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicles/{renavam}": {
+      "get": {
+        "summary": "Return an object containing vehicle information",
+        "tags": [
+          "Vehicles"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "renavam",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 314270183
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object that represents a vehicle information",
+            "content": {
+              "appliction/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "renavam": 314270183,
+                    "type": "C",
+                    "brand": "HONDA",
+                    "model": "CIVIC",
+                    "year_manufacture": 2018,
+                    "model_year": 2019,
+                    "mileage": 1120.02,
+                    "license_plate": "QKP2U95",
+                    "chassi": 62270492873160180,
+                    "fuel": "H",
+                    "fuel_tank": 40,
+                    "engine": 2,
+                    "color": "Cinza",
+                    "other_data": {
+                      "portas": "4P",
+                      "carroceria": "Sedã"
+                    },
+                    "available": true,
+                    "branch": 1,
+                    "classification": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a vehicle and return an object with the new values",
+        "tags": [
+          "Vehicles"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "renavam",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 314270183
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Vehicle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object informing the new vehicle information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "renavam": 314270183,
+                    "type": "C",
+                    "brand": "HONDA",
+                    "model": "CIVIC",
+                    "year_manufacture": 2018,
+                    "model_year": 2019,
+                    "mileage": 1120.02,
+                    "license_plate": "QKP2U95",
+                    "chassi": 62270492873160180,
+                    "fuel": "H",
+                    "fuel_tank": 40,
+                    "engine": 2,
+                    "color": "Cinza",
+                    "other_data": {
+                      "portas": "4P",
+                      "carroceria": "Sedã"
+                    },
+                    "available": true,
+                    "branch": 1,
+                    "classification": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a vehicle",
+        "tags": [
+          "Vehicles"
+        ],
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "renavam",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxItems": 1
+            },
+            "explode": false,
+            "example": 314270183
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns nothing if successful"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "AdditionalItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Children's chair"
+          },
+          "daily_cost": {
+            "type": "number",
+            "example": 3.7
+          },
+          "stock": {
+            "type": "integer",
+            "example": 8,
+            "default": 0
+          },
+          "branch": {
+            "type": "integer",
+            "example": 2
+          }
+        },
+        "required": [
+          "name",
+          "daily_cost",
+          "branch"
+        ]
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "cep": {
+            "type": "string",
+            "example": 22290255
+          },
+          "state": {
+            "type": "string",
+            "example": "RJ"
+          },
+          "city": {
+            "type": "string",
+            "example": "Rio de Janeiro"
+          },
+          "district": {
+            "type": "string",
+            "example": "Urca"
+          },
+          "street": {
+            "type": "string",
+            "example": "AV. Pasteur"
+          },
+          "number": {
+            "type": "string",
+            "example": 520
+          }
+        }
+      },
+      "Branch": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Vehicle rental"
+          },
+          "opening_hours_start": {
+            "type": "string",
+            "example": "12:00:00"
+          },
+          "opening_hours_end": {
+            "type": "string",
+            "example": "20:00:00"
+          },
+          "address": {
+            "type": "string",
+            "example": 1
+          }
+        }
+      },
+      "Classification": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Sport vehicle"
+          },
+          "daily_cost": {
+            "type": "number",
+            "example": 650
+          }
+        }
+      },
+      "Insurance": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "basic insurance"
+          },
+          "coverage": {
+            "type": "object",
+            "example": {
+              "personal itens": 5000,
+              "moral damages": 15000
+            }
+          },
+          "price": {
+            "type": "number",
+            "example": 20
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "cpf": {
+            "type": "string",
+            "example": 928095371
+          },
+          "user": {
+            "type": "integer",
+            "example": 1
+          },
+          "rg": {
+            "type": "string",
+            "example": 687512049
+          },
+          "gender": {
+            "type": "string",
+            "example": "M"
+          },
+          "age": {
+            "type": "integer",
+            "example": 58
+          },
+          "phone": {
+            "type": "string",
+            "example": "22 97038-2000"
+          },
+          "cnh": {
+            "type": "string",
+            "example": 68993497985
+          },
+          "finance": {
+            "type": "number",
+            "example": 3842
+          },
+          "address": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "Enzo65283"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "Enzo"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Cardoso"
+          },
+          "email": {
+            "type": "string",
+            "example": "enzo65283@email.com.br"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Vehicle": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "C"
+          },
+          "brand": {
+            "type": "string",
+            "example": "HONDA"
+          },
+          "model": {
+            "type": "string",
+            "example": "CIVIC"
+          },
+          "year_manufacture": {
+            "type": "integer",
+            "example": 2018
+          },
+          "model_year": {
+            "type": "integer",
+            "example": 2019
+          },
+          "mileage": {
+            "type": "number",
+            "example": 1120.02
+          },
+          "renavam": {
+            "type": "string",
+            "example": 314270183
+          },
+          "license_plate": {
+            "type": "string",
+            "example": "QKP2U95"
+          },
+          "chassi": {
+            "type": "string",
+            "example": 62270492873160180
+          },
+          "fuel": {
+            "type": "string",
+            "example": "H"
+          },
+          "fuel_tank": {
+            "type": "integer",
+            "example": 40
+          },
+          "engine": {
+            "type": "string",
+            "example": 2
+          },
+          "color": {
+            "type": "string",
+            "example": "Cinza"
+          },
+          "other_data": {
+            "type": "object",
+            "example": {
+              "portas": "4P",
+              "carroceria": "Sedã"
+            }
+          },
+          "available": {
+            "type": "boolean",
+            "example": true
+          },
+          "branch": {
+            "type": "integer",
+            "example": 1
+          },
+          "classification": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      }
+    }
+  }
+}
