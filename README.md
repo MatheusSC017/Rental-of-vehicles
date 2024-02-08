@@ -1,16 +1,6 @@
 # Car Rental API
 
-This project is an API for a car rental system, with the following endpoints:
-
-- /enderecos/
-- /filiais/
-- /usuarios/
-- /clientes/
-- /veiculos/
-- /alugueis/
-- /alugueis/seguros/
-
-API users who are not logged in will only be able to consult the information of the vehicles made available by the rental companies, as well as the name and address of their branches.
+You can view the list of endpoints made available by the api through the Swagger documentation stored in the documentation folder
 
 ## Requirements
 * **Python 3.9**
