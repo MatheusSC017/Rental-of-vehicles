@@ -144,6 +144,37 @@ paths:
       responses:
         '200':
           description: Returns nothing if successful
+  /branches/{id}/additional_items:
+    get:
+      summary: Return a list of all additional items for vehicles in a branch.
+      tags:
+        - Additional Items
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            maxItems: 1
+          explode: false
+          example: 1
+      responses:
+        '200':
+          description: An object containing a JSON array of additional item information for vehicles in a branch
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - count: 1
+                  next: null
+                  previous: null
+                  results: 
+                    - id: 1
+                      name: child seat
+                      daily_cost: 3.5
+                      stock: 2
+                      branch: 1
   /addresses:
     get:
       summary: Return a list of all addresses.
@@ -722,32 +753,32 @@ paths:
                   next: null
                   previous: null
                   results: 
-                    - cpf: 00928095371
+                    - cpf: "00928095371"
                       user: 
                         pk: 1
                         username: Enzo65283
                         first_name: Enzo
                         last_name: Cardoso
                         email: enzo65283@email.com.br
-                      rg: 687512049
+                      rg: "687512049"
                       gender: M
                       age: 58
-                      phone: 22 97038-2000
-                      cnh: 68993497985
+                      phone: "22 97038-2000"
+                      cnh: "68993497985"
                       finance: 3842.0
                       address: 1
-                    - cpf: 01060233061
+                    - cpf: "01060233061"
                       user: 
                         pk: 2
                         username: Ana_Vitoria41120
                         first_name: Ana Vitória
                         last_name: Oliveira
                         email: ana_Vitoria41120@email.com.br
-                      rg: 635408272
+                      rg: "635408272"
                       gender: F
                       age: 42
-                      phone: 23 91201-8659
-                      cnh: 35471298835
+                      phone: "23 91201-8659"
+                      cnh: "35471298835"
                       finance: 10134.0
                       address: 2
     post:
@@ -770,12 +801,12 @@ paths:
               schema:
                 type: object
               example:
-                - cpf: 00928095371
-                  rg: 687512049
+                - cpf: "00928095371"
+                  rg: "687512049"
                   gender: M
                   age: 58
-                  phone: 22 97038-2000
-                  cnh: 68993497985
+                  phone: "22 97038-2000"
+                  cnh: "68993497985"
                   finance: 3842.0
                   address: 1
                   user: 1
@@ -794,7 +825,7 @@ paths:
             type: string
             maxItems: 1
           explode: false
-          example: 00928095371
+          example: "00928095371"
       responses:
         '200':
           description: An object that represents a customer
@@ -803,18 +834,18 @@ paths:
               schema:
                 type: object
               example:
-                - cpf: 00928095371
+                - cpf: "00928095371"
                   user: 
                     pk: 1
                     username: Enzo65283
                     first_name: Enzo
                     last_name: Cardoso
                     email: enzo65283@email.com.br
-                  rg: 687512049
+                  rg: "687512049"
                   gender: M
                   age: 58
-                  phone: 22 97038-2000
-                  cnh: 68993497985
+                  phone: "22 97038-2000"
+                  cnh: "68993497985"
                   finance: 3842.0
                   address: 1
     put:
@@ -832,7 +863,7 @@ paths:
             maxItems: 1
           style: simple
           explode: false
-          example: 00928095371
+          example: "00928095371"
       requestBody:
         required: true
         content:
@@ -847,12 +878,12 @@ paths:
               schema:
                 type: object
               example:
-                - cpf: 00928095371
-                  rg: 687512049
+                - cpf: "00928095371"
+                  rg: "687512049"
                   gender: M
                   age: 58
-                  phone: 22 97038-2000
-                  cnh: 68993497985
+                  phone: "22 97038-2000"
+                  cnh: "68993497985"
                   finance: 3842.0
                   address: 1
                   user: 1
@@ -871,7 +902,7 @@ paths:
             maxItems: 1
           style: simple
           explode: false
-          example: 00928095371
+          example: "00928095371"
       responses:
         '200':
           description: Returns nothing if successful
@@ -1031,7 +1062,7 @@ paths:
                   next: null
                   previous: null
                   results: 
-                    - renavam: 00314270183
+                    - renavam: "00314270183"
                       'type': C
                       brand: HONDA
                       model: CIVIC
@@ -1039,14 +1070,14 @@ paths:
                       model_year: 2019
                       mileage: 1120.02
                       license_plate: QKP2U95
-                      chassi: 62270492873160179
+                      chassi: "62270492873160179"
                       fuel: H
                       fuel_tank: 40
-                      engine: 2.0
+                      engine: "2.0"
                       color: Cinza
                       other_data:
-                        portas: 4P
-                        carroceria: Sedã
+                        portas: "4P"
+                        carroceria: "Sedã"
                       available: true
                       branch: 1
                       classification: 1
@@ -1070,7 +1101,7 @@ paths:
               schema:
                 type: object
               example:
-                - renavam: 00314270183
+                - renavam: "00314270183"
                   'type': C
                   brand: HONDA
                   model: CIVIC
@@ -1078,14 +1109,14 @@ paths:
                   model_year: 2019
                   mileage: 1120.02
                   license_plate: QKP2U95
-                  chassi: 62270492873160179
+                  chassi: "62270492873160179"
                   fuel: H
                   fuel_tank: 40
-                  engine: 2.0
+                  engine: "2.0"
                   color: Cinza
                   other_data:
-                    portas: 4P
-                    carroceria: Sedã
+                    portas: "4P"
+                    carroceria: "Sedã"
                   available: true
                   branch: 1
                   classification: 1
@@ -1113,7 +1144,7 @@ paths:
               schema:
                 type: object
               example:
-                - renavam: 00314270183
+                - renavam: "00314270183"
                   'type': C
                   brand: HONDA
                   model: CIVIC
@@ -1121,14 +1152,14 @@ paths:
                   model_year: 2019
                   mileage: 1120.02
                   license_plate: QKP2U95
-                  chassi: 62270492873160179
+                  chassi: "62270492873160179"
                   fuel: H
                   fuel_tank: 40
-                  engine: 2.0
+                  engine: "2.0"
                   color: Cinza
                   other_data:
-                    portas: 4P
-                    carroceria: Sedã
+                    portas: "4P"
+                    carroceria: "Sedã"
                   available: true
                   branch: 1
                   classification: 1
@@ -1161,7 +1192,7 @@ paths:
               schema:
                 type: object
               example:
-                - renavam: 00314270183
+                - renavam: "00314270183"
                   'type': C
                   brand: HONDA
                   model: CIVIC
@@ -1169,14 +1200,14 @@ paths:
                   model_year: 2019
                   mileage: 1120.02
                   license_plate: QKP2U95
-                  chassi: 62270492873160179
+                  chassi: "62270492873160179"
                   fuel: H
                   fuel_tank: 40
-                  engine: 2.0
+                  engine: "2.0"
                   color: Cinza
                   other_data:
-                    portas: 4P
-                    carroceria: Sedã
+                    portas: "4P"
+                    carroceria: "Sedã"
                   available: true
                   branch: 1
                   classification: 1
@@ -1198,6 +1229,498 @@ paths:
       responses:
         '200':
           description: Returns nothing if successful
+  /branches/{id}/vehicles:
+    get:
+      summary: Return a list of all vehicles in a branch
+      tags:
+        - Vehicles
+      security:
+        - basicAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            maxItems: 1
+          explode: false
+          example: 1
+      responses:
+        '200':
+          description: An object containing a JSON array of vehicle information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - count: 1
+                  next: null
+                  previous: null
+                  results: 
+                    - renavam: "00314270183"
+                      'type': C
+                      brand: HONDA
+                      model: CIVIC
+                      year_manufacture: 2018
+                      model_year: 2019
+                      mileage: 1120.02
+                      license_plate: QKP2U95
+                      chassi: "62270492873160179"
+                      fuel: H
+                      fuel_tank: 40
+                      engine: "2.0"
+                      color: Cinza
+                      other_data:
+                        portas: "4P"
+                        carroceria: "Sedã"
+                      available: true
+                      branch: 1
+                      classification: 1
+  /rents:
+    get:
+      summary: Return a list of all rents
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: An object containing a JSON array of rent information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - count: 1
+                  next: null
+                  previous: null
+                  results: 
+                    - id: 1
+                      vehicle: "00314270183"
+                      insurance: null
+                      staff: "10452749417"
+                      client: "00928095371"
+                      status: "A"
+                      outlet_branch: 1
+                      arrival_branch: null
+                      distance_branch: null
+                      appointment_date: "2024-02-27"
+                      rent_date: null
+                      devolution_date: null
+                      requested_days: 5
+                      actual_days: 0
+                      fines: null
+                      rent_deposit: 150.0
+                      daily_cost: 14.59
+                      additional_daily_cost: 0.18
+                      return_rate: null
+                      total_cost: null
+                      driver: ["00928095371", ]
+                      additional_items:
+                        - id: 1
+                          number: 1
+                          rental: 1
+                          additional_item: 1
+  /rents/{id}:
+    get:
+      summary: Return an object containing rent information
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            maxItems: 1
+          style: simple
+          explode: false
+          example: 1
+      responses:
+        '200':
+          description: An object that represents a rent information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 1
+                  vehicle: "00314270183"
+                  insurance: null
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: "A"
+                  outlet_branch: 1
+                  arrival_branch: null
+                  distance_branch: null
+                  appointment_date: "2024-02-27"
+                  rent_date: null
+                  devolution_date: null
+                  requested_days: 5
+                  actual_days: 0
+                  fines: null
+                  rent_deposit: 150.0
+                  daily_cost: 14.59
+                  additional_daily_cost: 0.18
+                  return_rate: null
+                  total_cost: null
+                  driver: ["00928095371", ]
+                  additional_items:
+                    - id: 1
+                      number: 1
+                      rental: 1
+                      additional_item: 1
+  /rent/{id}:
+    put:
+      summary: Update a rent and return an object with the new values
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            maxItems: 1
+          style: simple
+          explode: false
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                driver:
+                  type: array
+                  items: 
+                    type: string
+                    example:
+                      - "00928095371"
+                      - "01044008628"
+
+      responses:
+        '200':
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - vehicle: "00314270183"
+                  insurance: null
+                  client: "00928095371"
+                  status: "L"
+                  requested_days: 5
+                  rent_deposit: 150.0
+                  driver:
+                    - "00928095371"
+                    - "01044008628"
+                  additional_items:
+                    - id: 1
+                      number: 1
+                      rental: 1
+                      additional_item: 1
+  /appointment:
+    post:
+      summary: Register a new appointment
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vehicle: 
+                  type: string
+                  example: "00314270183"
+                client: 
+                  type: string
+                  example: "00928095371"
+                appointment_date: 
+                  type: string
+                  example: "2024-02-27"
+                requested_days: 
+                  type: integer
+                  example: 5
+                rent_deposit: 
+                  type: number
+                  example: 150.00
+                driver:
+                  type: array
+                  items: 
+                    type: string
+                    example:
+                      - "00928095371"
+                additional_items:
+                  type: array
+                  items:
+                    type: object
+                    example:
+                      - additional_item: 1, 
+                        number: 1
+      responses:
+        '201':
+          description: An object that represents an appointment
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - vehicle: "00314270183"
+                  insurance: null
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: "A"
+                  appointment_date: "2024-02-27"
+                  requested_days: 5
+                  rent_deposit: 150.0
+                  driver: ["00928095371", ]
+                  additional_items:
+                    - id: 1
+                      number: 1
+                      rental: 1
+                      additional_item: 1
+  /appointment/{id}:
+    put:
+      summary: Update an appointment and return an object with the new values
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            maxItems: 1
+          style: simple
+          explode: false
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vehicle: 
+                  type: string
+                  example: "00314270183"
+                client: 
+                  type: string
+                  example: "00928095371"
+                appointment_date: 
+                  type: string
+                  example: "2024-02-27"
+                requested_days: 
+                  type: integer
+                  example: 5
+                rent_deposit: 
+                  type: number
+                  example: 150.00
+                driver:
+                  type: array
+                  items: 
+                    type: string
+                    example:
+                      - "00928095371"
+                additional_items:
+                  type: array
+                  items:
+                    type: object
+                    example:
+                      - additional_item: 1, 
+                        number: 1
+      responses:
+        '200':
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - vehicle: "00314270183"
+                  insurance: null
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: "A"
+                  appointment_date: "2024-02-27"
+                  requested_days: 5
+                  rent_deposit: 150.0
+                  driver: ["00928095371", ]
+                  additional_items:
+                    - id: 1
+                      number: 1
+                      rental: 1
+                      additional_item: 1
+  /rents/{id}/appointment_to_rent:
+    put:
+      summary: Update the status of a rental from appointment to rented and return an object with the new values
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            maxItems: 1
+          style: simple
+          explode: false
+          example: 1
+      responses:
+        '200':
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 1
+                  vehicle: "00314270183"
+                  insurance: null
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: "L"
+                  outlet_branch: 16
+                  arrival_branch: null
+                  distance_branch: null
+                  appointment_date: "2024-02-27"
+                  rent_date: "2024-02-27"
+                  devolution_date: null
+                  requested_days: 5
+                  actual_days: null
+                  fines: null
+                  rent_deposit: 150.0
+                  daily_cost: 14.59
+                  additional_daily_cost: 0.18
+                  return_rate: null
+                  total_cost: null
+                  driver:
+                    - "00928095371"
+                  additional_items:
+                    - id: 1
+                      number: 1
+                      rental: 1
+                      additional_item: 1
+  /rents/{id}/vehicle_devolution:
+    put:
+      summary: Update the status of a rental from rented to returned and return an object with the new values
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            maxItems: 1
+          style: simple
+          explode: false
+          example: 1
+      responses:
+        '200':
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 1
+                  vehicle: "00314270183"
+                  insurance: null
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: "D"
+                  outlet_branch: 1
+                  arrival_branch: 1
+                  distance_branch: 0
+                  appointment_date: null
+                  rent_date: "2024-02-08"
+                  devolution_date: "2024-02-12"
+                  requested_days: 5
+                  actual_days: 5
+                  fines: 0
+                  rent_deposit: 150.0
+                  daily_cost: 14.59
+                  additional_daily_cost: 0.18
+                  return_rate: 0.0
+                  total_cost: 73.85
+                  driver:
+                  - "00928095371"
+                  additional_items:
+                  - id: 1
+                    number: 1
+                    rental: 1
+                    additional_item: 1
+  /rents/{id}/cancel_appointment:
+    put:
+      summary: Update the status of a rental from appointment to canceled and return an object with the new values
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            maxItems: 1
+          style: simple
+          explode: false
+          example: 1
+      responses:
+        '200':
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 1
+                  vehicle: "00314270183"
+                  insurance: null
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: "C"
+                  outlet_branch: 16
+                  arrival_branch: null
+                  distance_branch: null
+                  appointment_date: "2024-03-01"
+                  rent_date: null
+                  devolution_date: null
+                  requested_days: 7
+                  actual_days: 0
+                  fines: null
+                  rent_deposit: 250.0
+                  daily_cost: 14.59
+                  additional_daily_cost: 0.36
+                  return_rate: null
+                  total_cost: null
+                  driver:
+                    - "00928095371"
+                    - "01044008628"
+                  additional_items:
+                    - id: 1
+                      number: 1
+                      rental: 1
+                      additional_item: 1
 
 components:
   securitySchemes:
