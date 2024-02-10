@@ -9,13 +9,13 @@ from . import validators
 class InsuranceSerializer(ModelSerializer):
     class Meta:
         model = Insurance
-        fields = ['pk', 'title', 'coverage', 'price', ]
+        fields = ['id', 'title', 'coverage', 'price', ]
 
 
 class AdditionalItemsSerializer(ModelSerializer):
     class Meta:
         model = AdditionalItems
-        fields = ['pk', 'name', 'daily_cost', 'stock', 'branch', ]
+        fields = ['id', 'name', 'daily_cost', 'stock', 'branch', ]
 
 
 class RentalAdditionalItemSerializer(ModelSerializer):

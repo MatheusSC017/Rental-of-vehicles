@@ -5,7 +5,7 @@ from .models import Vehicle, VehicleClassification
 class VehicleClassificationSerializer(ModelSerializer):
     class Meta:
         model = VehicleClassification
-        fields = '__all__'
+        fields = ['id', 'title', 'daily_cost', ]
 
 
 class VehicleSerializer(ModelSerializer):

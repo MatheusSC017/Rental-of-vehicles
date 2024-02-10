@@ -40,6 +40,7 @@ from branch.views import (
 )
 from client.views import ClientViewSet, UserViewSet
 from vehicle.views import VehicleViewSet, VehicleClassificationViewSet
+from staff.views import user_login, user_logout
 
 router_root = DefaultRouter()
 router_root.register('insurances', InsuranceViewSet, 'Insurances')
@@ -69,6 +70,8 @@ urlpatterns = [
     path('rents/<int:pk>/vehicle_devolution', vehicle_devolution, name='VehicleDevolution'),
     path('rents/expired_appointments', late_appointments, name='LateAppointments'),
     path('rents/expired_returns', late_devolutions, name='LateDevolutions'),
+    path('login/', user_login, name='user_login'),
+    path('logout/', user_logout, name='user_logout'),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
