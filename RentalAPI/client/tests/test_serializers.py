@@ -53,9 +53,11 @@ class ClientSerializerTestCase(TestCase, GetRelationOfTheFieldMixin):
 
     def test_verify_contents_of_serializer_fields(self) -> None:
         data = self.serializer.data
+        _, objects = self.get_many_to_many_and_objects_fields(Client)
         for key in self.keys:
-            _, objects = self.get_many_to_many_and_objects_fields(Client)
-            if key in objects:
+            if key == 'user':
+                self.assertEqual(data[key]['pk'], getattr(self.client, key).id)
+            elif key in objects:
                 self.assertEqual(data[key], getattr(self.client, key).id)
             else:
                 self.assertEqual(data[key], getattr(self.client, key))

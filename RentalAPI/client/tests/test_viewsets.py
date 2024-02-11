@@ -18,16 +18,22 @@ class ClientViewSetTestCase(APITestCase):
         self.cnh_generator = CNH()
 
         usernames = [self.fake.first_name().replace(' ', '_') + str(randrange(111111, 999999)) for _ in range(3)]
-        self.users = [User.objects.create_user(
-            username=username,
-            email=unidecode(username + '@email.com'),
-            password=username
-        ) for username in usernames]
+        self.users_data = [
+            {'username': username, 'email': unidecode(username + '@email.com'), 'password': username,
+             'first_name': self.fake.first_name(), 'last_name': self.fake.last_name()}
+            for username in usernames
+        ]
+        self.user = User.objects.create_user(
+            username=self.users_data[2]['username'],
+            email=self.users_data[2]['email'],
+            password=self.users_data[2]['password']
+        )
+        self.users_data.pop()
 
         content_type = ContentType.objects.get_for_model(Client)
         permissions = Permission.objects.filter(content_type=content_type)
         for permission in permissions:
-            self.users[0].user_permissions.add(permission)
+            self.user.user_permissions.add(permission)
 
         self.address = Address.objects.create(
             cep=self.fake.postcode(),
@@ -38,6 +44,12 @@ class ClientViewSetTestCase(APITestCase):
             number=self.fake.building_number()
         )
 
+        user = User.objects.create_user(
+            username=self.users_data[0]['username'],
+            email=self.users_data[0]['email'],
+            password=self.users_data[0]['password']
+        )
+
         self.client_user = Client.objects.create(
             cpf=self.cpf_generator.generate(),
             rg=self.fake.rg(),
@@ -45,7 +57,7 @@ class ClientViewSetTestCase(APITestCase):
             age=randrange(18, 60),
             phone=self.fake.cellphone_number()[4:],
             address=self.address,
-            user=self.users[1],
+            user=user,
             cnh=self.cnh_generator.generate(),
             finance=randrange(1500, 5000)
         )
@@ -65,33 +77,33 @@ class ClientViewSetTestCase(APITestCase):
         self.detail_url = reverse('Clients-detail', kwargs={'pk': self.client_user.cpf})
 
     def test_request_to_client_list(self) -> None:
-        self.client.force_login(self.users[0])
+        self.client.force_login(self.user)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_request_to_client_creation(self) -> None:
         data = copy.deepcopy(self.data)
-        data['user'] = self.users[2].pk
-        self.client.force_login(self.users[0])
-        response = self.client.post(self.list_url, data=data)
+        data['user'] = self.users_data[1]
+        self.client.force_login(self.user)
+        response = self.client.post(self.list_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, msg=response.data)
 
     def test_request_to_client_detail(self) -> None:
-        self.client.force_login(self.users[0])
+        self.client.force_login(self.user)
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_request_to_client_update(self) -> None:
         data = copy.deepcopy(self.data)
-        data['user'] = self.users[1].pk
+        data['user'] = self.users_data[1]
         data['cpf'] = self.client_user.cpf
         data['cnh'] = self.client_user.cnh
-        self.client.force_login(self.users[0])
-        response = self.client.put(self.detail_url, data=data)
+        self.client.force_login(self.user)
+        response = self.client.put(self.detail_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_request_to_client_delete(self) -> None:
-        self.client.force_login(self.users[0])
+        self.client.force_login(self.user)
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -125,7 +137,7 @@ class UserViewSetTestCase(APITestCase):
 
     def test_request_to_user_list_with_anonymous_user(self) -> None:
         response = self.client.get(self.list_url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_request_to_user_list(self) -> None:
         self.client.force_login(self.users[0])
