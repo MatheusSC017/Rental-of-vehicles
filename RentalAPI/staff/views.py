@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login, logout
-from django.views.decorators.csrf import csrf_exempt
 
 
 @api_view(['POST'])
@@ -22,9 +21,9 @@ def user_login(request):
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
-@csrf_exempt
 def user_logout(request):
+    Token.objects.get(user_id=request.user).delete()
     logout(request)
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)

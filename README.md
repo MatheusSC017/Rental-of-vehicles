@@ -1,10 +1,23 @@
 # Car Rental API
 
-You can view the list of endpoints made available by the api through the Swagger documentation stored in the documentation folder
+## Summary
+* [Requirements](https://github.com/MatheusSC017/Rental-of-vehicles#requirements)
+* [Structure](https://github.com/MatheusSC017/Rental-of-vehicles#structure)
+* [Authentication](https://github.com/MatheusSC017/Rental-of-vehicles#authentication)
+* [Installation](https://github.com/MatheusSC017/Rental-of-vehicles#installation)
+  * [Quick install with Docker](https://github.com/MatheusSC017/Rental-of-vehicles#quick-install-with-docker)
+  * [On-premises installation](https://github.com/MatheusSC017/Rental-of-vehicles#on-premises-installation)
+  * [Enviroment files parameters](https://github.com/MatheusSC017/Rental-of-vehicles#enviroment-files-parameters)
 
 ## Requirements
 * **Python 3.9**
 * **MySQL**
+
+## Structure
+You can view the list of endpoints made available by the api through the Swagger documentation stored in the documentation folder
+
+## Authentication
+Regarding the form of authentication accepted by the API, we have three ways of using it, the first is through basic authentication (Username and password), the second is through Token authentication that allows you to log in and create a token that can be used during requests and the third is Session Authentication, native to Django
 
 ## Installation
 ### Quick install with Docker
