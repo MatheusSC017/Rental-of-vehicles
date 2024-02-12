@@ -809,7 +809,12 @@ paths:
                   cnh: "68993497985"
                   finance: 3842.0
                   address: 1
-                  user: 1
+                  user:
+                    pk: 1
+                    username: Enzo65283
+                    first_name: Enzo
+                    last_name: Cardoso
+                    email: enzo65283@email.com.br
   /customers/{cpf}:
     get:
       summary: Return an object containing customer information
@@ -886,7 +891,12 @@ paths:
                   cnh: "68993497985"
                   finance: 3842.0
                   address: 1
-                  user: 1
+                  user:
+                    pk: 1
+                    username: Enzo65283
+                    first_name: Enzo
+                    last_name: Cardoso
+                    email: enzo65283@email.com.br
     delete:
       summary: Delete a customer
       tags:
@@ -1721,6 +1731,96 @@ paths:
                       number: 1
                       rental: 1
                       additional_item: 1
+  /rents/expired_appointments:
+    get:
+      summary: Return a list of all expired appointments
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: An object containing a JSON array of expired appointments information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - count: 1
+                  next: null
+                  previous: null
+                  results: 
+                    - id: 1
+                      vehicle: "00314270183"
+                      insurance: null
+                      staff: "10452749417"
+                      client: "00928095371"
+                      status: "A"
+                      outlet_branch: 1
+                      arrival_branch: null
+                      distance_branch: null
+                      appointment_date: "2024-02-01"
+                      rent_date: null
+                      devolution_date: null
+                      requested_days: 5
+                      actual_days: 0
+                      fines: null
+                      rent_deposit: 150.0
+                      daily_cost: 14.59
+                      additional_daily_cost: 0.18
+                      return_rate: null
+                      total_cost: null
+                      driver: ["00928095371", ]
+                      additional_items:
+                        - id: 1
+                          number: 1
+                          rental: 1
+                          additional_item: 1
+  /rents/expired_returns:
+    get:
+      summary: Return a list of all expired returns
+      tags:
+        - Rents
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: An object containing a JSON array of expired returns information
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - count: 1
+                  next: null
+                  previous: null
+                  results: 
+                    - id: 1
+                      vehicle: "00314270183"
+                      insurance: null
+                      staff: "10452749417"
+                      client: "00928095371"
+                      status: "L"
+                      outlet_branch: 1
+                      arrival_branch: null
+                      distance_branch: null
+                      appointment_date: "2024-02-01"
+                      rent_date: "2024-02-01"
+                      devolution_date: null
+                      requested_days: 5
+                      actual_days: 0
+                      fines: null
+                      rent_deposit: 150.0
+                      daily_cost: 14.59
+                      additional_daily_cost: 0.18
+                      return_rate: null
+                      total_cost: null
+                      driver: ["00928095371", ]
+                      additional_items:
+                        - id: 1
+                          number: 1
+                          rental: 1
+                          additional_item: 1
 
 components:
   securitySchemes:
@@ -1814,8 +1914,22 @@ components:
           type: string
           example: 00928095371
         user:
-          type: integer
-          example: 1
+          type: object
+          properties:
+            username: 
+              type: string
+              example: Enzo65283
+            first_name:
+              type: string
+              example: Enzo
+            last_name:
+              type: string
+              example: Cardoso
+            email: 
+              type: string
+              example: enzo65283@email.com.br
+            password:
+              type: string
         rg:
           type: string
           example: 687512049
