@@ -14,7 +14,9 @@
 * **MySQL**
 
 ## Structure
-You can view the list of endpoints made available by the api through the Swagger documentation stored in the documentation folder
+Regarding the available endpoints, you can view them in the Swagger documentation at this [link](https://rental-of-vehicles-66128f353f24.herokuapp.com/ui/)
+
+You can also view the list of endpoints made available by the API through the Swagger documentation stored in the documentation folder
 
 ## Authentication
 Regarding the form of authentication accepted by the API, we have three ways of using it, the first is through basic authentication (Username and password), the second is through Token authentication that allows you to log in and create a token that can be used during requests and the third is Session Authentication, native to Django

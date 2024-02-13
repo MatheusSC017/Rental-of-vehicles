@@ -1,0 +1,8 @@
+connexion >= 3.0.0
+connexion[swagger-ui] >= 2.6.0
+connexion[flask] >= 2.6.0
+connexion[uvicorn] >= 2.6.0
+python_dateutil == 2.6.0
+setuptools >= 21.0.0
+swagger-ui-bundle >= 0.0.2
+gunicorn>=20.1.0

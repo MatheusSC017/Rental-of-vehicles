@@ -1,0 +1,2126 @@
+openapi: 3.0.3
+info:
+  title: Rental of Vehicles
+  description: "This API was created with the aim of managing a dealership's rental\
+    \ registration, storing data and relationships, such as vehicles and their branches\
+    \ and users and their rentals."
+  version: "1.0"
+servers:
+- url: http://localhost:8000/
+  description: Sandbox server (uses test data)
+paths:
+  /additional_items:
+    get:
+      tags:
+      - Additional Items
+      summary: Return a list of all additional items for vehicles.
+      operationId: additional_items_get
+      responses:
+        "200":
+          description: An object containing a JSON array of additional item information
+            for vehicles
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 2
+                results:
+                - id: 1
+                  name: child seat
+                  daily_cost: 3.5
+                  stock: 2
+                  branch: 1
+                - id: 2
+                  name: seat cover
+                  daily_cost: 0.5
+                  stock: 12
+                  branch: 2
+      x-openapi-router-controller: swagger_server.controllers.additional_items_controller
+    post:
+      tags:
+      - Additional Items
+      summary: Register a new additional item for vehicles
+      operationId: additional_items_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdditionalItem'
+        required: true
+      responses:
+        "201":
+          description: An object that represents an additional item for vehicles
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                name: Children's chair
+                daily_cost: 3.7
+                stock: 8
+                branch: 2
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.additional_items_controller
+  /additional_items/{id}:
+    get:
+      tags:
+      - Additional Items
+      summary: Return an object containing additional item information
+      operationId: additional_items_id_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object that represents an additional item for vehicles
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                name: Children's chair
+                daily_cost: 3.7
+                stock: 8
+                branch: 2
+      x-openapi-router-controller: swagger_server.controllers.additional_items_controller
+    put:
+      tags:
+      - Additional Items
+      summary: Update an additional item and return an object with the new values
+      operationId: additional_items_id_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdditionalItem'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new additional item information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                name: Children's chair
+                daily_cost: 3.7
+                stock: 8
+                branch: 2
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.additional_items_controller
+    delete:
+      tags:
+      - Additional Items
+      summary: Delete an additional item
+      operationId: additional_items_id_delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: Returns nothing if successful
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.additional_items_controller
+  /branches/{id}/additional_items:
+    get:
+      tags:
+      - Additional Items
+      summary: Return a list of all additional items for vehicles in a branch.
+      operationId: branches_id_additional_items_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object containing a JSON array of additional item information
+            for vehicles in a branch
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 1
+                results:
+                - id: 1
+                  name: child seat
+                  daily_cost: 3.5
+                  stock: 2
+                  branch: 1
+      x-openapi-router-controller: swagger_server.controllers.additional_items_controller
+  /addresses:
+    get:
+      tags:
+      - Addresses
+      summary: Return a list of all addresses.
+      operationId: addresses_get
+      responses:
+        "200":
+          description: An object containing a JSON array of addresses information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 2
+                results:
+                - id: 1
+                  cep: 20531590
+                  state: RJ
+                  city: Rio de Janeiro
+                  district: Alto da Boa Vista
+                  street: Parque Nacional da Tijuca
+                  number: S/N
+                - id: 2
+                  cep: 22290255
+                  state: RJ
+                  city: Rio de Janeiro
+                  district: Urca
+                  street: AV. Pasteur
+                  number: 520
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.addresses_controller
+    post:
+      tags:
+      - Addresses
+      summary: Register a new address
+      operationId: addresses_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+        required: true
+      responses:
+        "201":
+          description: An object that represents an Address
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                cep: 20531590
+                state: RJ
+                city: Rio de Janeiro
+                district: Alto da Boa Vista
+                street: Parque Nacional da Tijuca
+                number: S/N
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.addresses_controller
+  /addresses/{id}:
+    get:
+      tags:
+      - Addresses
+      summary: Return an object containing address information
+      operationId: addresses_id_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object that represents an address
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                cep: 20531590
+                state: RJ
+                city: Rio de Janeiro
+                district: Alto da Boa Vista
+                street: Parque Nacional da Tijuca
+                number: S/N
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.addresses_controller
+    put:
+      tags:
+      - Addresses
+      summary: Update an address and return an object with the new values
+      operationId: addresses_id_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new address information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                cep: 20531590
+                state: RJ
+                city: Rio de Janeiro
+                district: Alto da Boa Vista
+                street: Parque Nacional da Tijuca
+                number: S/N
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.addresses_controller
+    delete:
+      tags:
+      - Addresses
+      summary: Delete an address
+      operationId: addresses_id_delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: Returns nothing if successful
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.addresses_controller
+  /branches:
+    get:
+      tags:
+      - Branches
+      summary: Return a list of all branches
+      operationId: branches_get
+      responses:
+        "200":
+          description: An object containing a JSON array of branches information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 2
+                results:
+                - id: 1
+                  name: Vehicle Rental
+                  opening_hours_start: 12:00:00
+                  opening_hours_end: 20:00:00
+                  address: 1
+                  address_info: "Parque Nacional da Tijuca - S/N, Alto da Boa Vista,\
+                    \ Rio de Janeiro/ RJ"
+                  number_vehicles: 0
+                - id: 2
+                  name: Vehicle Rental
+                  opening_hours_start: 11:00:00
+                  opening_hours_end: 21:00:00
+                  address: 2
+                  address_info: "AV. Pasteur - 520, Urca, Rio de Janeiro/ RJ"
+                  number_vehicles: 3
+      x-openapi-router-controller: swagger_server.controllers.branches_controller
+    post:
+      tags:
+      - Branches
+      summary: Register a new Branch
+      operationId: branches_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Branch'
+        required: true
+      responses:
+        "201":
+          description: An object that represents a branch
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                name: Vehicle Rental
+                opening_hours_start: 12:00:00
+                opening_hours_end: 20:00:00
+                address: 1
+                address_info: "Parque Nacional da Tijuca - S/N, Alto da Boa Vista,\
+                  \ Rio de Janeiro/ RJ"
+                number_vehicles: 0
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.branches_controller
+  /branches/{id}:
+    get:
+      tags:
+      - Branches
+      summary: Return an object containing branch information
+      operationId: branches_id_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object that represents a branch
+          content:
+            appliction/json:
+              schema:
+                type: object
+                x-content-type: appliction/json
+              example:
+              - id: 1
+                name: Vehicle Rental
+                opening_hours_start: 12:00:00
+                opening_hours_end: 20:00:00
+                address: 1
+                address_info: "Parque Nacional da Tijuca - S/N, Alto da Boa Vista,\
+                  \ Rio de Janeiro/ RJ"
+                number_vehicles: 0
+      x-openapi-router-controller: swagger_server.controllers.branches_controller
+    put:
+      tags:
+      - Branches
+      summary: Update a branch and return an object with the new values
+      operationId: branches_id_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Branch'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new branch information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                name: Vehicle Rental
+                opening_hours_start: 12:00:00
+                opening_hours_end: 20:00:00
+                address: 1
+                address_info: "Parque Nacional da Tijuca - S/N, Alto da Boa Vista,\
+                  \ Rio de Janeiro/ RJ"
+                number_vehicles: 0
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.branches_controller
+    delete:
+      tags:
+      - Branches
+      summary: Delete a branch
+      operationId: branches_id_delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: Returns nothing if successful
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.branches_controller
+  /classifications:
+    get:
+      tags:
+      - Classifications
+      summary: Return a list of all vehicle classifications
+      operationId: classifications_get
+      responses:
+        "200":
+          description: An object containing a JSON array of vehicle classification
+            information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 3
+                results:
+                - id: 1
+                  title: Luxury vehicle
+                  daily_cost: 520
+                - id: 2
+                  title: Basic vehicle
+                  daily_cost: 100
+                - id: 3
+                  title: Sport vehicle
+                  daily_cost: 650
+      x-openapi-router-controller: swagger_server.controllers.classifications_controller
+    post:
+      tags:
+      - Classifications
+      summary: Register a new vehicle classification
+      operationId: classifications_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classification'
+        required: true
+      responses:
+        "201":
+          description: An object that represents a vehicle classification
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 3
+                title: Sport vehicle
+                daily_cost: 650
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.classifications_controller
+  /classifications/{id}:
+    get:
+      tags:
+      - Classifications
+      summary: Return an object containing vehicle classification information
+      operationId: classifications_id_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object that represents a vehicle classification
+          content:
+            appliction/json:
+              schema:
+                type: object
+                x-content-type: appliction/json
+              example:
+              - id: 1
+                title: Luxury vehicle
+                daily_cost: 520
+      x-openapi-router-controller: swagger_server.controllers.classifications_controller
+    put:
+      tags:
+      - Classifications
+      summary: Update a vehicle classification and return an object with the new values
+      operationId: classifications_id_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classification'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new vehicle classification information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                title: Sport vehicle
+                daily_cost: 650
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.classifications_controller
+    delete:
+      tags:
+      - Classifications
+      summary: Delete a vehicle classification
+      operationId: classifications_id_delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: Returns nothing if successful
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.classifications_controller
+  /insurances:
+    get:
+      tags:
+      - Insurances
+      summary: Return a list of all vehicle insurances
+      operationId: insurances_get
+      responses:
+        "200":
+          description: An object containing a JSON array of vehicle insurances information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 2
+                results:
+                - id: 1
+                  title: basic insurance
+                  coverage:
+                    personal itens: 5000
+                    moral damages: 15000
+                  price: 20
+                - id: 2
+                  title: complete insurance
+                  coverage:
+                    personal itens: 50000
+                    moral damages: 150000
+                    moral damages to third parties: 25000
+                  price: 50
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.insurances_controller
+    post:
+      tags:
+      - Insurances
+      summary: Register a new vehicle insurance
+      operationId: insurances_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Insurance'
+        required: true
+      responses:
+        "201":
+          description: An object that represents a vehicle insurance
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                title: basic insurance
+                coverage:
+                  personal itens: 5000
+                  moral damages: 15000
+                price: 20
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.insurances_controller
+  /insurances/{id}:
+    get:
+      tags:
+      - Insurances
+      summary: Return an object containing vehicle insurance information
+      operationId: insurances_id_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object that represents a vehicle insurance information
+          content:
+            appliction/json:
+              schema:
+                type: object
+                x-content-type: appliction/json
+              example:
+              - id: 1
+                title: basic insurance
+                coverage:
+                  personal itens: 5000
+                  moral damages: 15000
+                price: 20
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.insurances_controller
+    put:
+      tags:
+      - Insurances
+      summary: Update a vehicle insurance and return an object with the new values
+      operationId: insurances_id_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Insurance'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new vehicle insurance information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                title: basic insurance
+                coverage:
+                  personal itens: 5000
+                  moral damages: 15000
+                price: 20
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.insurances_controller
+    delete:
+      tags:
+      - Insurances
+      summary: Delete a vehicle insurance
+      operationId: insurances_id_delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: Returns nothing if successful
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.insurances_controller
+  /customers:
+    get:
+      tags:
+      - Customers
+      summary: Return a list of all customers
+      operationId: customers_get
+      responses:
+        "200":
+          description: An object containing a JSON array of customers information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 2
+                results:
+                - cpf: "00928095371"
+                  user:
+                    pk: 1
+                    username: Enzo65283
+                    first_name: Enzo
+                    last_name: Cardoso
+                    email: enzo65283@email.com.br
+                  rg: "687512049"
+                  gender: M
+                  age: 58
+                  phone: 22 97038-2000
+                  cnh: "68993497985"
+                  finance: 3842
+                  address: 1
+                - cpf: "01060233061"
+                  user:
+                    pk: 2
+                    username: Ana_Vitoria41120
+                    first_name: Ana Vitória
+                    last_name: Oliveira
+                    email: ana_Vitoria41120@email.com.br
+                  rg: "635408272"
+                  gender: F
+                  age: 42
+                  phone: 23 91201-8659
+                  cnh: "35471298835"
+                  finance: 10134
+                  address: 2
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.customers_controller
+    post:
+      tags:
+      - Customers
+      summary: Register a new customer
+      operationId: customers_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        "201":
+          description: An object that represents a customer
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - cpf: "00928095371"
+                rg: "687512049"
+                gender: M
+                age: 58
+                phone: 22 97038-2000
+                cnh: "68993497985"
+                finance: 3842
+                address: 1
+                user:
+                  pk: 1
+                  username: Enzo65283
+                  first_name: Enzo
+                  last_name: Cardoso
+                  email: enzo65283@email.com.br
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.customers_controller
+  /customers/{cpf}:
+    get:
+      tags:
+      - Customers
+      summary: Return an object containing customer information
+      operationId: customers_cpf_get
+      parameters:
+      - name: cpf
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: "00928095371"
+      responses:
+        "200":
+          description: An object that represents a customer
+          content:
+            appliction/json:
+              schema:
+                type: object
+                x-content-type: appliction/json
+              example:
+              - cpf: "00928095371"
+                user:
+                  pk: 1
+                  username: Enzo65283
+                  first_name: Enzo
+                  last_name: Cardoso
+                  email: enzo65283@email.com.br
+                rg: "687512049"
+                gender: M
+                age: 58
+                phone: 22 97038-2000
+                cnh: "68993497985"
+                finance: 3842
+                address: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.customers_controller
+    put:
+      tags:
+      - Customers
+      summary: Update a customer and return an object with the new values
+      operationId: customers_cpf_put
+      parameters:
+      - name: cpf
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: "00928095371"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new customer information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - cpf: "00928095371"
+                rg: "687512049"
+                gender: M
+                age: 58
+                phone: 22 97038-2000
+                cnh: "68993497985"
+                finance: 3842
+                address: 1
+                user:
+                  pk: 1
+                  username: Enzo65283
+                  first_name: Enzo
+                  last_name: Cardoso
+                  email: enzo65283@email.com.br
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.customers_controller
+    delete:
+      tags:
+      - Customers
+      summary: Delete a customer
+      operationId: customers_cpf_delete
+      parameters:
+      - name: cpf
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: "00928095371"
+      responses:
+        "200":
+          description: Returns nothing if successful
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.customers_controller
+  /customers/users:
+    get:
+      tags:
+      - Users
+      summary: Return a list of all users
+      operationId: customers_users_get
+      responses:
+        "200":
+          description: An object containing a JSON array of users information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 2
+                results:
+                - id: 1
+                  username: Enzo65283
+                  first_name: Enzo
+                  last_name: Cardoso
+                  email: enzo65283@email.com.br
+                - id: 2
+                  username: Ana_Vitoria41120
+                  first_name: Ana Vitória
+                  last_name: Oliveira
+                  email: ana_Vitoria41120@email.com.br
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    post:
+      tags:
+      - Users
+      summary: Register a new user
+      operationId: customers_users_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "201":
+          description: An object that represents an user
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                username: Enzo65283
+                first_name: Enzo
+                last_name: Cardoso
+                email: enzo65283@email.com.br
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+  /customers/users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Return an object containing user information
+      operationId: customers_users_id_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object that represents an user information
+          content:
+            appliction/json:
+              schema:
+                type: object
+                x-content-type: appliction/json
+              example:
+              - id: 1
+                username: Enzo65283
+                first_name: Enzo
+                last_name: Cardoso
+                email: enzo65283@email.com.br
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    put:
+      tags:
+      - Users
+      summary: Update an user and return an object with the new values
+      operationId: customers_users_id_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new user information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                username: Enzo65283
+                first_name: Enzo
+                last_name: Cardoso
+                email: enzo65283@email.com.br
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+    delete:
+      tags:
+      - Users
+      summary: Delete an user
+      operationId: customers_users_id_delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: Returns nothing if successful
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.users_controller
+  /vehicles:
+    get:
+      tags:
+      - Vehicles
+      summary: Return a list of all vehicles
+      operationId: vehicles_get
+      responses:
+        "200":
+          description: An object containing a JSON array of vehicle information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 1
+                results:
+                - renavam: "00314270183"
+                  type: C
+                  brand: HONDA
+                  model: CIVIC
+                  year_manufacture: 2018
+                  model_year: 2019
+                  mileage: 1120.02
+                  license_plate: QKP2U95
+                  chassi: "62270492873160179"
+                  fuel: H
+                  fuel_tank: 40
+                  engine: "2.0"
+                  color: Cinza
+                  other_data:
+                    portas: 4P
+                    carroceria: Sedã
+                  available: true
+                  branch: 1
+                  classification: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.vehicles_controller
+    post:
+      tags:
+      - Vehicles
+      summary: Register a new vehicle
+      operationId: vehicles_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+        required: true
+      responses:
+        "201":
+          description: An object that represents a vehicle
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - renavam: "00314270183"
+                type: C
+                brand: HONDA
+                model: CIVIC
+                year_manufacture: 2018
+                model_year: 2019
+                mileage: 1120.02
+                license_plate: QKP2U95
+                chassi: "62270492873160179"
+                fuel: H
+                fuel_tank: 40
+                engine: "2.0"
+                color: Cinza
+                other_data:
+                  portas: 4P
+                  carroceria: Sedã
+                available: true
+                branch: 1
+                classification: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.vehicles_controller
+  /vehicles/{renavam}:
+    get:
+      tags:
+      - Vehicles
+      summary: Return an object containing vehicle information
+      operationId: vehicles_renavam_get
+      parameters:
+      - name: renavam
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 314270183
+      responses:
+        "200":
+          description: An object that represents a vehicle information
+          content:
+            appliction/json:
+              schema:
+                type: object
+                x-content-type: appliction/json
+              example:
+              - renavam: "00314270183"
+                type: C
+                brand: HONDA
+                model: CIVIC
+                year_manufacture: 2018
+                model_year: 2019
+                mileage: 1120.02
+                license_plate: QKP2U95
+                chassi: "62270492873160179"
+                fuel: H
+                fuel_tank: 40
+                engine: "2.0"
+                color: Cinza
+                other_data:
+                  portas: 4P
+                  carroceria: Sedã
+                available: true
+                branch: 1
+                classification: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.vehicles_controller
+    put:
+      tags:
+      - Vehicles
+      summary: Update a vehicle and return an object with the new values
+      operationId: vehicles_renavam_put
+      parameters:
+      - name: renavam
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 314270183
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new vehicle information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - renavam: "00314270183"
+                type: C
+                brand: HONDA
+                model: CIVIC
+                year_manufacture: 2018
+                model_year: 2019
+                mileage: 1120.02
+                license_plate: QKP2U95
+                chassi: "62270492873160179"
+                fuel: H
+                fuel_tank: 40
+                engine: "2.0"
+                color: Cinza
+                other_data:
+                  portas: 4P
+                  carroceria: Sedã
+                available: true
+                branch: 1
+                classification: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.vehicles_controller
+    delete:
+      tags:
+      - Vehicles
+      summary: Delete a vehicle
+      operationId: vehicles_renavam_delete
+      parameters:
+      - name: renavam
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 314270183
+      responses:
+        "200":
+          description: Returns nothing if successful
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.vehicles_controller
+  /branches/{id}/vehicles:
+    get:
+      tags:
+      - Vehicles
+      summary: Return a list of all vehicles in a branch
+      operationId: branches_id_vehicles_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object containing a JSON array of vehicle information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 1
+                results:
+                - renavam: "00314270183"
+                  type: C
+                  brand: HONDA
+                  model: CIVIC
+                  year_manufacture: 2018
+                  model_year: 2019
+                  mileage: 1120.02
+                  license_plate: QKP2U95
+                  chassi: "62270492873160179"
+                  fuel: H
+                  fuel_tank: 40
+                  engine: "2.0"
+                  color: Cinza
+                  other_data:
+                    portas: 4P
+                    carroceria: Sedã
+                  available: true
+                  branch: 1
+                  classification: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.vehicles_controller
+  /rents:
+    get:
+      tags:
+      - Rents
+      summary: Return a list of all rents
+      operationId: rents_get
+      responses:
+        "200":
+          description: An object containing a JSON array of rent information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 1
+                results:
+                - id: 1
+                  vehicle: "00314270183"
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: A
+                  outlet_branch: 1
+                  appointment_date: 2024-02-27
+                  requested_days: 5
+                  actual_days: 0
+                  rent_deposit: 150
+                  daily_cost: 14.59
+                  additional_daily_cost: 0.18
+                  driver:
+                  - "00928095371"
+                  additional_items:
+                  - id: 1
+                    number: 1
+                    rental: 1
+                    additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /rents/{id}:
+    get:
+      tags:
+      - Rents
+      summary: Return an object containing rent information
+      operationId: rents_id_get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object that represents a rent information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                vehicle: "00314270183"
+                staff: "10452749417"
+                client: "00928095371"
+                status: A
+                outlet_branch: 1
+                appointment_date: 2024-02-27
+                requested_days: 5
+                actual_days: 0
+                rent_deposit: 150
+                daily_cost: 14.59
+                additional_daily_cost: 0.18
+                driver:
+                - "00928095371"
+                additional_items:
+                - id: 1
+                  number: 1
+                  rental: 1
+                  additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /rent/{id}:
+    put:
+      tags:
+      - Rents
+      summary: Update a rent and return an object with the new values
+      operationId: rent_id_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rent_id_body'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - vehicle: "00314270183"
+                client: "00928095371"
+                status: L
+                requested_days: 5
+                rent_deposit: 150
+                driver:
+                - "00928095371"
+                - "01044008628"
+                additional_items:
+                - id: 1
+                  number: 1
+                  rental: 1
+                  additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /appointment:
+    post:
+      tags:
+      - Rents
+      summary: Register a new appointment
+      operationId: appointment_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/appointment_body'
+        required: true
+      responses:
+        "201":
+          description: An object that represents an appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - vehicle: "00314270183"
+                staff: "10452749417"
+                client: "00928095371"
+                status: A
+                appointment_date: 2024-02-27
+                requested_days: 5
+                rent_deposit: 150
+                driver:
+                - "00928095371"
+                additional_items:
+                - id: 1
+                  number: 1
+                  rental: 1
+                  additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /appointment/{id}:
+    put:
+      tags:
+      - Rents
+      summary: Update an appointment and return an object with the new values
+      operationId: appointment_id_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/appointment_id_body'
+        required: true
+      responses:
+        "200":
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - vehicle: "00314270183"
+                staff: "10452749417"
+                client: "00928095371"
+                status: A
+                appointment_date: 2024-02-27
+                requested_days: 5
+                rent_deposit: 150
+                driver:
+                - "00928095371"
+                additional_items:
+                - id: 1
+                  number: 1
+                  rental: 1
+                  additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /rents/{id}/appointment_to_rent:
+    put:
+      tags:
+      - Rents
+      summary: Update the status of a rental from appointment to rented and return
+        an object with the new values
+      operationId: rents_id_appointment_to_rent_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                vehicle: "00314270183"
+                staff: "10452749417"
+                client: "00928095371"
+                status: L
+                outlet_branch: 16
+                appointment_date: 2024-02-27
+                rent_date: 2024-02-27
+                requested_days: 5
+                rent_deposit: 150
+                daily_cost: 14.59
+                additional_daily_cost: 0.18
+                driver:
+                - "00928095371"
+                additional_items:
+                - id: 1
+                  number: 1
+                  rental: 1
+                  additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /rents/{id}/vehicle_devolution:
+    put:
+      tags:
+      - Rents
+      summary: Update the status of a rental from rented to returned and return an
+        object with the new values
+      operationId: rents_id_vehicle_devolution_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                vehicle: "00314270183"
+                staff: "10452749417"
+                client: "00928095371"
+                status: D
+                outlet_branch: 1
+                arrival_branch: 1
+                distance_branch: 0
+                rent_date: 2024-02-08
+                devolution_date: 2024-02-12
+                requested_days: 5
+                actual_days: 5
+                fines: 0
+                rent_deposit: 150
+                daily_cost: 14.59
+                additional_daily_cost: 0.18
+                return_rate: 0
+                total_cost: 73.85
+                driver:
+                - "00928095371"
+                additional_items:
+                - id: 1
+                  number: 1
+                  rental: 1
+                  additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /rents/{id}/cancel_appointment:
+    put:
+      tags:
+      - Rents
+      summary: Update the status of a rental from appointment to canceled and return
+        an object with the new values
+      operationId: rents_id_cancel_appointment_put
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxItems: 1
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: An object informing the new rent information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - id: 1
+                vehicle: "00314270183"
+                staff: "10452749417"
+                client: "00928095371"
+                status: C
+                outlet_branch: 16
+                appointment_date: 2024-03-01
+                requested_days: 7
+                actual_days: 0
+                rent_deposit: 250
+                daily_cost: 14.59
+                additional_daily_cost: 0.36
+                driver:
+                - "00928095371"
+                - "01044008628"
+                additional_items:
+                - id: 1
+                  number: 1
+                  rental: 1
+                  additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /rents/expired_appointments:
+    get:
+      tags:
+      - Rents
+      summary: Return a list of all expired appointments
+      operationId: rents_expired_appointments_get
+      responses:
+        "200":
+          description: An object containing a JSON array of expired appointments information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 1
+                results:
+                - id: 1
+                  vehicle: "00314270183"
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: A
+                  outlet_branch: 1
+                  appointment_date: 2024-02-01
+                  requested_days: 5
+                  actual_days: 0
+                  rent_deposit: 150
+                  daily_cost: 14.59
+                  additional_daily_cost: 0.18
+                  driver:
+                  - "00928095371"
+                  additional_items:
+                  - id: 1
+                    number: 1
+                    rental: 1
+                    additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+  /rents/expired_returns:
+    get:
+      tags:
+      - Rents
+      summary: Return a list of all expired returns
+      operationId: rents_expired_returns_get
+      responses:
+        "200":
+          description: An object containing a JSON array of expired returns information
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+              example:
+              - count: 1
+                results:
+                - id: 1
+                  vehicle: "00314270183"
+                  staff: "10452749417"
+                  client: "00928095371"
+                  status: L
+                  outlet_branch: 1
+                  appointment_date: 2024-02-01
+                  rent_date: 2024-02-01
+                  requested_days: 5
+                  actual_days: 0
+                  rent_deposit: 150
+                  daily_cost: 14.59
+                  additional_daily_cost: 0.18
+                  driver:
+                  - "00928095371"
+                  additional_items:
+                  - id: 1
+                    number: 1
+                    rental: 1
+                    additional_item: 1
+      security:
+      - basicAuth: []
+      x-openapi-router-controller: swagger_server.controllers.rents_controller
+components:
+  schemas:
+    AdditionalItem:
+      required:
+      - branch
+      - daily_cost
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: Children's chair
+        daily_cost:
+          type: number
+          example: 3.7
+        stock:
+          type: integer
+          example: 8
+          default: 0
+        branch:
+          type: integer
+          example: 2
+    Address:
+      type: object
+      properties:
+        cep:
+          type: string
+          example: "22290255"
+        state:
+          type: string
+          example: RJ
+        city:
+          type: string
+          example: Rio de Janeiro
+        district:
+          type: string
+          example: Urca
+        street:
+          type: string
+          example: AV. Pasteur
+        number:
+          type: string
+          example: "520"
+    Branch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Vehicle rental
+        opening_hours_start:
+          type: string
+          example: 12:00:00
+        opening_hours_end:
+          type: string
+          example: 20:00:00
+        address:
+          type: string
+          example: "1"
+    Classification:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Sport vehicle
+        daily_cost:
+          type: number
+          example: 650
+    Insurance:
+      type: object
+      properties:
+        title:
+          type: string
+          example: basic insurance
+        coverage:
+          type: object
+          example:
+            personal itens: 5000
+            moral damages: 15000
+        price:
+          type: number
+          example: 20
+    Customer:
+      type: object
+      properties:
+        cpf:
+          type: string
+          example: "928095371"
+        user:
+          $ref: '#/components/schemas/Customer_user'
+        rg:
+          type: string
+          example: "687512049"
+        gender:
+          type: string
+          example: M
+        age:
+          type: integer
+          example: 58
+        phone:
+          type: string
+          example: 22 97038-2000
+        cnh:
+          type: string
+          example: "68993497985"
+        finance:
+          type: number
+          example: 3842
+        address:
+          type: integer
+          example: 1
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Enzo65283
+        first_name:
+          type: string
+          example: Enzo
+        last_name:
+          type: string
+          example: Cardoso
+        email:
+          type: string
+          example: enzo65283@email.com.br
+        password:
+          type: string
+    Vehicle:
+      type: object
+      properties:
+        type:
+          type: string
+          example: C
+        brand:
+          type: string
+          example: HONDA
+        model:
+          type: string
+          example: CIVIC
+        year_manufacture:
+          type: integer
+          example: 2018
+        model_year:
+          type: integer
+          example: 2019
+        mileage:
+          type: number
+          example: 1120.02
+        renavam:
+          type: string
+          example: "314270183"
+        license_plate:
+          type: string
+          example: QKP2U95
+        chassi:
+          type: string
+          example: "62270492873160180"
+        fuel:
+          type: string
+          example: H
+        fuel_tank:
+          type: integer
+          example: 40
+        engine:
+          type: string
+          example: "2"
+        color:
+          type: string
+          example: Cinza
+        other_data:
+          type: object
+          example:
+            portas: 4P
+            carroceria: Sedã
+        available:
+          type: boolean
+          example: true
+        branch:
+          type: integer
+          example: 1
+        classification:
+          type: integer
+          example: 1
+    rent_id_body:
+      type: object
+      properties:
+        driver:
+          type: array
+          items:
+            type: string
+            example: "[\"00928095371\",\"01044008628\"]"
+    appointment_body:
+      type: object
+      properties:
+        vehicle:
+          type: string
+          example: "00314270183"
+        client:
+          type: string
+          example: "00928095371"
+        appointment_date:
+          type: string
+          example: 2024-02-27
+        requested_days:
+          type: integer
+          example: 5
+        rent_deposit:
+          type: number
+          example: 150
+        driver:
+          type: array
+          items:
+            type: string
+            example: "[\"00928095371\"]"
+        additional_items:
+          type: array
+          items:
+            type: object
+            example:
+            - additional_item: "1,"
+              number: 1
+    appointment_id_body:
+      type: object
+      properties:
+        vehicle:
+          type: string
+          example: "00314270183"
+        client:
+          type: string
+          example: "00928095371"
+        appointment_date:
+          type: string
+          example: 2024-02-27
+        requested_days:
+          type: integer
+          example: 5
+        rent_deposit:
+          type: number
+          example: 150
+        driver:
+          type: array
+          items:
+            type: string
+            example: "[\"00928095371\"]"
+        additional_items:
+          type: array
+          items:
+            type: object
+            example:
+            - additional_item: "1,"
+              number: 1
+    Customer_user:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Enzo65283
+        first_name:
+          type: string
+          example: Enzo
+        last_name:
+          type: string
+          example: Cardoso
+        email:
+          type: string
+          example: enzo65283@email.com.br
+        password:
+          type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      x-basicInfoFunc: swagger_server.controllers.authorization_controller.check_basicAuth
+
