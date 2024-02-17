@@ -10,6 +10,45 @@ servers:
     
 
 paths:
+  /login:
+    post:
+      summary: Log in to the system
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          applciation/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Return a token that will be used in other requests
+          content:
+            application/json:
+              schema:
+                type: string
+  /logout:
+    get:
+      summary: Log out to the system
+      tags:
+        - Authentication
+      security:
+        - tokenAuth: []
+      responses:
+        '200':
+          description: A message of successful
+          content:
+            aplication/json:
+              schema:
+                type: object
+                example:
+                  message: Logout successful
   /additional_items:
     get:
       summary: Return a list of all additional items for vehicles.
@@ -43,6 +82,7 @@ paths:
         - Additional Items
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -96,6 +136,7 @@ paths:
         - Additional Items
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -131,6 +172,7 @@ paths:
         - Additional Items
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -182,6 +224,7 @@ paths:
         - Addresses
       security:
         - basicAuth: []
+        - tokenAuth: []
       responses:
         '200':
           description: An object containing a JSON array of addresses information
@@ -214,6 +257,7 @@ paths:
         - Addresses
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -242,6 +286,7 @@ paths:
         - Addresses
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -272,6 +317,7 @@ paths:
         - Addresses
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -309,6 +355,7 @@ paths:
         - Addresses
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -359,6 +406,7 @@ paths:
         - Branches
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -415,6 +463,7 @@ paths:
         - Branches
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -452,6 +501,7 @@ paths:
         - Branches
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -497,6 +547,7 @@ paths:
         - Classifications
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -545,6 +596,7 @@ paths:
         - Classifications
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -578,6 +630,7 @@ paths:
         - Classifications
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -598,6 +651,7 @@ paths:
         - Insurances
       security:
         - basicAuth: []
+        - tokenAuth: []
       responses:
         '200':
           description: An object containing a JSON array of vehicle insurances information
@@ -629,6 +683,7 @@ paths:
         - Insurances
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -656,6 +711,7 @@ paths:
         - Insurances
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -685,6 +741,7 @@ paths:
         - Insurances
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -721,6 +778,7 @@ paths:
         - Insurances
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -741,6 +799,7 @@ paths:
         - Customers
       security:
         - basicAuth: []
+        - tokenAuth: []
       responses:
         '200':
           description: An object containing a JSON array of customers information
@@ -787,6 +846,7 @@ paths:
         - Customers
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -822,6 +882,7 @@ paths:
         - Customers
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: cpf
@@ -859,6 +920,7 @@ paths:
         - Customers
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: cpf
@@ -903,6 +965,7 @@ paths:
         - Customers
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: cpf
@@ -923,6 +986,7 @@ paths:
         - Users
       security:
         - basicAuth: []
+        - tokenAuth: []
       responses:
         '200':
           description: An object containing a JSON array of users information
@@ -951,6 +1015,7 @@ paths:
         - Users
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -977,6 +1042,7 @@ paths:
         - Users
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -1005,6 +1071,7 @@ paths:
         - Users
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -1040,6 +1107,7 @@ paths:
         - Users
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -1060,6 +1128,7 @@ paths:
         - Vehicles
       security:
         - basicAuth: []
+        - tokenAuth: []
       responses:
         '200':
           description: An object containing a JSON array of vehicle information
@@ -1097,6 +1166,7 @@ paths:
         - Vehicles
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -1137,6 +1207,7 @@ paths:
         - Vehicles
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: renavam
@@ -1179,6 +1250,7 @@ paths:
         - Vehicles
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: renavam
@@ -1227,6 +1299,7 @@ paths:
         - Vehicles
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: renavam
@@ -1246,6 +1319,7 @@ paths:
         - Vehicles
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters:
         - in: path
           name: id
@@ -1293,6 +1367,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       responses:
         '200':
           description: An object containing a JSON array of rent information
@@ -1338,6 +1413,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -1389,6 +1465,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -1443,6 +1520,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       requestBody:
         required: true
         content:
@@ -1507,6 +1585,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -1581,6 +1660,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -1633,6 +1713,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -1685,6 +1766,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       parameters: 
         - in: path
           name: id
@@ -1738,6 +1820,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       responses:
         '200':
           description: An object containing a JSON array of expired appointments information
@@ -1783,6 +1866,7 @@ paths:
         - Rents
       security:
         - basicAuth: []
+        - tokenAuth: []
       responses:
         '200':
           description: An object containing a JSON array of expired returns information
@@ -1827,6 +1911,10 @@ components:
     basicAuth:
       type: http
       scheme: basic
+    tokenAuth:
+      type: apiKey
+      name: Authorization
+      in: header
   schemas:
     AdditionalItem:
       type: object

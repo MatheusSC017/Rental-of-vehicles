@@ -12,6 +12,72 @@
     }
   ],
   "paths": {
+    "/login": {
+      "post": {
+        "summary": "Log in to the system",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "applciation/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a token that will be used in other requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "summary": "Log out to the system",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "tokenAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A message of successful",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "message": "Logout successful"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/additional_items": {
       "get": {
         "summary": "Return a list of all additional items for vehicles.",
@@ -62,6 +128,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -147,6 +216,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -203,6 +275,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -284,6 +359,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "responses": {
@@ -334,6 +412,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -380,6 +461,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -427,6 +511,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -485,6 +572,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -562,6 +652,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -650,6 +743,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -708,6 +804,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -782,6 +881,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -862,6 +964,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -916,6 +1021,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -948,6 +1056,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "responses": {
@@ -999,6 +1110,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -1045,6 +1159,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1092,6 +1209,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1150,6 +1270,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1182,6 +1305,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "responses": {
@@ -1248,6 +1374,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -1302,6 +1431,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1357,6 +1489,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1423,6 +1558,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1455,6 +1593,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "responses": {
@@ -1501,6 +1642,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -1545,6 +1689,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1590,6 +1737,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1646,6 +1796,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1678,6 +1831,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "responses": {
@@ -1732,6 +1888,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -1791,6 +1950,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1851,6 +2013,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1921,6 +2086,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -1952,6 +2120,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -2021,6 +2192,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "responses": {
@@ -2088,6 +2262,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -2162,6 +2339,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -2245,6 +2425,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "requestBody": {
@@ -2346,6 +2529,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -2461,6 +2647,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -2535,6 +2724,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -2609,6 +2801,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "parameters": [
@@ -2684,6 +2879,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "responses": {
@@ -2751,6 +2949,9 @@
         "security": [
           {
             "basicAuth": []
+          },
+          {
+            "tokenAuth": []
           }
         ],
         "responses": {
@@ -2815,6 +3016,11 @@
       "basicAuth": {
         "type": "http",
         "scheme": "basic"
+      },
+      "tokenAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
       }
     },
     "schemas": {
