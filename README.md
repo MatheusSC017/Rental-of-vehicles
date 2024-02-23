@@ -1,5 +1,11 @@
 # Car Rental API
 
+![Linguagem mais usada](https://img.shields.io/github/languages/top/MatheusSC017/Rental-of-vehicles)
+![Numero de lingaugens usadas](https://img.shields.io/github/languages/count/MatheusSC017/Rental-of-vehicles)
+![Lincense](https://img.shields.io/github/license/MatheusSC017/Rental-of-vehicles)
+![Tamanho do projeto](https://img.shields.io/github/languages/code-size/MatheusSC017/Rental-of-vehicles)
+
+
 ## Summary
 * [Requirements](https://github.com/MatheusSC017/Rental-of-vehicles#requirements)
 * [Structure](https://github.com/MatheusSC017/Rental-of-vehicles#structure)
