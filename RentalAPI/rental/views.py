@@ -4,11 +4,12 @@ from django.db.models.expressions import RawSQL
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.viewsets import ModelViewSet, GenericViewSet, mixins
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from vehicle.models import Vehicle
+from .auth import MessagingSystemAccessTokenAuthentication
 from .permissions import OnlyStaffMemberPermission
 from .serializers import (
     InsuranceSerializer,
@@ -146,14 +147,16 @@ def vehicle_devolution(request, pk):
 
 
 @api_view(['GET', ])
-@permission_classes([OnlyStaffMemberPermission, ])
+@authentication_classes([MessagingSystemAccessTokenAuthentication, ])
+@permission_classes((IsAuthenticated,))
 def late_appointments(request):
     queryset = Rental.objects.filter(status='A', appointment_date__lt=str(timezone.now())[:10])
     return Response(data=RentalSerializer(queryset, many=True).data)
 
 
 @api_view(['GET', ])
-@permission_classes([OnlyStaffMemberPermission, ])
+@authentication_classes([MessagingSystemAccessTokenAuthentication, ])
+@permission_classes((IsAuthenticated,))
 def late_devolutions(request):
     queryset = Rental.objects.annotate(
         devolution_date_expected=RawSQL('DATE_ADD(appointment_date, INTERVAL requested_days DAY)', ()),

@@ -174,6 +174,8 @@ CACHE_PAGE_DURATION = 2
 COORDINATES_API_KEY = os.environ.get('COORDINATES_API_KEY')
 COORDINATES_URL = os.environ.get('COORDINATES_URL')
 
+MESSAGING_SYSTEM_ACCESS_TOKEN = os.environ.get('MESSAGING_SYSTEM_ACCESS_TOKEN')
+
 try:
     from .local_settings import *
 except ModuleNotFoundError:
