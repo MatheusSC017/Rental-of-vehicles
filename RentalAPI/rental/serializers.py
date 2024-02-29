@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from .models import Insurance, AdditionalItems, Rental
@@ -162,3 +163,23 @@ class RentUpdateSerializer(ModelSerializer):
         read_only_fields = [
             'vehicle', 'insurance', 'client', 'status', 'requested_days', 'rent_deposit', 'additional_items'
         ]
+
+
+class MessageSerializer(ModelSerializer):
+    recipient = serializers.CharField(source='client.user.email')
+    client = serializers.SerializerMethodField('get_client_full_name')
+    vehicle = serializers.SerializerMethodField('get_vehicle_base_info')
+    date = serializers.DateField(source='appointment_date')
+    branch = serializers.CharField(source='outlet_branch.address')
+    subject = serializers.CharField()
+
+    class Meta:
+        model = Rental
+        fields = ('recipient', 'client', 'date', 'vehicle', 'branch', 'subject')
+
+    def get_vehicle_base_info(self, obj):
+        return f'{obj.vehicle.brand}/ {obj.vehicle.model} - {obj.vehicle.model_year}, {obj.vehicle.color}'
+
+    def get_client_full_name(self, obj):
+        return f'{obj.client.user.first_name} {obj.client.user.last_name}'
+

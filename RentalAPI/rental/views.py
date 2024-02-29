@@ -1,5 +1,6 @@
 import json
 from django.shortcuts import get_object_or_404
+from django.db import models
 from django.db.models.expressions import RawSQL
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -17,7 +18,8 @@ from .serializers import (
     RentalSerializer,
     AppointmentSerializer,
     RentCreateSerializer,
-    RentUpdateSerializer
+    RentUpdateSerializer,
+    MessageSerializer,
 )
 from branch.models import Branch
 from .models import Insurance, AdditionalItems, Rental
@@ -147,18 +149,25 @@ def vehicle_devolution(request, pk):
 
 
 @api_view(['GET', ])
-@authentication_classes([MessagingSystemAccessTokenAuthentication, ])
-@permission_classes((IsAuthenticated,))
+@permission_classes((OnlyStaffMemberPermission,))
 def late_appointments(request):
     queryset = Rental.objects.filter(status='A', appointment_date__lt=str(timezone.now())[:10])
     return Response(data=RentalSerializer(queryset, many=True).data)
 
 
 @api_view(['GET', ])
-@authentication_classes([MessagingSystemAccessTokenAuthentication, ])
-@permission_classes((IsAuthenticated,))
+@permission_classes((OnlyStaffMemberPermission,))
 def late_devolutions(request):
     queryset = Rental.objects.annotate(
         devolution_date_expected=RawSQL('DATE_ADD(appointment_date, INTERVAL requested_days DAY)', ()),
     ).filter(status='D', devolution_date_expected__lt=str(timezone.now())[:10])
     return Response(data=RentalSerializer(queryset, many=True).data)
+
+
+@api_view(['GET', ])
+@authentication_classes([MessagingSystemAccessTokenAuthentication, ])
+@permission_classes((IsAuthenticated,))
+def messages(request):
+    queryset = Rental.objects.annotate(subject=models.Value('appointment', output_field=models.CharField())). \
+        filter(status='A', appointment_date__lt=str(timezone.now())[:10])
+    return Response(data=MessageSerializer(queryset, many=True).data)
