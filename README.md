@@ -71,9 +71,13 @@ But if you use Linux OS or MAC use the command below
 10. Create the .env.rental file, in this file configure the database and API information to the main API (Guide yourself through the [environment variables](https://github.com/MatheusSC017/Rental-of-vehicles#enviroment-files-parameters) section)
 
 11. Create the database according to the settings established in the .env.rental file
-12. Run the following command to create the API tables
+
+12. Make sure you have mysql installed on your machine and create the “vehicle rental” table using the command below
+> CREATE SCHEMA `rental-of-vehicles` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+
+13. Run the following command to create the API tables
 > python RentalAPI/manage.py migrate
-13. Start the API through this command
+14. Start the API through this command
 > python RentalAPI/manage.py runserver
 
 ### Enviroment files parameters

@@ -29,7 +29,7 @@ from rental.views import (
     vehicle_devolution,
     late_appointments,
     late_devolutions,
-    messages,
+    messages_late_appointment,
 )
 from address.views import AddressViewSet
 from branch.views import (
@@ -71,7 +71,7 @@ urlpatterns = [
     path('rents/<int:pk>/vehicle_devolution', vehicle_devolution, name='VehicleDevolution'),
     path('rents/expired_appointments', late_appointments, name='LateAppointments'),
     path('rents/expired_returns', late_devolutions, name='LateDevolutions'),
-    path('messages', messages, name='Messages'),
+    path('messages_late_appointment', messages_late_appointment, name='MessagesLateAppointment'),
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
     path('admin/', admin.site.urls),

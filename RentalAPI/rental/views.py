@@ -167,7 +167,7 @@ def late_devolutions(request):
 @api_view(['GET', ])
 @authentication_classes([MessagingSystemAccessTokenAuthentication, ])
 @permission_classes((IsAuthenticated,))
-def messages(request):
+def messages_late_appointment(request):
     queryset = Rental.objects.annotate(subject=models.Value('appointment', output_field=models.CharField())). \
         filter(status='A', appointment_date__lt=str(timezone.now())[:10])
     return Response(data=MessageSerializer(queryset, many=True).data)
