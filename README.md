@@ -5,6 +5,7 @@
 ![Lincense](https://img.shields.io/github/license/MatheusSC017/Rental-of-vehicles)
 ![Tamanho do projeto](https://img.shields.io/github/languages/code-size/MatheusSC017/Rental-of-vehicles)
 
+![Diagram](Documentation/Diagram.png)
 
 ## Summary
 * [Requirements](https://github.com/MatheusSC017/Rental-of-vehicles#requirements)
