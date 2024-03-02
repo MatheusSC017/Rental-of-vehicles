@@ -165,7 +165,7 @@ class RentUpdateSerializer(ModelSerializer):
         ]
 
 
-class MessageSerializer(ModelSerializer):
+class LateAppointmentMessageSerializer(ModelSerializer):
     recipient = serializers.CharField(source='client.user.email')
     client = serializers.SerializerMethodField('get_client_full_name')
     vehicle = serializers.SerializerMethodField('get_vehicle_base_info')
@@ -183,3 +183,22 @@ class MessageSerializer(ModelSerializer):
     def get_client_full_name(self, obj):
         return f'{obj.client.user.first_name} {obj.client.user.last_name}'
 
+
+class LateDevolutionMessageSerializer(ModelSerializer):
+    recipient = serializers.CharField(source='client.user.email')
+    client = serializers.SerializerMethodField('get_client_full_name')
+    vehicle = serializers.SerializerMethodField('get_vehicle_base_info')
+    start_date = serializers.DateField(source='rental_date')
+    end_date = serializers.DateField(source='devolution_date_expected')
+    branch = serializers.CharField(source='outlet_branch.address')
+    subject = serializers.CharField()
+
+    class Meta:
+        model = Rental
+        fields = ('recipient', 'client', 'start_date', 'end_date', 'vehicle', 'branch', 'subject')
+
+    def get_vehicle_base_info(self, obj):
+        return f'{obj.vehicle.brand}/ {obj.vehicle.model} - {obj.vehicle.model_year}, {obj.vehicle.color}'
+
+    def get_client_full_name(self, obj):
+        return f'{obj.client.user.first_name} {obj.client.user.last_name}'

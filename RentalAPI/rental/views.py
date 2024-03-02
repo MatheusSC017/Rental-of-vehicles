@@ -19,7 +19,8 @@ from .serializers import (
     AppointmentSerializer,
     RentCreateSerializer,
     RentUpdateSerializer,
-    MessageSerializer,
+    LateAppointmentMessageSerializer,
+    LateDevolutionMessageSerializer,
 )
 from branch.models import Branch
 from .models import Insurance, AdditionalItems, Rental
@@ -168,6 +169,18 @@ def late_devolutions(request):
 @authentication_classes([MessagingSystemAccessTokenAuthentication, ])
 @permission_classes((IsAuthenticated,))
 def messages_late_appointment(request):
-    queryset = Rental.objects.annotate(subject=models.Value('appointment', output_field=models.CharField())). \
+    queryset = Rental.objects.annotate(subject=models.Value('late_appointment', output_field=models.CharField())). \
         filter(status='A', appointment_date__lt=str(timezone.now())[:10])
-    return Response(data=MessageSerializer(queryset, many=True).data)
+    return Response(data=LateAppointmentMessageSerializer(queryset, many=True).data)
+
+
+@api_view(['GET', ])
+@authentication_classes([MessagingSystemAccessTokenAuthentication, ])
+@permission_classes((IsAuthenticated,))
+def messages_late_devolution(request):
+    queryset = Rental.objects.annotate(
+        devolution_date_expected=RawSQL('DATE_ADD(appointment_date, INTERVAL requested_days DAY)', ()),
+    ).annotate(subject=models.Value('late_devolution', output_field=models.CharField())).\
+        filter(status='D', devolution_date_expected__lt=str(timezone.now())[:10])
+
+    return Response(data=LateDevolutionMessageSerializer(queryset, many=True).data)
