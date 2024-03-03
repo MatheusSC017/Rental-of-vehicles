@@ -8,7 +8,10 @@ from dotenv import load_dotenv
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 template_env = Environment(loader=FileSystemLoader(searchpath="Consumers/templates"))
-load_dotenv()
+try:
+    load_dotenv(BASE_DIR.parent / ".env.consumers")
+except:
+    load_dotenv(BASE_DIR.parent / ".env")
 
 
 def send_email(recipient, subject, **kwargs):
