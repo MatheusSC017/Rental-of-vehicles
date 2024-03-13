@@ -19,7 +19,7 @@ from .serializers import (
     AppointmentSerializer,
     RentCreateSerializer,
     RentUpdateSerializer,
-    LateAppointmentMessageSerializer,
+    AppointmentMessageSerializer,
     LateDevolutionMessageSerializer,
 )
 from branch.models import Branch
@@ -161,7 +161,7 @@ def late_appointments(request):
 def late_devolutions(request):
     queryset = Rental.objects.annotate(
         devolution_date_expected=RawSQL('DATE_ADD(appointment_date, INTERVAL requested_days DAY)', ()),
-    ).filter(status='D', devolution_date_expected__lt=str(timezone.now())[:10])
+    ).filter(status='L', devolution_date_expected__lt=str(timezone.now())[:10])
     return Response(data=RentalSerializer(queryset, many=True).data)
 
 
@@ -171,7 +171,7 @@ def late_devolutions(request):
 def messages_late_appointment(request):
     queryset = Rental.objects.annotate(subject=models.Value('late_appointment', output_field=models.CharField())). \
         filter(status='A', appointment_date__lt=str(timezone.now())[:10])
-    return Response(data=LateAppointmentMessageSerializer(queryset, many=True).data)
+    return Response(data=AppointmentMessageSerializer(queryset, many=True).data)
 
 
 @api_view(['GET', ])
@@ -181,6 +181,22 @@ def messages_late_devolution(request):
     queryset = Rental.objects.annotate(
         devolution_date_expected=RawSQL('DATE_ADD(appointment_date, INTERVAL requested_days DAY)', ()),
     ).annotate(subject=models.Value('late_devolution', output_field=models.CharField())).\
-        filter(status='D', devolution_date_expected__lt=str(timezone.now())[:10])
+        filter(status='L', devolution_date_expected__lt=str(timezone.now())[:10])
 
     return Response(data=LateDevolutionMessageSerializer(queryset, many=True).data)
+
+
+@api_view(['GET', ])
+@authentication_classes([MessagingSystemAccessTokenAuthentication, ])
+@permission_classes((IsAuthenticated,))
+def messages_appointment(request):
+    queryset = Rental.objects.annotate(
+        subject=models.Value('late_appointment', output_field=models.CharField())
+    ).annotate(
+        appointment_date_notices=RawSQL('DATE_SUB(appointment_date, INTERVAL 5 DAY)', ()),
+    ).filter(
+        status='A',
+        appointment_date_notices__lt=str(timezone.now())[:10],
+        appointment_date__gt=str(timezone.now())[:10]
+    )
+    return Response(data=AppointmentMessageSerializer(queryset, many=True).data)
