@@ -106,9 +106,9 @@ But if you use Linux OS or MAC use the command below
 6. Create the .env.consumers (Guide yourself through the [environment variables](https://github.com/MatheusSC017/Rental-of-vehicles#enviroment-files-parameters) section), regarding the email password, read [Google's documentation](https://support.google.com/mail/answer/185833?hl=en) on how to create an application password.
 
 7. Run as many instances as you want of the WhatsApp email consumer,If you replace the templates in step 7 you need to replace the third parameter that represents the subjects with the set of names of your templates separated by ";"
-> python consumers/consumer.py 'e-mail' 'email_queue' 'appointment;devolution;late devolution;invoice'
+> python consumers/consumer.py 'e-mail' 'email_queue' 'appointment;devolution;late_devolution;devolution'
 
-> python consumers/consumer.py 'whatsapp' 'whatsapp_queue' 'appointment;devolution;late devolution;invoice'
+> python consumers/consumer.py 'whatsapp' 'whatsapp_queue' 'appointment;devolution;late_devolution;devolution'
 
 #### Running the scheduler to call the API and populate the consumer daily
 You need to make sure you have Airflow running on your machine and then place the file in the dags folder and create a config.py in the dag folder with the next configs.

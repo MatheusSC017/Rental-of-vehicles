@@ -6,6 +6,7 @@ import json
 import requests
 from config import *
 
+SUBJECTS = ['late_appointment', 'devolution', 'late_devolution', 'devolution']
 
 def send_message(message, queue_name):
     try:
@@ -20,25 +21,27 @@ def send_message(message, queue_name):
 
 
 def send_email_message():
-    headers = {
-        "Authorization": ACCESS_TOKEN
-    }
-    response = requests.get(API_URL, headers=headers)
-    messages = json.loads(response.content)
-    if len(messages):
-        for message in messages:
-            send_message(message, 'email_queue')
+    for subject in SUBJECTS:
+        headers = {
+            "Authorization": ACCESS_TOKEN
+        }
+        response = requests.get(f'{BASE_URL}messages_{subject}', headers=headers)
+        messages = json.loads(response.content)
+        if len(messages):
+            for message in messages:
+                send_message(message, 'email_queue')
 
 
 def send_whatsapp_message():
-    headers = {
-        "Authorization": ACCESS_TOKEN
-    }
-    response = requests.get(API_URL, headers=headers)
-    messages = json.loads(response.content)
-    if len(messages):
-        for message in messages:
-            send_message(message, 'whatsapp_queue')
+    for subject in SUBJECTS:
+        headers = {
+            "Authorization": ACCESS_TOKEN
+        }
+        response = requests.get(f'{BASE_URL}messages_{subject}', headers=headers)
+        messages = json.loads(response.content)
+        if len(messages):
+            for message in messages:
+                send_message(message, 'whatsapp_queue')
 
 
 with DAG(dag_id="messages",

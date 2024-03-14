@@ -184,7 +184,7 @@ class AppointmentMessageSerializer(ModelSerializer):
         return f'{obj.client.user.first_name} {obj.client.user.last_name}'
 
 
-class LateDevolutionMessageSerializer (ModelSerializer):
+class DevolutionMessageSerializer (ModelSerializer):
     recipient = serializers.CharField(source='client.user.email')
     client = serializers.SerializerMethodField('get_client_full_name')
     vehicle = serializers.SerializerMethodField('get_vehicle_base_info')

@@ -20,7 +20,7 @@ from .serializers import (
     RentCreateSerializer,
     RentUpdateSerializer,
     AppointmentMessageSerializer,
-    LateDevolutionMessageSerializer,
+    DevolutionMessageSerializer,
 )
 from branch.models import Branch
 from .models import Insurance, AdditionalItems, Rental
@@ -179,11 +179,11 @@ def messages_late_appointment(request):
 @permission_classes((IsAuthenticated,))
 def messages_late_devolution(request):
     queryset = Rental.objects.annotate(
-        devolution_date_expected=RawSQL('DATE_ADD(appointment_date, INTERVAL requested_days DAY)', ()),
+        devolution_date_expected=RawSQL('DATE_ADD(rent_date, INTERVAL requested_days DAY)', ()),
     ).annotate(subject=models.Value('late_devolution', output_field=models.CharField())).\
         filter(status='L', devolution_date_expected__lt=str(timezone.now())[:10])
 
-    return Response(data=LateDevolutionMessageSerializer(queryset, many=True).data)
+    return Response(data=DevolutionMessageSerializer(queryset, many=True).data)
 
 
 @api_view(['GET', ])
@@ -191,7 +191,7 @@ def messages_late_devolution(request):
 @permission_classes((IsAuthenticated,))
 def messages_appointment(request):
     queryset = Rental.objects.annotate(
-        subject=models.Value('late_appointment', output_field=models.CharField())
+        subject=models.Value('appointment', output_field=models.CharField())
     ).annotate(
         appointment_date_notices=RawSQL('DATE_SUB(appointment_date, INTERVAL 5 DAY)', ()),
     ).filter(
@@ -200,3 +200,24 @@ def messages_appointment(request):
         appointment_date__gt=str(timezone.now())[:10]
     )
     return Response(data=AppointmentMessageSerializer(queryset, many=True).data)
+
+
+@api_view(['GET', ])
+@authentication_classes([MessagingSystemAccessTokenAuthentication, ])
+@permission_classes((IsAuthenticated,))
+def messages_devolution(request):
+    queryset = Rental.objects.annotate(
+        subject=models.Value('devolution', output_field=models.CharField())
+    ).annotate(
+        devolution_date_expected=RawSQL('DATE_ADD(rent_date, INTERVAL requested_days DAY)', ()),
+    ).annotate(
+        devolution_date_expected_notices=RawSQL('DATE_SUB(DATE_ADD(rent_date, INTERVAL requested_days DAY), '
+                                                'INTERVAL 5 DAY)', ()),
+    ).filter(
+        status='L',
+        devolution_date_expected_notices__lt=str(timezone.now())[:10],
+        devolution_date_expected__gt=str(timezone.now())[:10]
+    )
+    print(queryset[0].devolution_date_expected)
+    print(queryset[0].devolution_date_expected_notices)
+    return Response(data=DevolutionMessageSerializer(queryset, many=True).data)

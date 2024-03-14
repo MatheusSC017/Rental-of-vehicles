@@ -32,6 +32,7 @@ from rental.views import (
     messages_late_appointment,
     messages_late_devolution,
     messages_appointment,
+    messages_devolution,
 )
 from address.views import AddressViewSet
 from branch.views import (
@@ -76,6 +77,7 @@ urlpatterns = [
     path('messages_late_appointment', messages_late_appointment, name='MessagesLateAppointment'),
     path('messages_late_devolution', messages_late_devolution, name='MessagesLateDevolution'),
     path('messages_appointment', messages_appointment, name='MessagesAppointment'),
+    path('messages_devolution', messages_devolution, name='MessagesDevolution'),
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
     path('admin/', admin.site.urls),
