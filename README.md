@@ -23,7 +23,7 @@
 * **RabbitMQ**
 
 ## Structure
-Regarding the available endpoints, you can view them in the Swagger documentation at this [link](https://rental-of-vehicles-66128f353f24.herokuapp.com/ui/)
+Regarding the available endpoints, you can view them in the Swagger documentation at this [link](https://rental-of-vehicles-66128f353f24.herokuapp.com/ui/) (Link temporarily disabled)
 
 You can also view the list of endpoints made available by the API through the Swagger documentation stored in the documentation folder
 
